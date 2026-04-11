@@ -1,0 +1,49 @@
+# Interventional TGMM starter code
+
+This repository is a working starter implementation for the project **Interventional Robustness of a Transformer-Based Unsupervised GMM Solver**.
+
+It follows the proposal scope:
+- fixed **K = 3** components by default
+- main benchmark at **d = 8**
+- training sample sizes **N in [32, 64]**
+- a **small 3-layer transformer** rather than the full TGMM scale used in the paper
+- intervention families: **prior shift**, **mechanism shift**, **noise shift**, and **sample-size shift**
+- baselines: **EM**, **k-means**, and a small **spectral** estimator for isotropic mixtures
+
+## Repository layout
+
+- `src/interventional_tgmm/config.py` — dataclass configs
+- `src/interventional_tgmm/data.py` — synthetic GMM task generation and interventions
+- `src/interventional_tgmm/model.py` — small TGMM-style transformer
+- `src/interventional_tgmm/losses.py` — permutation-invariant training loss
+- `src/interventional_tgmm/baselines.py` — EM, k-means, spectral baselines
+- `src/interventional_tgmm/metrics.py` — parameter error, clustering accuracy, log-likelihood
+- `scripts/train_tgmm.py` — training entrypoint
+- `scripts/evaluate_interventions.py` — evaluation entrypoint
+- `scripts/smoke_test.py` — quick end-to-end sanity check
+
+## Quickstart
+
+```bash
+cd interventional_tgmm
+pip install -e .
+python scripts/smoke_test.py
+```
+
+Train a small model:
+
+```bash
+python scripts/train_tgmm.py --steps 500 --batch-size 32 --device cpu
+```
+
+Evaluate it:
+
+```bash
+python scripts/evaluate_interventions.py   --checkpoint outputs/checkpoint_last.pt   --num-tasks 100   --methods tgmm em kmeans spectral
+```
+
+## Notes
+
+1. The main implementation assumes **isotropic Gaussian mixtures** with a known solver-side scalar `sigma`. Noise interventions can still be tested by changing the data-generating `sigma` at test time.
+2. The spectral baseline is implemented only for the isotropic setting and can fail on small or ill-conditioned samples. The evaluation script records `NaN` if a method is not applicable.
+3. This code is intentionally compact and readable. It is meant to be a solid starting point, not the final project codebase.
