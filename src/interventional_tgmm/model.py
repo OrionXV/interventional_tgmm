@@ -4,6 +4,7 @@ from dataclasses import asdict
 
 import torch
 from torch import nn
+from torch.nn import functional as F
 
 from .config import ModelConfig
 
@@ -38,6 +39,7 @@ class TGMMNet(nn.Module):
         )
         self.mean_head = nn.Linear(cfg.hidden_dim, cfg.d)
         self.weight_head = nn.Linear(cfg.hidden_dim, 1)
+        self.scale_head = nn.Linear(cfg.hidden_dim, cfg.d) if cfg.predict_scales else None
 
     def forward(self, x: torch.Tensor, mask: torch.Tensor) -> dict[str, torch.Tensor]:
         if x.ndim != 3:
@@ -61,7 +63,13 @@ class TGMMNet(nn.Module):
 
         means = self.mean_head(slots)
         weight_logits = self.weight_head(slots).squeeze(-1)
-        return {"means": means, "weight_logits": weight_logits}
+        outputs: dict[str, torch.Tensor] = {"means": means, "weight_logits": weight_logits}
+        if self.scale_head is not None:
+            outputs["log_scales"] = self.scale_head(slots)
+        return outputs
 
-    def config_dict(self) -> dict[str, int | float]:
+    def decode_scales(self, log_scales: torch.Tensor) -> torch.Tensor:
+        return F.softplus(log_scales) + float(self.cfg.min_scale)
+
+    def config_dict(self) -> dict[str, int | float | bool]:
         return asdict(self.cfg)

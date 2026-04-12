@@ -3,9 +3,9 @@ from __future__ import annotations
 
 import argparse
 import sys
-from dataclasses import asdict
 from pathlib import Path
 
+import numpy as np
 import torch
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -34,10 +34,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--n-min", type=int, default=32)
     parser.add_argument("--n-max", type=int, default=64)
     parser.add_argument("--sigma", type=float, default=1.0)
+    parser.add_argument("--anisotropic-prob", type=float, default=0.0)
+    parser.add_argument("--anisotropic-log-scale-min", type=float, default=-1.0)
+    parser.add_argument("--anisotropic-log-scale-max", type=float, default=1.0)
     parser.add_argument("--hidden-dim", type=int, default=128)
     parser.add_argument("--n-layers", type=int, default=3)
     parser.add_argument("--n-heads", type=int, default=4)
     parser.add_argument("--dropout", type=float, default=0.0)
+    parser.add_argument("--predict-scales", action="store_true")
+    parser.add_argument("--scale-loss-weight", type=float, default=1.0)
+    parser.add_argument("--min-scale", type=float, default=1e-3)
     return parser.parse_args()
 
 
@@ -48,7 +54,16 @@ def main() -> None:
     device = choose_device(args.device)
     out_dir = ensure_dir(args.output_dir)
 
-    data_cfg = SamplingConfig(k=args.k, d=args.d, n_min=args.n_min, n_max=args.n_max, sigma=args.sigma)
+    data_cfg = SamplingConfig(
+        k=args.k,
+        d=args.d,
+        n_min=args.n_min,
+        n_max=args.n_max,
+        sigma=args.sigma,
+        anisotropic_prob=args.anisotropic_prob,
+        anisotropic_log_scale_min=args.anisotropic_log_scale_min,
+        anisotropic_log_scale_max=args.anisotropic_log_scale_max,
+    )
     model_cfg = ModelConfig(
         d=args.d,
         k=args.k,
@@ -56,12 +71,13 @@ def main() -> None:
         n_layers=args.n_layers,
         n_heads=args.n_heads,
         dropout=args.dropout,
+        predict_scales=args.predict_scales,
+        min_scale=args.min_scale,
     )
 
     model = TGMMNet(model_cfg).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
-    rng = torch.Generator(device="cpu")
-    numpy_rng = __import__("numpy").random.default_rng(args.seed)
+    numpy_rng = np.random.default_rng(args.seed)
 
     history: list[dict[str, float | int]] = []
     best_loss = float("inf")
@@ -72,6 +88,7 @@ def main() -> None:
         mask = batch["mask"].to(device)
         true_means = batch["true_means"].to(device)
         true_weights = batch["true_weights"].to(device)
+        true_scales = batch["true_scales"].to(device)
 
         optimizer.zero_grad(set_to_none=True)
         outputs = model(x, mask)
@@ -80,6 +97,10 @@ def main() -> None:
             pred_weight_logits=outputs["weight_logits"],
             true_means=true_means,
             true_weights=true_weights,
+            pred_log_scales=outputs.get("log_scales"),
+            true_scales=true_scales,
+            scale_loss_weight=args.scale_loss_weight,
+            min_scale=args.min_scale,
         )
         loss = loss_dict["loss"]
         loss.backward()
@@ -91,6 +112,7 @@ def main() -> None:
             "loss": float(loss_dict["loss"].item()),
             "mean_loss": float(loss_dict["mean_loss"].item()),
             "pi_loss": float(loss_dict["pi_loss"].item()),
+            "scale_loss": float(loss_dict["scale_loss"].item()),
         }
         history.append(record)
 
@@ -111,7 +133,8 @@ def main() -> None:
                 f"step={step:04d} "
                 f"loss={record['loss']:.4f} "
                 f"mean_loss={record['mean_loss']:.4f} "
-                f"pi_loss={record['pi_loss']:.4f}"
+                f"pi_loss={record['pi_loss']:.4f} "
+                f"scale_loss={record['scale_loss']:.4f}"
             )
 
     checkpoint = {

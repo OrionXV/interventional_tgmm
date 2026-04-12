@@ -16,6 +16,9 @@ class SamplingConfig:
     dirichlet_alpha: float = 4.0
     min_weight: float = 0.12
     max_mean_resamples: int = 200
+    anisotropic_prob: float = 0.0
+    anisotropic_log_scale_min: float = -1.0
+    anisotropic_log_scale_max: float = 1.0
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -29,6 +32,9 @@ class InterventionConfig:
     mechanism_compression: float = 0.65
     mechanism_shift_scale: float = 0.0
     noise_factor: float = 1.5
+    noise_type: str = "scale"
+    anisotropic_log_scale_min: float = -1.0
+    anisotropic_log_scale_max: float = 1.0
     sample_size: int | None = None
 
     def to_dict(self) -> dict[str, Any]:
@@ -43,6 +49,8 @@ class ModelConfig:
     n_layers: int = 3
     n_heads: int = 4
     dropout: float = 0.0
+    predict_scales: bool = False
+    min_scale: float = 1e-3
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

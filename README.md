@@ -1,6 +1,6 @@
-# Interventional TGMM starter code
+# Interventional TGMM
 
-This repository is a working starter implementation for the project **Interventional Robustness of a Transformer-Based Unsupervised GMM Solver**.
+This repository implements the full project workflow for **Interventional Robustness of a Transformer-Based Unsupervised GMM Solver**.
 
 It follows the proposal scope:
 - fixed **K = 3** components by default
@@ -14,12 +14,13 @@ It follows the proposal scope:
 
 - `src/interventional_tgmm/config.py` — dataclass configs
 - `src/interventional_tgmm/data.py` — synthetic GMM task generation and interventions
-- `src/interventional_tgmm/model.py` — small TGMM-style transformer
-- `src/interventional_tgmm/losses.py` — permutation-invariant training loss
+- `src/interventional_tgmm/model.py` — small TGMM-style transformer (optional scale head for anisotropic extension)
+- `src/interventional_tgmm/losses.py` — permutation-invariant training loss (means, weights, optional scales)
 - `src/interventional_tgmm/baselines.py` — EM, k-means, spectral baselines
 - `src/interventional_tgmm/metrics.py` — parameter error, clustering accuracy, log-likelihood
 - `scripts/train_tgmm.py` — training entrypoint
-- `scripts/evaluate_interventions.py` — evaluation entrypoint
+- `scripts/evaluate_interventions.py` — intervention sweeps, summary tables, interventional gaps, curve SVGs
+- `scripts/visualize_2d.py` — 2D qualitative visualization panels (SVG + JSON)
 - `scripts/smoke_test.py` — quick end-to-end sanity check
 
 ## Quickstart
@@ -36,14 +37,44 @@ Train a small model:
 python scripts/train_tgmm.py --steps 500 --batch-size 32 --device cpu
 ```
 
+Train with the optional anisotropic extension (scale prediction):
+
+```bash
+python scripts/train_tgmm.py \
+  --steps 500 \
+  --batch-size 32 \
+  --predict-scales \
+  --anisotropic-prob 0.25 \
+  --device cpu
+```
+
 Evaluate it:
 
 ```bash
-python scripts/evaluate_interventions.py   --checkpoint outputs/checkpoint_last.pt   --num-tasks 100   --methods tgmm em kmeans spectral
+python scripts/evaluate_interventions.py \
+  --checkpoint outputs/checkpoint_last.pt \
+  --num-tasks 100 \
+  --seeds 0 1 2 \
+  --methods tgmm em kmeans spectral
+```
+
+This writes:
+- `outputs/eval/raw_results.json` (per-task records)
+- `outputs/eval/summary.json` (aggregated metrics + interventional gaps)
+- `outputs/eval/main_table.md` (main quantitative table)
+- `outputs/eval/intervention_curves.svg` (intervention curves)
+
+Generate 2D visualization panels:
+
+```bash
+python scripts/visualize_2d.py \
+  --checkpoint outputs/checkpoint_last.pt \
+  --output outputs/eval/viz_2d.svg \
+  --intervention none
 ```
 
 ## Notes
 
-1. The main implementation assumes **isotropic Gaussian mixtures** with a known solver-side scalar `sigma`. Noise interventions can still be tested by changing the data-generating `sigma` at test time.
-2. The spectral baseline is implemented only for the isotropic setting and can fail on small or ill-conditioned samples. The evaluation script records `NaN` if a method is not applicable.
-3. This code is intentionally compact and readable. It is meant to be a solid starting point, not the final project codebase.
+1. The main benchmark remains isotropic (`d=8`, `K=3`, `N in [32,64]`) and includes prior/mechanism/noise/sample-size interventions.
+2. The optional anisotropic extension is enabled through model scale prediction and anisotropic noise interventions.
+3. The spectral baseline is isotropic-only and may return `NaN` for unsupported or ill-conditioned tasks.

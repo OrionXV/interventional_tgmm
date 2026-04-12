@@ -5,7 +5,9 @@
     "hidden_dim": 128,
     "n_layers": 3,
     "n_heads": 4,
-    "dropout": 0.0
+    "dropout": 0.0,
+    "predict_scales": false,
+    "min_scale": 0.001
   },
   "sampling_config": {
     "k": 3,
@@ -17,12 +19,15 @@
     "min_separation": 3.0,
     "dirichlet_alpha": 4.0,
     "min_weight": 0.12,
-    "max_mean_resamples": 200
+    "max_mean_resamples": 200,
+    "anisotropic_prob": 0.0,
+    "anisotropic_log_scale_min": -1.0,
+    "anisotropic_log_scale_max": 1.0
   },
   "train_args": {
     "output_dir": "outputs",
-    "steps": 500,
-    "batch_size": 32,
+    "steps": 2000,
+    "batch_size": 128,
     "lr": 0.0001,
     "weight_decay": 0.0001,
     "eval_every": 100,
@@ -34,9 +39,15 @@
     "n_min": 32,
     "n_max": 64,
     "sigma": 1.0,
+    "anisotropic_prob": 0.0,
+    "anisotropic_log_scale_min": -1.0,
+    "anisotropic_log_scale_max": 1.0,
     "hidden_dim": 128,
     "n_layers": 3,
     "n_heads": 4,
-    "dropout": 0.0
+    "dropout": 0.0,
+    "predict_scales": false,
+    "scale_loss_weight": 1.0,
+    "min_scale": 0.001
   }
 }
