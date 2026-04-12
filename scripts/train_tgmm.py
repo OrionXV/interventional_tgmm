@@ -21,6 +21,7 @@ from interventional_tgmm.utils import choose_device, configure_torch_runtime, en
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Train a small TGMM-style transformer.")
     parser.add_argument("--output-dir", type=str, default="outputs")
+    parser.add_argument("--preset", type=str, default="none", choices=["none", "stage_b_d4", "stage_b_d2"])
     parser.add_argument("--steps", type=int, default=1000)
     parser.add_argument("--batch-size", type=int, default=32)
     parser.add_argument("--lr", type=float, default=1e-4)
@@ -34,6 +35,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--n-min", type=int, default=32)
     parser.add_argument("--n-max", type=int, default=64)
     parser.add_argument("--sigma", type=float, default=1.0)
+    parser.add_argument("--mean-bound", type=float, default=4.0)
+    parser.add_argument("--min-separation", type=float, default=3.0)
+    parser.add_argument("--dirichlet-alpha", type=float, default=4.0)
+    parser.add_argument("--min-weight", type=float, default=0.12)
+    parser.add_argument("--max-mean-resamples", type=int, default=200)
     parser.add_argument("--anisotropic-prob", type=float, default=0.0)
     parser.add_argument("--anisotropic-log-scale-min", type=float, default=-1.0)
     parser.add_argument("--anisotropic-log-scale-max", type=float, default=1.0)
@@ -47,8 +53,33 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def apply_preset(args: argparse.Namespace) -> None:
+    if args.preset == "none":
+        return
+    if args.preset == "stage_b_d4":
+        args.k = 5
+        args.d = 4
+        args.n_min = 16
+        args.n_max = 32
+        args.min_separation = 1.5
+        args.dirichlet_alpha = 2.0
+        args.min_weight = 0.03
+        return
+    if args.preset == "stage_b_d2":
+        args.k = 5
+        args.d = 2
+        args.n_min = 16
+        args.n_max = 32
+        args.min_separation = 1.0
+        args.dirichlet_alpha = 2.0
+        args.min_weight = 0.03
+        return
+    raise ValueError(f"Unknown preset: {args.preset}")
+
+
 def main() -> None:
     args = parse_args()
+    apply_preset(args)
     configure_torch_runtime(args.num_threads)
     seed_everything(args.seed)
     device = choose_device(args.device)
@@ -60,6 +91,11 @@ def main() -> None:
         n_min=args.n_min,
         n_max=args.n_max,
         sigma=args.sigma,
+        mean_bound=args.mean_bound,
+        min_separation=args.min_separation,
+        dirichlet_alpha=args.dirichlet_alpha,
+        min_weight=args.min_weight,
+        max_mean_resamples=args.max_mean_resamples,
         anisotropic_prob=args.anisotropic_prob,
         anisotropic_log_scale_min=args.anisotropic_log_scale_min,
         anisotropic_log_scale_max=args.anisotropic_log_scale_max,

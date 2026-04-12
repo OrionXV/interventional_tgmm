@@ -4,7 +4,7 @@ from __future__ import annotations
 import argparse
 import math
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Callable
 
@@ -29,11 +29,17 @@ class InterventionSpec:
     family: str
     strength: float
     config: InterventionConfig
+    sampling_overrides: dict[str, float | int] | None = None
 
 
 def parse_float_list(value: str) -> list[float]:
     tokens = [tok for tok in value.replace(",", " ").split() if tok]
     return [float(tok) for tok in tokens]
+
+
+def parse_int_list(value: str) -> list[int]:
+    tokens = [tok for tok in value.replace(",", " ").split() if tok]
+    return [int(tok) for tok in tokens]
 
 
 def format_float(value: float) -> str:
@@ -47,6 +53,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Evaluate interventional robustness with sweeps and report artifacts.")
     parser.add_argument("--checkpoint", type=str, default="outputs/checkpoint_last.pt")
     parser.add_argument("--output-dir", type=str, default="outputs/eval")
+    parser.add_argument("--preset", type=str, default="none", choices=["none", "stage_a"])
     parser.add_argument("--num-tasks", type=int, default=100)
     parser.add_argument("--seeds", nargs="+", type=int, default=[0])
     parser.add_argument("--device", type=str, default="auto")
@@ -59,11 +66,28 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--mechanism-compressions", type=str, default="0.65")
     parser.add_argument("--noise-factors", type=str, default="1.5")
     parser.add_argument("--sample-size-multipliers", type=str, default="2.0")
+    parser.add_argument("--sample-sizes", type=str, default="")
+    parser.add_argument("--dirichlet-alphas", type=str, default="")
+    parser.add_argument("--dirichlet-min-weight", type=float, default=0.0)
     parser.add_argument("--include-anisotropic-noise", action="store_true")
     parser.add_argument("--anisotropic-log-scale-min", type=float, default=-1.0)
     parser.add_argument("--anisotropic-log-scale-max", type=float, default=1.0)
     parser.add_argument("--curve-metric", type=str, default="parameter_error")
     return parser.parse_args()
+
+
+def apply_preset(args: argparse.Namespace) -> None:
+    if args.preset == "none":
+        return
+    if args.preset == "stage_a":
+        args.prior_strengths = ""
+        args.mechanism_compressions = "0.5 0.35"
+        args.noise_factors = ""
+        args.sample_size_multipliers = ""
+        args.sample_sizes = "16 8"
+        args.dirichlet_alphas = "0.2"
+        return
+    raise ValueError(f"Unknown preset: {args.preset}")
 
 
 def load_model(checkpoint_path: Path, device: torch.device) -> tuple[TGMMNet, SamplingConfig]:
@@ -147,6 +171,17 @@ def build_interventions(data_cfg: SamplingConfig, args: argparse.Namespace) -> l
                 )
             )
 
+    for sample_size in sorted(set(parse_int_list(args.sample_sizes))):
+        sample_size = max(2, int(sample_size))
+        interventions.append(
+            InterventionSpec(
+                name=f"sample_size@{sample_size}",
+                family="sample_size",
+                strength=float(sample_size),
+                config=InterventionConfig(kind="sample_size", sample_size=sample_size),
+            )
+        )
+
     for multiplier in sorted(set(parse_float_list(args.sample_size_multipliers))):
         sample_size = max(4, int(round(float(multiplier) * data_cfg.n_max)))
         interventions.append(
@@ -158,7 +193,28 @@ def build_interventions(data_cfg: SamplingConfig, args: argparse.Namespace) -> l
             )
         )
 
-    return interventions
+    for alpha in sorted(set(parse_float_list(args.dirichlet_alphas))):
+        interventions.append(
+            InterventionSpec(
+                name=f"dirichlet@{format_float(alpha)}",
+                family="prior_imbalance",
+                strength=float(alpha),
+                config=InterventionConfig(kind="none"),
+                sampling_overrides={
+                    "dirichlet_alpha": float(alpha),
+                    "min_weight": float(args.dirichlet_min_weight),
+                },
+            )
+        )
+
+    deduped: list[InterventionSpec] = []
+    seen_names: set[str] = set()
+    for spec in interventions:
+        if spec.name in seen_names:
+            continue
+        deduped.append(spec)
+        seen_names.add(spec.name)
+    return deduped
 
 
 def empty_metrics() -> dict[str, float]:
@@ -182,9 +238,9 @@ def safe_metric_eval(task, estimate_fn: Callable[[], GMMEstimate]) -> dict[str, 
 
 def summarize_records(
     records: list[dict[str, object]],
-) -> tuple[dict[str, dict[str, dict[str, dict[str, float]]]], dict[str, dict[str, float | str]]]:
+) -> tuple[dict[str, dict[str, dict[str, dict[str, float]]]], dict[str, dict[str, object]]]:
     grouped: dict[tuple[str, str], list[dict[str, float]]] = {}
-    intervention_meta: dict[str, dict[str, float | str]] = {}
+    intervention_meta: dict[str, dict[str, object]] = {}
 
     for record in records:
         method = str(record["method"])
@@ -193,6 +249,7 @@ def summarize_records(
         intervention_meta[intervention] = {
             "family": str(record["family"]),
             "strength": float(record["strength"]),
+            "sampling_overrides": record.get("sampling_overrides"),
         }
 
     summary: dict[str, dict[str, dict[str, dict[str, float]]]] = {}
@@ -204,7 +261,7 @@ def summarize_records(
 
 def compute_interventional_gaps(
     summary: dict[str, dict[str, dict[str, dict[str, float]]]],
-    intervention_meta: dict[str, dict[str, float | str]],
+    intervention_meta: dict[str, dict[str, object]],
 ) -> dict[str, dict[str, dict[str, dict[str, float]]]]:
     metrics_where_lower_is_better = {"parameter_error", "mean_mse", "weight_mse", "scale_mse"}
     gaps_by_intervention: dict[str, dict[str, dict[str, float]]] = {}
@@ -425,6 +482,7 @@ def write_intervention_curve_svg(
 
 def main() -> None:
     args = parse_args()
+    apply_preset(args)
     configure_torch_runtime(args.num_threads)
     seed_everything(int(args.seeds[0]))
     device = choose_device(args.device)
@@ -441,7 +499,10 @@ def main() -> None:
         rng = np.random.default_rng(seed)
         for intervention in interventions:
             for task_idx in range(args.num_tasks):
-                task = sample_task(data_cfg, rng=rng, intervention=intervention.config)
+                task_cfg = data_cfg
+                if intervention.sampling_overrides is not None:
+                    task_cfg = replace(data_cfg, **intervention.sampling_overrides)
+                task = sample_task(task_cfg, rng=rng, intervention=intervention.config)
 
                 if "tgmm" in args.methods:
                     metrics = safe_metric_eval(task, lambda: model_estimate(model, task.x, device, sigma=solver_sigma))
@@ -453,6 +514,7 @@ def main() -> None:
                             "strength": intervention.strength,
                             "seed": int(seed),
                             "task_index": task_idx,
+                            "sampling_overrides": intervention.sampling_overrides,
                             "metrics": metrics,
                         }
                     )
@@ -462,7 +524,7 @@ def main() -> None:
                         task,
                         lambda: fit_em_known_sigma(
                             task.x,
-                            k=data_cfg.k,
+                            k=task_cfg.k,
                             sigma=solver_sigma,
                             restarts=args.em_restarts,
                             max_iters=args.em_max_iters,
@@ -477,6 +539,7 @@ def main() -> None:
                             "strength": intervention.strength,
                             "seed": int(seed),
                             "task_index": task_idx,
+                            "sampling_overrides": intervention.sampling_overrides,
                             "metrics": metrics,
                         }
                     )
@@ -484,7 +547,7 @@ def main() -> None:
                 if "kmeans" in args.methods:
                     metrics = safe_metric_eval(
                         task,
-                        lambda: fit_kmeans_baseline(task.x, k=data_cfg.k, sigma=solver_sigma, seed=int(seed)),
+                        lambda: fit_kmeans_baseline(task.x, k=task_cfg.k, sigma=solver_sigma, seed=int(seed)),
                     )
                     raw_records.append(
                         {
@@ -494,6 +557,7 @@ def main() -> None:
                             "strength": intervention.strength,
                             "seed": int(seed),
                             "task_index": task_idx,
+                            "sampling_overrides": intervention.sampling_overrides,
                             "metrics": metrics,
                         }
                     )
@@ -501,7 +565,7 @@ def main() -> None:
                 if "spectral" in args.methods:
                     metrics = safe_metric_eval(
                         task,
-                        lambda: fit_spectral_isotropic(task.x, k=data_cfg.k, sigma=solver_sigma, seed=int(seed)),
+                        lambda: fit_spectral_isotropic(task.x, k=task_cfg.k, sigma=solver_sigma, seed=int(seed)),
                     )
                     raw_records.append(
                         {
@@ -511,6 +575,7 @@ def main() -> None:
                             "strength": intervention.strength,
                             "seed": int(seed),
                             "task_index": task_idx,
+                            "sampling_overrides": intervention.sampling_overrides,
                             "metrics": metrics,
                         }
                     )

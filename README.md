@@ -73,6 +73,48 @@ python scripts/visualize_2d.py \
   --intervention none
 ```
 
+## Staged Progression
+
+Stage A (low-code harder benchmark):
+
+```bash
+python scripts/evaluate_interventions.py \
+  --checkpoint outputs/checkpoint_last.pt \
+  --preset stage_a \
+  --num-tasks 100 \
+  --seeds 0 1 2 \
+  --methods tgmm em kmeans spectral
+```
+
+This preset includes:
+- `mechanism@0.5`, `mechanism@0.35`
+- `sample_size@16`, `sample_size@8`
+- imbalanced prior family `dirichlet@0.2`
+
+Stage B (harder retraining benchmark):
+
+```bash
+python scripts/train_tgmm.py --preset stage_b_d4 --steps 2000 --batch-size 64
+```
+
+or
+
+```bash
+python scripts/train_tgmm.py --preset stage_b_d2 --steps 2000 --batch-size 64
+```
+
+Stage C (stronger extension, approximated with fixed-K checkpoints):
+
+```bash
+python scripts/run_stage_progression.py --stage c --steps 2000 --num-tasks 100
+```
+
+Run all stages in sequence:
+
+```bash
+python scripts/run_stage_progression.py --stage all --steps 2000 --num-tasks 100
+```
+
 ## Notes
 
 1. The main benchmark remains isotropic (`d=8`, `K=3`, `N in [32,64]`) and includes prior/mechanism/noise/sample-size interventions.
