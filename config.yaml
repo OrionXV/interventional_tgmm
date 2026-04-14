@@ -1,0 +1,86 @@
+dataset:
+  dataset: wine
+  dataset_path: wine.csv
+  label_column: Cultivars
+
+runtime:
+  use_tqdm: true
+  show_tmp: true
+  tmp_dir: outputs/tmp
+
+train:
+  output_dir: outputs
+  preset: none
+  steps: 1000
+  batch_size: 32
+  lr: 0.0001
+  weight_decay: 0.0001
+  eval_every: 100
+  seed: 0
+  device: auto
+  num_threads: 1
+  k: 3
+  d: 8
+  n_min: 32
+  n_max: 64
+  sigma: 1.0
+  dirichlet_alpha: 4.0
+  min_weight: 0.12
+  anisotropic_prob: 0.0
+  anisotropic_log_scale_min: -1.0
+  anisotropic_log_scale_max: 1.0
+  hidden_dim: 128
+  n_layers: 3
+  n_heads: 4
+  dropout: 0.0
+  predict_scales: false
+  scale_loss_weight: 1.0
+  min_scale: 0.001
+
+eval:
+  checkpoint: outputs/checkpoint_last.pt
+  output_dir: outputs/eval
+  preset: none
+  num_tasks: 100
+  seeds: [0]
+  device: auto
+  num_threads: 1
+  methods: [tgmm, em, kmeans, spectral]
+  em_restarts: 10
+  em_max_iters: 100
+  solver_sigma: null
+  prior_strengths: "1.25"
+  mechanism_compressions: "0.65"
+  noise_factors: "1.5"
+  sample_size_multipliers: "2.0"
+  sample_sizes: ""
+  dirichlet_alphas: ""
+  dirichlet_min_weight: 0.0
+  include_anisotropic_noise: false
+  anisotropic_log_scale_min: -1.0
+  anisotropic_log_scale_max: 1.0
+  curve_metric: parameter_error
+
+visualize:
+  checkpoint: outputs/checkpoint_last.pt
+  output: outputs/eval/viz_2d.svg
+  seed: 0
+  device: auto
+  num_threads: 1
+  num_points: 128
+  intervention: none
+  prior_strength: 1.25
+  mechanism_compression: 0.65
+  noise_factor: 1.5
+  methods: [tgmm, em, kmeans, spectral]
+
+stage_progression:
+  stage: all
+  checkpoint: outputs/checkpoint_last.pt
+  output_root: outputs/stages
+  device: auto
+  num_tasks: 100
+  seeds: [0, 1, 2]
+  steps: 2000
+  batch_size: 64
+  stage_b_d: 4

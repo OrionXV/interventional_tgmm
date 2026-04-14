@@ -1,0 +1,19 @@
+# Output artifacts
+output/
+outputs/
+**/output/
+**/outputs/
+tmp_outputs/
+tmp_outputs*/
+
+# Temporary artifacts
+tmp/
+tmp*/
+
+# Python/cache artifacts
+__pycache__/
+**/__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.cache/

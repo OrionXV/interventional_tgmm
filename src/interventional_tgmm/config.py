@@ -6,6 +6,9 @@ from typing import Any
 
 @dataclass(slots=True)
 class SamplingConfig:
+    dataset: str = "wine"
+    dataset_path: str = "wine.csv"
+    label_column: str = "Cultivars"
     k: int = 3
     d: int = 8
     n_min: int = 32

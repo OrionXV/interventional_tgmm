@@ -10,15 +10,18 @@ from typing import Callable
 
 import numpy as np
 import torch
+from tqdm.auto import tqdm
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from interventional_tgmm.baselines import fit_em_known_sigma, fit_kmeans_baseline, fit_spectral_isotropic
 from interventional_tgmm.config import InterventionConfig, ModelConfig, SamplingConfig
+from interventional_tgmm.config_io import apply_config_defaults
 from interventional_tgmm.data import sample_task
 from interventional_tgmm.metrics import evaluate_task, summarize_metric_dicts
 from interventional_tgmm.model import TGMMNet
+from interventional_tgmm.tmp_utils import cleanup_tmp_dir, rewrite_tmp_relative_path
 from interventional_tgmm.types import GMMEstimate
 from interventional_tgmm.utils import choose_device, configure_torch_runtime, ensure_dir, save_json, seed_everything
 
@@ -51,6 +54,7 @@ def format_float(value: float) -> str:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Evaluate interventional robustness with sweeps and report artifacts.")
+    parser.add_argument("--config", type=str, default="config.yaml")
     parser.add_argument("--checkpoint", type=str, default="outputs/checkpoint_last.pt")
     parser.add_argument("--output-dir", type=str, default="outputs/eval")
     parser.add_argument("--preset", type=str, default="none", choices=["none", "stage_a"])
@@ -58,6 +62,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--seeds", nargs="+", type=int, default=[0])
     parser.add_argument("--device", type=str, default="auto")
     parser.add_argument("--num-threads", type=int, default=1)
+    parser.add_argument("--use-tqdm", action=argparse.BooleanOptionalAction, default=True)
+    parser.add_argument("--show-tmp", action="store_true")
+    parser.add_argument("--tmp-dir", type=str, default="outputs/tmp")
+    parser.add_argument("--dataset", type=str, default="")
+    parser.add_argument("--dataset-path", type=str, default="")
+    parser.add_argument("--label-column", type=str, default="")
     parser.add_argument("--methods", nargs="+", default=["tgmm", "em", "kmeans", "spectral"])
     parser.add_argument("--em-restarts", type=int, default=10)
     parser.add_argument("--em-max-iters", type=int, default=100)
@@ -73,6 +83,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--anisotropic-log-scale-min", type=float, default=-1.0)
     parser.add_argument("--anisotropic-log-scale-max", type=float, default=1.0)
     parser.add_argument("--curve-metric", type=str, default="parameter_error")
+
+    pre_args, _ = parser.parse_known_args()
+    apply_config_defaults(parser, pre_args.config, sections=["dataset", "runtime", "eval"])
     return parser.parse_args()
 
 
@@ -482,155 +495,181 @@ def write_intervention_curve_svg(
 
 def main() -> None:
     args = parse_args()
-    apply_preset(args)
-    configure_torch_runtime(args.num_threads)
-    seed_everything(int(args.seeds[0]))
-    device = choose_device(args.device)
-    out_dir = ensure_dir(args.output_dir)
+    args.checkpoint = rewrite_tmp_relative_path(args.checkpoint, args.tmp_dir)
+    args.output_dir = rewrite_tmp_relative_path(args.output_dir, args.tmp_dir)
+    try:
+        apply_preset(args)
+        configure_torch_runtime(args.num_threads)
+        seed_everything(int(args.seeds[0]))
+        device = choose_device(args.device)
+        out_dir = ensure_dir(args.output_dir)
 
-    checkpoint_path = Path(args.checkpoint)
-    model, data_cfg = load_model(checkpoint_path, device)
-    solver_sigma = float(data_cfg.sigma if args.solver_sigma is None else args.solver_sigma)
+        checkpoint_path = Path(args.checkpoint)
+        model, data_cfg = load_model(checkpoint_path, device)
+        cfg_overrides: dict[str, str] = {}
+        if args.dataset:
+            cfg_overrides["dataset"] = args.dataset
+        if args.dataset_path:
+            cfg_overrides["dataset_path"] = args.dataset_path
+        if args.label_column:
+            cfg_overrides["label_column"] = args.label_column
+        if cfg_overrides:
+            data_cfg = replace(data_cfg, **cfg_overrides)
+        solver_sigma = float(data_cfg.sigma if args.solver_sigma is None else args.solver_sigma)
 
-    interventions = build_interventions(data_cfg, args)
-    raw_records: list[dict[str, object]] = []
+        interventions = build_interventions(data_cfg, args)
+        raw_records: list[dict[str, object]] = []
 
-    for seed in args.seeds:
-        rng = np.random.default_rng(seed)
-        for intervention in interventions:
-            for task_idx in range(args.num_tasks):
-                task_cfg = data_cfg
-                if intervention.sampling_overrides is not None:
-                    task_cfg = replace(data_cfg, **intervention.sampling_overrides)
-                task = sample_task(task_cfg, rng=rng, intervention=intervention.config)
+        total_tasks = max(1, len(args.seeds) * len(interventions) * int(args.num_tasks))
+        progress = tqdm(total=total_tasks, desc="evaluate", disable=not args.use_tqdm)
+        try:
+            for seed in args.seeds:
+                rng = np.random.default_rng(seed)
+                for intervention in interventions:
+                    for task_idx in range(args.num_tasks):
+                        task_cfg = data_cfg
+                        if intervention.sampling_overrides is not None:
+                            task_cfg = replace(data_cfg, **intervention.sampling_overrides)
+                        task = sample_task(task_cfg, rng=rng, intervention=intervention.config)
 
-                if "tgmm" in args.methods:
-                    metrics = safe_metric_eval(task, lambda: model_estimate(model, task.x, device, sigma=solver_sigma))
-                    raw_records.append(
-                        {
-                            "method": "tgmm",
-                            "intervention": intervention.name,
-                            "family": intervention.family,
-                            "strength": intervention.strength,
-                            "seed": int(seed),
-                            "task_index": task_idx,
-                            "sampling_overrides": intervention.sampling_overrides,
-                            "metrics": metrics,
-                        }
-                    )
+                        if "tgmm" in args.methods:
+                            metrics = safe_metric_eval(task, lambda: model_estimate(model, task.x, device, sigma=solver_sigma))
+                            raw_records.append(
+                                {
+                                    "method": "tgmm",
+                                    "intervention": intervention.name,
+                                    "family": intervention.family,
+                                    "strength": intervention.strength,
+                                    "seed": int(seed),
+                                    "task_index": task_idx,
+                                    "sampling_overrides": intervention.sampling_overrides,
+                                    "metrics": metrics,
+                                }
+                            )
 
-                if "em" in args.methods:
-                    metrics = safe_metric_eval(
-                        task,
-                        lambda: fit_em_known_sigma(
-                            task.x,
-                            k=task_cfg.k,
-                            sigma=solver_sigma,
-                            restarts=args.em_restarts,
-                            max_iters=args.em_max_iters,
+                        if "em" in args.methods:
+                            metrics = safe_metric_eval(
+                                task,
+                                lambda: fit_em_known_sigma(
+                                    task.x,
+                                    k=task_cfg.k,
+                                    sigma=solver_sigma,
+                                    restarts=args.em_restarts,
+                                    max_iters=args.em_max_iters,
+                                    seed=int(seed),
+                                ),
+                            )
+                            raw_records.append(
+                                {
+                                    "method": "em",
+                                    "intervention": intervention.name,
+                                    "family": intervention.family,
+                                    "strength": intervention.strength,
+                                    "seed": int(seed),
+                                    "task_index": task_idx,
+                                    "sampling_overrides": intervention.sampling_overrides,
+                                    "metrics": metrics,
+                                }
+                            )
+
+                        if "kmeans" in args.methods:
+                            metrics = safe_metric_eval(
+                                task,
+                                lambda: fit_kmeans_baseline(task.x, k=task_cfg.k, sigma=solver_sigma, seed=int(seed)),
+                            )
+                            raw_records.append(
+                                {
+                                    "method": "kmeans",
+                                    "intervention": intervention.name,
+                                    "family": intervention.family,
+                                    "strength": intervention.strength,
+                                    "seed": int(seed),
+                                    "task_index": task_idx,
+                                    "sampling_overrides": intervention.sampling_overrides,
+                                    "metrics": metrics,
+                                }
+                            )
+
+                        if "spectral" in args.methods:
+                            metrics = safe_metric_eval(
+                                task,
+                                lambda: fit_spectral_isotropic(task.x, k=task_cfg.k, sigma=solver_sigma, seed=int(seed)),
+                            )
+                            raw_records.append(
+                                {
+                                    "method": "spectral",
+                                    "intervention": intervention.name,
+                                    "family": intervention.family,
+                                    "strength": intervention.strength,
+                                    "seed": int(seed),
+                                    "task_index": task_idx,
+                                    "sampling_overrides": intervention.sampling_overrides,
+                                    "metrics": metrics,
+                                }
+                            )
+                        progress.set_postfix(
                             seed=int(seed),
-                        ),
-                    )
-                    raw_records.append(
-                        {
-                            "method": "em",
-                            "intervention": intervention.name,
-                            "family": intervention.family,
-                            "strength": intervention.strength,
-                            "seed": int(seed),
-                            "task_index": task_idx,
-                            "sampling_overrides": intervention.sampling_overrides,
-                            "metrics": metrics,
-                        }
-                    )
+                            intervention=intervention.name,
+                            task=task_idx + 1,
+                            refresh=False,
+                        )
+                        progress.update(1)
+        finally:
+            progress.close()
 
-                if "kmeans" in args.methods:
-                    metrics = safe_metric_eval(
-                        task,
-                        lambda: fit_kmeans_baseline(task.x, k=task_cfg.k, sigma=solver_sigma, seed=int(seed)),
-                    )
-                    raw_records.append(
-                        {
-                            "method": "kmeans",
-                            "intervention": intervention.name,
-                            "family": intervention.family,
-                            "strength": intervention.strength,
-                            "seed": int(seed),
-                            "task_index": task_idx,
-                            "sampling_overrides": intervention.sampling_overrides,
-                            "metrics": metrics,
-                        }
-                    )
+        summary, intervention_meta = summarize_records(raw_records)
+        interventional_gaps = compute_interventional_gaps(summary, intervention_meta)
 
-                if "spectral" in args.methods:
-                    metrics = safe_metric_eval(
-                        task,
-                        lambda: fit_spectral_isotropic(task.x, k=task_cfg.k, sigma=solver_sigma, seed=int(seed)),
-                    )
-                    raw_records.append(
-                        {
-                            "method": "spectral",
-                            "intervention": intervention.name,
-                            "family": intervention.family,
-                            "strength": intervention.strength,
-                            "seed": int(seed),
-                            "task_index": task_idx,
-                            "sampling_overrides": intervention.sampling_overrides,
-                            "metrics": metrics,
-                        }
-                    )
+        payload = {
+            "metadata": {
+                "num_tasks": args.num_tasks,
+                "seeds": [int(seed) for seed in args.seeds],
+                "methods": args.methods,
+                "solver_sigma": solver_sigma,
+                "em_restarts": args.em_restarts,
+                "em_max_iters": args.em_max_iters,
+            },
+            "interventions": intervention_meta,
+            "summary": summary,
+            "interventional_gaps": interventional_gaps,
+        }
 
-    summary, intervention_meta = summarize_records(raw_records)
-    interventional_gaps = compute_interventional_gaps(summary, intervention_meta)
-
-    payload = {
-        "metadata": {
-            "num_tasks": args.num_tasks,
-            "seeds": [int(seed) for seed in args.seeds],
-            "methods": args.methods,
-            "solver_sigma": solver_sigma,
-            "em_restarts": args.em_restarts,
-            "em_max_iters": args.em_max_iters,
-        },
-        "interventions": intervention_meta,
-        "summary": summary,
-        "interventional_gaps": interventional_gaps,
-    }
-
-    save_json(out_dir / "raw_results.json", raw_records)
-    save_json(out_dir / "summary.json", payload)
-    write_main_table(out_dir / "main_table.md", summary, interventions, methods=args.methods)
-    write_intervention_curve_svg(
-        out_dir / "intervention_curves.svg",
-        summary,
-        interventions,
-        methods=args.methods,
-        metric=args.curve_metric,
-    )
-
-    print(f"Saved evaluation outputs to {out_dir}")
-    for method in args.methods:
-        method_summary = summary.get(method, {})
-        baseline = method_summary.get("none")
-        if baseline is None:
-            continue
-        print(f"\n== {method} ==")
-        base_err = baseline["parameter_error"]["mean"]
-        base_acc = baseline["cluster_acc"]["mean"]
-        base_ll = baseline["avg_log_likelihood"]["mean"]
-        print(
-            "none: "
-            f"parameter_error={base_err:.4f}, cluster_acc={base_acc:.4f}, avg_log_likelihood={base_ll:.4f}"
+        save_json(out_dir / "raw_results.json", raw_records)
+        save_json(out_dir / "summary.json", payload)
+        write_main_table(out_dir / "main_table.md", summary, interventions, methods=args.methods)
+        write_intervention_curve_svg(
+            out_dir / "intervention_curves.svg",
+            summary,
+            interventions,
+            methods=args.methods,
+            metric=args.curve_metric,
         )
-        family_gaps = interventional_gaps.get("by_family", {}).get(method, {})
-        for family, gaps in sorted(family_gaps.items()):
-            pe_gap = gaps.get("parameter_error_gap", float("nan"))
-            acc_gap = gaps.get("cluster_acc_gap", float("nan"))
-            ll_gap = gaps.get("avg_log_likelihood_gap", float("nan"))
+
+        print(f"Saved evaluation outputs to {out_dir}")
+        for method in args.methods:
+            method_summary = summary.get(method, {})
+            baseline = method_summary.get("none")
+            if baseline is None:
+                continue
+            print(f"\n== {method} ==")
+            base_err = baseline["parameter_error"]["mean"]
+            base_acc = baseline["cluster_acc"]["mean"]
+            base_ll = baseline["avg_log_likelihood"]["mean"]
             print(
-                f"{family:>12s}: parameter_error_gap={pe_gap:.4f}, "
-                f"cluster_acc_gap={acc_gap:.4f}, avg_log_likelihood_gap={ll_gap:.4f}"
+                "none: "
+                f"parameter_error={base_err:.4f}, cluster_acc={base_acc:.4f}, avg_log_likelihood={base_ll:.4f}"
             )
+            family_gaps = interventional_gaps.get("by_family", {}).get(method, {})
+            for family, gaps in sorted(family_gaps.items()):
+                pe_gap = gaps.get("parameter_error_gap", float("nan"))
+                acc_gap = gaps.get("cluster_acc_gap", float("nan"))
+                ll_gap = gaps.get("avg_log_likelihood_gap", float("nan"))
+                print(
+                    f"{family:>12s}: parameter_error_gap={pe_gap:.4f}, "
+                    f"cluster_acc_gap={acc_gap:.4f}, avg_log_likelihood_gap={ll_gap:.4f}"
+                )
+    finally:
+        cleanup_tmp_dir(args.tmp_dir, args.show_tmp)
 
 
 if __name__ == "__main__":

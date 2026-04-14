@@ -1,12 +1,34 @@
 from __future__ import annotations
 
+import csv
+from dataclasses import dataclass
+from functools import lru_cache
+from pathlib import Path
 from typing import Any
 
 import numpy as np
 import torch
+from sklearn.decomposition import PCA
 
 from .config import InterventionConfig, SamplingConfig
 from .types import GMMParams, GMMTask
+
+_EPS = 1e-8
+
+
+@dataclass(slots=True)
+class WineDataset:
+    path: str
+    label_column: str
+    features: np.ndarray
+    labels: np.ndarray
+    class_points: tuple[np.ndarray, ...]
+    class_residuals: tuple[np.ndarray, ...]
+    class_means: np.ndarray
+    class_scales: np.ndarray
+    class_weights: np.ndarray
+    feature_names: tuple[str, ...]
+    original_dim: int
 
 
 def _softmax_np(logits: np.ndarray) -> np.ndarray:
@@ -15,36 +37,167 @@ def _softmax_np(logits: np.ndarray) -> np.ndarray:
     return exp_logits / exp_logits.sum()
 
 
-def _pairwise_min_distance(means: np.ndarray) -> float:
-    if len(means) < 2:
-        return float("inf")
-    diffs = means[:, None, :] - means[None, :, :]
-    dists = np.linalg.norm(diffs, axis=-1)
-    dists += np.eye(len(means)) * 1e9
-    return float(dists.min())
+def _resolve_dataset_path(dataset_path: str) -> Path:
+    path = Path(dataset_path)
+    if path.is_file():
+        return path.resolve()
+
+    repo_root = Path(__file__).resolve().parents[2]
+    candidate = (repo_root / dataset_path).resolve()
+    if candidate.is_file():
+        return candidate
+
+    raise FileNotFoundError(f"Could not find dataset at '{dataset_path}'.")
 
 
-def sample_weights(cfg: SamplingConfig, rng: np.random.Generator) -> np.ndarray:
+def _resolve_label_column(header: list[str], label_column: str) -> int:
+    if label_column in header:
+        return header.index(label_column)
+
+    lowered = [name.lower() for name in header]
+    target = label_column.lower()
+    if target in lowered:
+        return lowered.index(target)
+
+    for fallback in ["cultivars", "class", "target", "label"]:
+        if fallback in lowered:
+            return lowered.index(fallback)
+
+    raise ValueError(f"Label column '{label_column}' was not found in dataset header: {header}")
+
+
+def _read_wine_csv(dataset_path: Path, label_column: str) -> tuple[np.ndarray, np.ndarray, list[str]]:
+    with dataset_path.open("r", encoding="utf-8", newline="") as handle:
+        reader = csv.reader(handle)
+        raw_header = next(reader, None)
+        if raw_header is None:
+            raise ValueError(f"Dataset at '{dataset_path}' is empty.")
+
+        header = [cell.strip() for cell in raw_header]
+        label_idx = _resolve_label_column(header, label_column)
+
+        feature_indices: list[int] = []
+        feature_names: list[str] = []
+        for idx, name in enumerate(header):
+            if idx == label_idx:
+                continue
+            lowered = name.lower()
+            if idx == 0 and (lowered == "" or lowered.startswith("unnamed") or lowered in {"index", "id"}):
+                continue
+            feature_indices.append(idx)
+            feature_names.append(name if name else f"feature_{idx}")
+
+        rows_x: list[list[float]] = []
+        rows_y: list[int] = []
+        for row in reader:
+            if not row:
+                continue
+            rows_y.append(int(float(row[label_idx])))
+            rows_x.append([float(row[idx]) for idx in feature_indices])
+
+    x = np.asarray(rows_x, dtype=np.float64)
+    y = np.asarray(rows_y, dtype=np.int64)
+    if x.ndim != 2 or len(x) == 0:
+        raise ValueError(f"Dataset at '{dataset_path}' did not contain tabular numeric features.")
+    return x, y, feature_names
+
+
+def _standardize_features(x: np.ndarray) -> np.ndarray:
+    mean = x.mean(axis=0, keepdims=True)
+    std = x.std(axis=0, keepdims=True)
+    std = np.where(std < 1e-6, 1.0, std)
+    return (x - mean) / std
+
+
+@lru_cache(maxsize=32)
+def _load_wine_dataset_cached(dataset_path: str, label_column: str, d: int, k: int) -> WineDataset:
+    resolved_path = _resolve_dataset_path(dataset_path)
+    x_raw, y_raw, feature_names = _read_wine_csv(resolved_path, label_column)
+    original_dim = int(x_raw.shape[1])
+
+    if d <= 0:
+        raise ValueError(f"Sampling dimension d must be positive; got d={d}.")
+    if d > original_dim:
+        raise ValueError(
+            f"Requested d={d} but dataset has only {original_dim} continuous features before PCA."
+        )
+
+    unique_labels = sorted(np.unique(y_raw).tolist())
+    if len(unique_labels) != k:
+        raise ValueError(
+            f"Configured k={k} does not match the dataset class count={len(unique_labels)} ({unique_labels})."
+        )
+
+    label_map = {int(label): idx for idx, label in enumerate(unique_labels)}
+    y = np.asarray([label_map[int(label)] for label in y_raw], dtype=np.int64)
+
+    x = _standardize_features(x_raw)
+    if d < original_dim:
+        x = PCA(n_components=d, svd_solver="full", random_state=0).fit_transform(x)
+    x = x.astype(np.float32)
+
+    class_points: list[np.ndarray] = []
+    class_residuals: list[np.ndarray] = []
+    class_means = np.zeros((k, d), dtype=np.float32)
+    class_scales = np.zeros((k, d), dtype=np.float32)
+    class_weights = np.zeros(k, dtype=np.float32)
+
+    for class_idx in range(k):
+        points = x[y == class_idx]
+        if points.shape[0] == 0:
+            raise ValueError(f"Class {class_idx} has no samples in the dataset.")
+
+        mean = points.mean(axis=0).astype(np.float32)
+        residuals = (points - mean).astype(np.float32)
+        scales = np.clip(residuals.std(axis=0), 1e-3, None).astype(np.float32)
+
+        class_points.append(points.astype(np.float32, copy=False))
+        class_residuals.append(residuals)
+        class_means[class_idx] = mean
+        class_scales[class_idx] = scales
+        class_weights[class_idx] = float(points.shape[0] / x.shape[0])
+
+    return WineDataset(
+        path=str(resolved_path),
+        label_column=label_column,
+        features=x,
+        labels=y,
+        class_points=tuple(class_points),
+        class_residuals=tuple(class_residuals),
+        class_means=class_means,
+        class_scales=class_scales,
+        class_weights=class_weights,
+        feature_names=tuple(feature_names),
+        original_dim=original_dim,
+    )
+
+
+def load_wine_dataset(cfg: SamplingConfig) -> WineDataset:
+    if cfg.dataset.lower() != "wine":
+        raise ValueError(f"Unsupported dataset '{cfg.dataset}'. This project now expects dataset='wine'.")
+    return _load_wine_dataset_cached(cfg.dataset_path, cfg.label_column, cfg.d, cfg.k)
+
+
+def sample_weights(
+    cfg: SamplingConfig,
+    rng: np.random.Generator,
+    base_weights: np.ndarray | None = None,
+) -> np.ndarray:
+    if base_weights is None:
+        base = np.full(cfg.k, 1.0 / cfg.k, dtype=np.float64)
+    else:
+        base = np.asarray(base_weights, dtype=np.float64)
+        base = np.clip(base, _EPS, None)
+        base /= base.sum()
+
+    concentration = max(float(cfg.dirichlet_alpha), 1e-3)
+    alpha = np.clip(base * concentration * cfg.k, 1e-3, None)
+    weights = base.astype(np.float32, copy=True)
     for _ in range(512):
-        weights = rng.dirichlet(np.full(cfg.k, cfg.dirichlet_alpha, dtype=np.float64))
+        weights = rng.dirichlet(alpha).astype(np.float32)
         if float(weights.min()) >= cfg.min_weight:
-            return weights.astype(np.float32)
-    return weights.astype(np.float32)
-
-
-def sample_means(cfg: SamplingConfig, rng: np.random.Generator) -> np.ndarray:
-    best: np.ndarray | None = None
-    best_sep = -np.inf
-    for _ in range(cfg.max_mean_resamples):
-        means = rng.uniform(-cfg.mean_bound, cfg.mean_bound, size=(cfg.k, cfg.d)).astype(np.float32)
-        cur_sep = _pairwise_min_distance(means)
-        if cur_sep > best_sep:
-            best = means
-            best_sep = cur_sep
-        if cur_sep >= cfg.min_separation:
-            return means
-    assert best is not None
-    return best
+            return weights
+    return weights
 
 
 def sample_anisotropic_scales(
@@ -129,9 +282,17 @@ def sample_task(
     intervention: InterventionConfig | None = None,
 ) -> GMMTask:
     intervention = intervention or InterventionConfig(kind="none")
-    weights = sample_weights(cfg, rng)
-    means = sample_means(cfg, rng)
+    dataset = load_wine_dataset(cfg)
+    weights = sample_weights(cfg, rng, base_weights=dataset.class_weights)
+    means = dataset.class_means.copy()
     sigma = float(cfg.sigma)
+    base_sigma_diag = dataset.class_scales.copy()
+    base_sigma = float(base_sigma_diag.mean())
+    if base_sigma < _EPS:
+        base_sigma = 1.0
+    base_sigma_diag = (base_sigma_diag * (sigma / base_sigma)).astype(np.float32)
+    base_sigma = float(base_sigma_diag.mean())
+
     sigma_diag: np.ndarray | None = None
     if cfg.anisotropic_prob > 0.0 and rng.random() < cfg.anisotropic_prob:
         sigma_diag = sample_anisotropic_scales(
@@ -140,8 +301,10 @@ def sample_task(
             rng=rng,
             min_log_scale=cfg.anisotropic_log_scale_min,
             max_log_scale=cfg.anisotropic_log_scale_max,
-            base_sigma=cfg.sigma,
+            base_sigma=1.0,
         )
+        sigma_diag = (base_sigma_diag * sigma_diag).astype(np.float32)
+        sigma = float(sigma_diag.mean())
 
     weights, means, sigma, sigma_diag = apply_intervention(weights, means, sigma, sigma_diag, intervention, rng)
 
@@ -150,18 +313,35 @@ def sample_task(
     else:
         n = int(rng.integers(cfg.n_min, cfg.n_max + 1))
 
-    z = rng.choice(cfg.k, size=n, p=weights)
-    noise = rng.normal(size=(n, cfg.d)).astype(np.float32)
+    z = rng.choice(cfg.k, size=n, p=weights).astype(np.int64)
+    x = np.zeros((n, cfg.d), dtype=np.float32)
+
     if sigma_diag is None:
-        x = means[z] + sigma * noise
+        scale_factors = np.full((cfg.k, cfg.d), sigma / max(base_sigma, _EPS), dtype=np.float32)
     else:
-        x = means[z] + sigma_diag[z] * noise
+        scale_factors = (sigma_diag / np.clip(base_sigma_diag, _EPS, None)).astype(np.float32)
+
+    for class_idx in range(cfg.k):
+        indices = np.where(z == class_idx)[0]
+        if len(indices) == 0:
+            continue
+        residual_pool = dataset.class_residuals[class_idx]
+        sampled_idx = rng.integers(0, residual_pool.shape[0], size=len(indices))
+        sampled_residuals = residual_pool[sampled_idx]
+        x[indices] = means[class_idx] + sampled_residuals * scale_factors[class_idx]
 
     params = GMMParams(
         weights=weights.astype(np.float32),
         means=means.astype(np.float32),
         sigma=sigma,
         sigma_diag=None if sigma_diag is None else sigma_diag.astype(np.float32),
+        metadata={
+            "dataset": dataset.path,
+            "dataset_name": cfg.dataset,
+            "label_column": dataset.label_column,
+            "original_dim": dataset.original_dim,
+            "projected_dim": cfg.d,
+        },
     )
     return GMMTask(x=x.astype(np.float32), z=z.astype(np.int64), params=params, intervention=intervention.kind)
 
