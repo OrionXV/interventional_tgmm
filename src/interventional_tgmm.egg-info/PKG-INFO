@@ -64,6 +64,40 @@ cd interventional_tgmm
 python scripts/smoke_test.py
 ```
 
+Run an actual end-to-end quick test (keeps temp outputs for inspection):
+
+```bash
+python scripts/train_tgmm.py \
+  --config config.yaml \
+  --show-tmp \
+  --steps 20 \
+  --batch-size 8 \
+  --device cpu \
+  --output-dir tmp_quick_test
+
+python scripts/evaluate_interventions.py \
+  --config config.yaml \
+  --show-tmp \
+  --checkpoint tmp_quick_test/checkpoint_last.pt \
+  --output-dir tmp_quick_eval \
+  --num-tasks 5 \
+  --seeds 0 \
+  --methods tgmm em kmeans \
+  --device cpu
+
+python scripts/visualize_2d.py \
+  --config config.yaml \
+  --show-tmp \
+  --checkpoint tmp_quick_test/checkpoint_last.pt \
+  --output tmp_quick_eval/viz_2d.svg \
+  --intervention none \
+  --device cpu
+```
+
+Quick test artifacts will be under:
+- `outputs/tmp/tmp_quick_test/`
+- `outputs/tmp/tmp_quick_eval/`
+
 ## Configuration
 
 All main scripts read defaults from `config.yaml` (root) via `--config`.
@@ -73,6 +107,7 @@ The `runtime` section controls temporary artifact behavior:
 - `show_tmp: false` routes `tmp*` paths into `outputs/tmp/...` and removes `outputs/tmp` after each run.
 - set `show_tmp: true` to keep temporary outputs.
 - if you chain scripts through `tmp*` paths (for example train then eval from a tmp checkpoint), use `show_tmp: true`.
+You can also disable per run with `--no-use-tqdm`.
 
 Example:
 

@@ -1,0 +1,17 @@
+{
+  "generator": "residual",
+  "train_split": "train",
+  "eval_split": "test",
+  "train_seed": 0,
+  "eval_seeds": [
+    101,
+    102,
+    103
+  ],
+  "num_train_tasks": 200,
+  "num_eval_tasks_per_seed": 100,
+  "num_eval_tasks_total": 300,
+  "num_exact_hash_overlaps": 0,
+  "overlap_rate": 0.0,
+  "overlaps": []
+}

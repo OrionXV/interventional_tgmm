@@ -1,0 +1,3802 @@
+[
+  {
+    "generator": "residual",
+    "method": "tgmm",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.1333113331347704,
+      "mean_mse": 0.9113588333129883,
+      "weight_mse": 0.023506226018071175,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.631578947368421,
+      "avg_log_likelihood": -15.816784576060957
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "em",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.27628579922020435,
+      "mean_mse": 0.07502538710832596,
+      "weight_mse": 0.0028141383081674576,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.9473684210526315,
+      "avg_log_likelihood": -12.920397821441462
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "kmeans",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.27907232102006674,
+      "mean_mse": 0.07757802307605743,
+      "weight_mse": 0.0030480241402983665,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.9473684210526315,
+      "avg_log_likelihood": -12.921363748301808
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "spectral",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.123998872935772,
+      "mean_mse": 1.8319038152694702,
+      "weight_mse": 0.09364878386259079,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.6140350877192983,
+      "avg_log_likelihood": -14.953046887180154
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "diag_gmm",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.863445800729096,
+      "mean_mse": 2.0225629806518555,
+      "weight_mse": 0.014582973904907703,
+      "scale_mse": 0.8262998461723328,
+      "cluster_acc": 0.40350877192982454,
+      "avg_log_likelihood": -8.9111967086792
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "tgmm",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.1353717558085918,
+      "mean_mse": 0.9252906441688538,
+      "weight_mse": 0.011634837836027145,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.9047619047619048,
+      "avg_log_likelihood": -15.504726178818032
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "em",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.46306186029687524,
+      "mean_mse": 0.2568219006061554,
+      "weight_mse": 0.007793685887008905,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.9206349206349206,
+      "avg_log_likelihood": -12.36280230816573
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "kmeans",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.343546770978719,
+      "mean_mse": 0.1399216502904892,
+      "weight_mse": 0.005178846884518862,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.9523809523809523,
+      "avg_log_likelihood": -12.377949414684252
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "spectral",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.1282213556114584,
+      "mean_mse": 0.9266297817230225,
+      "weight_mse": 0.0031453000847250223,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.7777777777777778,
+      "avg_log_likelihood": -12.753118310048153
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "diag_gmm",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.5811233203858137,
+      "mean_mse": 1.6894570589065552,
+      "weight_mse": 0.01614847593009472,
+      "scale_mse": 0.8755177855491638,
+      "cluster_acc": 0.7777777777777778,
+      "avg_log_likelihood": -8.851402282714844
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "tgmm",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.132792178541422,
+      "mean_mse": 0.9135276675224304,
+      "weight_mse": 0.020818237215280533,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.6046511627906976,
+      "avg_log_likelihood": -15.260896638676387
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "em",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.31430275179445744,
+      "mean_mse": 0.10812851041555405,
+      "weight_mse": 0.0077279675751924515,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.9534883720930233,
+      "avg_log_likelihood": -12.468598360692393
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "kmeans",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.31597390212118626,
+      "mean_mse": 0.1105685606598854,
+      "weight_mse": 0.006959067657589912,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.9534883720930233,
+      "avg_log_likelihood": -12.47142001333075
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "spectral",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 3.088383838534355,
+      "mean_mse": 2.764282464981079,
+      "weight_mse": 0.12565509974956512,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.46511627906976744,
+      "avg_log_likelihood": -13.08134462247535
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "diag_gmm",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 3.6339940205216408,
+      "mean_mse": 2.493601083755493,
+      "weight_mse": 0.1247280016541481,
+      "scale_mse": 1.0156649351119995,
+      "cluster_acc": 0.5116279069767442,
+      "avg_log_likelihood": -8.597128868103027
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "tgmm",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.1140235010534525,
+      "mean_mse": 0.9096057415008545,
+      "weight_mse": 0.005971485748887062,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.7755102040816326,
+      "avg_log_likelihood": -14.111826714206602
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "em",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.40159496385604143,
+      "mean_mse": 0.194127157330513,
+      "weight_mse": 0.009021532721817493,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.8979591836734694,
+      "avg_log_likelihood": -11.56807485504508
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "kmeans",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.3453067922964692,
+      "mean_mse": 0.13865388929843903,
+      "weight_mse": 0.008206629194319248,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.9387755102040817,
+      "avg_log_likelihood": -11.571780944070737
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "spectral",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.1202710000798106,
+      "mean_mse": 0.9075138568878174,
+      "weight_mse": 0.014310869388282299,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.5102040816326531,
+      "avg_log_likelihood": -13.412141783679001
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "diag_gmm",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.5792295970022678,
+      "mean_mse": 1.0066916942596436,
+      "weight_mse": 0.050529662519693375,
+      "scale_mse": 0.5220082402229309,
+      "cluster_acc": 0.3877551020408163,
+      "avg_log_likelihood": -10.01436996459961
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "tgmm",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.145895654335618,
+      "mean_mse": 0.9249791502952576,
+      "weight_mse": 0.022470230236649513,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.7192982456140351,
+      "avg_log_likelihood": -15.044101675982775
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "em",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.2426469657330017,
+      "mean_mse": 0.044141486287117004,
+      "weight_mse": 5.920564217376523e-05,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.9649122807017544,
+      "avg_log_likelihood": -11.864516134954624
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "kmeans",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.2442251850064281,
+      "mean_mse": 0.04577814042568207,
+      "weight_mse": 7.70777035086212e-07,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.9649122807017544,
+      "avg_log_likelihood": -11.865877591429902
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "spectral",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.8265408277511597,
+      "mean_mse": 1.323574423789978,
+      "weight_mse": 0.3045201301574707,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.17543859649122806,
+      "avg_log_likelihood": -14.722648934665559
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "diag_gmm",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.614093793556094,
+      "mean_mse": 1.8165888786315918,
+      "weight_mse": 0.025984955951571465,
+      "scale_mse": 0.7715199589729309,
+      "cluster_acc": 0.7192982456140351,
+      "avg_log_likelihood": -9.142927169799805
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "tgmm",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.2455651685595512,
+      "mean_mse": 0.9544887542724609,
+      "weight_mse": 0.09263014048337936,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.9365079365079365,
+      "avg_log_likelihood": -15.979737343033392
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "em",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.361287246167194,
+      "mean_mse": 1.1620348691940308,
+      "weight_mse": 0.000806103169452399,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.8571428571428571,
+      "avg_log_likelihood": -11.28166470492419
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "kmeans",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.3659348452929407,
+      "mean_mse": 1.1666773557662964,
+      "weight_mse": 0.0008112157229334116,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.8571428571428571,
+      "avg_log_likelihood": -11.281675510902417
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "spectral",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.9526403844356537,
+      "mean_mse": 1.3916531801223755,
+      "weight_mse": 0.36254093050956726,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.25396825396825395,
+      "avg_log_likelihood": -14.217090027875855
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "diag_gmm",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.466346263885498,
+      "mean_mse": 1.5014047622680664,
+      "weight_mse": 0.25771957635879517,
+      "scale_mse": 0.7072219252586365,
+      "cluster_acc": 0.20634920634920634,
+      "avg_log_likelihood": -9.089664459228516
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "tgmm",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.1922629438340664,
+      "mean_mse": 0.9313671588897705,
+      "weight_mse": 0.062449511140584946,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.7674418604651163,
+      "avg_log_likelihood": -14.897158144580994
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "em",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.1916325706988573,
+      "mean_mse": 1.9668933153152466,
+      "weight_mse": 0.026292981579899788,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.8372093023255814,
+      "avg_log_likelihood": -11.138861796518455
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "kmeans",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.2186637576669455,
+      "mean_mse": 1.9916449785232544,
+      "weight_mse": 0.028572505339980125,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.8372093023255814,
+      "avg_log_likelihood": -11.144876496387695
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "spectral",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.6887584179639816,
+      "mean_mse": 2.312950849533081,
+      "weight_mse": 0.17736129462718964,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.37209302325581395,
+      "avg_log_likelihood": -15.581489547864365
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "diag_gmm",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.925114866346121,
+      "mean_mse": 1.9956979751586914,
+      "weight_mse": 0.03179686889052391,
+      "scale_mse": 0.8976200222969055,
+      "cluster_acc": 0.7906976744186046,
+      "avg_log_likelihood": -7.639472961425781
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "tgmm",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.215178981423378,
+      "mean_mse": 0.9369420409202576,
+      "weight_mse": 0.07979066669940948,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.9387755102040817,
+      "avg_log_likelihood": -15.148825155897871
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "em",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.0789814982563257,
+      "mean_mse": 0.8550141453742981,
+      "weight_mse": 0.02552107907831669,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.5918367346938775,
+      "avg_log_likelihood": -11.445330065554062
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "kmeans",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.9419176504015923,
+      "mean_mse": 0.7160995602607727,
+      "weight_mse": 0.027371816337108612,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.6326530612244898,
+      "avg_log_likelihood": -11.452710877891342
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "spectral",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.2751061078161,
+      "mean_mse": 2.0600178241729736,
+      "weight_mse": 0.01664200983941555,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.6326530612244898,
+      "avg_log_likelihood": -12.480877867443755
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "diag_gmm",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.125703804194927,
+      "mean_mse": 1.4806071519851685,
+      "weight_mse": 0.09823768585920334,
+      "scale_mse": 0.5468589663505554,
+      "cluster_acc": 0.3877551020408163,
+      "avg_log_likelihood": -9.657073974609375
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "tgmm",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.6240303590893745,
+      "mean_mse": 0.40207743644714355,
+      "weight_mse": 0.02350664883852005,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.43859649122807015,
+      "avg_log_likelihood": -13.84308400295227
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "em",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.9649093970656395,
+      "mean_mse": 0.6573546528816223,
+      "weight_mse": 0.10910847038030624,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.5263157894736842,
+      "avg_log_likelihood": -12.396397379626686
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "kmeans",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.4015570543706417,
+      "mean_mse": 0.15770851075649261,
+      "weight_mse": 0.045402269810438156,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.7192982456140351,
+      "avg_log_likelihood": -12.63716817503203
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "spectral",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.025093264877796,
+      "mean_mse": 1.7387558221817017,
+      "weight_mse": 0.08789116889238358,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.5087719298245614,
+      "avg_log_likelihood": -14.098898304658308
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "diag_gmm",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.115978315472603,
+      "mean_mse": 1.0451074838638306,
+      "weight_mse": 0.13403792679309845,
+      "scale_mse": 0.9368329048156738,
+      "cluster_acc": 0.47368421052631576,
+      "avg_log_likelihood": -7.5350470542907715
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "tgmm",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.617502081207931,
+      "mean_mse": 0.40742388367652893,
+      "weight_mse": 0.011631923727691174,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.7301587301587301,
+      "avg_log_likelihood": -13.317985304276709
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "em",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.9333844212815166,
+      "mean_mse": 0.7253772616386414,
+      "weight_mse": 0.009560885839164257,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.7301587301587301,
+      "avg_log_likelihood": -11.79700071466832
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "kmeans",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.8005857113748789,
+      "mean_mse": 0.5937718749046326,
+      "weight_mse": 0.008367562666535378,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.7301587301587301,
+      "avg_log_likelihood": -11.8223296998889
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "spectral",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.360885500907898,
+      "mean_mse": 2.035098075866699,
+      "weight_mse": 0.1273411512374878,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.19047619047619047,
+      "avg_log_likelihood": -13.347859115883283
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "diag_gmm",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.103551797568798,
+      "mean_mse": 0.5950923562049866,
+      "weight_mse": 0.010157309472560883,
+      "scale_mse": 0.4983021318912506,
+      "cluster_acc": 0.6825396825396826,
+      "avg_log_likelihood": -10.277665138244629
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "tgmm",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.6190895587205887,
+      "mean_mse": 0.3998195230960846,
+      "weight_mse": 0.020823761820793152,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.6976744186046512,
+      "avg_log_likelihood": -13.329759694144991
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "em",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.3583699464797974,
+      "mean_mse": 2.0232293605804443,
+      "weight_mse": 0.1366943120956421,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.37209302325581395,
+      "avg_log_likelihood": -11.641032749753478
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "kmeans",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.2777936458587646,
+      "mean_mse": 1.9913877248764038,
+      "weight_mse": 0.0879596471786499,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.4418604651162791,
+      "avg_log_likelihood": -11.689086641135214
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "spectral",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.7122728675603867,
+      "mean_mse": 1.3703182935714722,
+      "weight_mse": 0.14350830018520355,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.3023255813953488,
+      "avg_log_likelihood": -13.215448616029756
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "diag_gmm",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.905418559908867,
+      "mean_mse": 2.101583242416382,
+      "weight_mse": 0.06491939723491669,
+      "scale_mse": 0.7389159202575684,
+      "cluster_acc": 0.4186046511627907,
+      "avg_log_likelihood": -7.9585676193237305
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "tgmm",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.599420016631484,
+      "mean_mse": 0.3950076401233673,
+      "weight_mse": 0.005966102704405785,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.673469387755102,
+      "avg_log_likelihood": -12.214560054702746
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "em",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.7081871088594198,
+      "mean_mse": 0.49338385462760925,
+      "weight_mse": 0.016356980428099632,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.7755102040816326,
+      "avg_log_likelihood": -11.10534096385033
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "kmeans",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.7454322758130729,
+      "mean_mse": 0.5445451140403748,
+      "weight_mse": 0.0024408879689872265,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.6530612244897959,
+      "avg_log_likelihood": -11.162216846243957
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "spectral",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.5956826880574226,
+      "mean_mse": 1.3135985136032104,
+      "weight_mse": 0.08363790065050125,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.4897959183673469,
+      "avg_log_likelihood": -12.762465661322388
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "diag_gmm",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.1490429788827896,
+      "mean_mse": 0.5921724438667297,
+      "weight_mse": 0.05100829899311066,
+      "scale_mse": 0.5058622360229492,
+      "cluster_acc": 0.40816326530612246,
+      "avg_log_likelihood": -9.59486198425293
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "tgmm",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.3840561136603355,
+      "mean_mse": 0.9140274524688721,
+      "weight_mse": 0.02352454513311386,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.42105263157894735,
+      "avg_log_likelihood": -17.137734526845144
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "em",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.031628429889679,
+      "mean_mse": 1.4760370254516602,
+      "weight_mse": 0.10908728837966919,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.5263157894736842,
+      "avg_log_likelihood": -15.676700152876736
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "kmeans",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.8500145375728607,
+      "mean_mse": 0.36125659942626953,
+      "weight_mse": 0.04225382208824158,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.7368421052631579,
+      "avg_log_likelihood": -15.90080079535742
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "spectral",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 5.11454264074564,
+      "mean_mse": 4.558741092681885,
+      "weight_mse": 0.10929743200540543,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.5087719298245614,
+      "avg_log_likelihood": -17.206113949147415
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "diag_gmm",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 4.610750690102577,
+      "mean_mse": 2.3677451610565186,
+      "weight_mse": 0.13405467569828033,
+      "scale_mse": 2.1089508533477783,
+      "cluster_acc": 0.47368421052631576,
+      "avg_log_likelihood": -10.726673126220703
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "tgmm",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.3791824243962765,
+      "mean_mse": 0.9210615158081055,
+      "weight_mse": 0.011616792529821396,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.7301587301587301,
+      "avg_log_likelihood": -16.515503559556656
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "em",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.1207904228940606,
+      "mean_mse": 1.6646734476089478,
+      "weight_mse": 0.009612859226763248,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.7301587301587301,
+      "avg_log_likelihood": -15.063540322320543
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "kmeans",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.8079360965639353,
+      "mean_mse": 1.3530644178390503,
+      "weight_mse": 0.008367562666535378,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.7301587301587301,
+      "avg_log_likelihood": -15.090864219372543
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "spectral",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 5.308778882026672,
+      "mean_mse": 4.709845066070557,
+      "weight_mse": 0.1524296998977661,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.19047619047619047,
+      "avg_log_likelihood": -16.516118459285995
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "diag_gmm",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.4816463822498918,
+      "mean_mse": 1.3560914993286133,
+      "weight_mse": 0.010153972543776035,
+      "scale_mse": 1.1154009103775024,
+      "cluster_acc": 0.6825396825396826,
+      "avg_log_likelihood": -13.532341957092285
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "tgmm",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.378469618037343,
+      "mean_mse": 0.9111503958702087,
+      "weight_mse": 0.020815106108784676,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.6744186046511628,
+      "avg_log_likelihood": -16.58265622818617
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "em",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 5.174262836575508,
+      "mean_mse": 4.59307336807251,
+      "weight_mse": 0.13468535244464874,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.37209302325581395,
+      "avg_log_likelihood": -14.930424064061423
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "kmeans",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 5.056648135185242,
+      "mean_mse": 4.522184371948242,
+      "weight_mse": 0.0879596471786499,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.4418604651162791,
+      "avg_log_likelihood": -14.975050667465586
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "spectral",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 3.6380298733711243,
+      "mean_mse": 3.0524260997772217,
+      "weight_mse": 0.13909965753555298,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.32558139534883723,
+      "avg_log_likelihood": -16.293735467363927
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "diag_gmm",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 6.489067502319813,
+      "mean_mse": 4.759962558746338,
+      "weight_mse": 0.06492144614458084,
+      "scale_mse": 1.664183497428894,
+      "cluster_acc": 0.4186046511627907,
+      "avg_log_likelihood": -11.185761451721191
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "tgmm",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.3570678383111954,
+      "mean_mse": 0.9046151638031006,
+      "weight_mse": 0.005948558449745178,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.6326530612244898,
+      "avg_log_likelihood": -15.480853048176154
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "em",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.5844597928225994,
+      "mean_mse": 1.121510624885559,
+      "weight_mse": 0.01644505187869072,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.7755102040816326,
+      "avg_log_likelihood": -14.370198957775633
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "kmeans",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.6987059894017875,
+      "mean_mse": 1.2497609853744507,
+      "weight_mse": 0.0024408879689872265,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.6530612244897959,
+      "avg_log_likelihood": -14.438506959017928
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "spectral",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 3.376879595220089,
+      "mean_mse": 2.8481223583221436,
+      "weight_mse": 0.0822531208395958,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.5306122448979592,
+      "avg_log_likelihood": -15.970737505477715
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "diag_gmm",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.5520331263542175,
+      "mean_mse": 1.3629273176193237,
+      "weight_mse": 0.05099743604660034,
+      "scale_mse": 1.1381083726882935,
+      "cluster_acc": 0.40816326530612246,
+      "avg_log_likelihood": -12.855199813842773
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "tgmm",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.1322597581893206,
+      "mean_mse": 0.9102931618690491,
+      "weight_mse": 0.023520322516560555,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.5078125,
+      "avg_log_likelihood": -15.663260354596723
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "em",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.353746309876442,
+      "mean_mse": 2.133760690689087,
+      "weight_mse": 0.021539345383644104,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.515625,
+      "avg_log_likelihood": -13.003309640559126
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "kmeans",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.4717984553426504,
+      "mean_mse": 0.25073957443237305,
+      "weight_mse": 0.02261260710656643,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.796875,
+      "avg_log_likelihood": -13.246124606410326
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "spectral",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 3.056710347533226,
+      "mean_mse": 2.8188486099243164,
+      "weight_mse": 0.03941546380519867,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.6484375,
+      "avg_log_likelihood": -13.791303608400632
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "diag_gmm",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 3.344290390610695,
+      "mean_mse": 2.240668773651123,
+      "weight_mse": 0.1809052973985672,
+      "scale_mse": 0.9227163195610046,
+      "cluster_acc": 0.4453125,
+      "avg_log_likelihood": -8.070371627807617
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "tgmm",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.1188501631841063,
+      "mean_mse": 0.9120519757270813,
+      "weight_mse": 0.008351913653314114,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.578125,
+      "avg_log_likelihood": -14.911050130941767
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "em",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.25500810239464045,
+      "mean_mse": 0.05400135740637779,
+      "weight_mse": 0.002560471184551716,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.9140625,
+      "avg_log_likelihood": -12.478303341435424
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "kmeans",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.2577383960597217,
+      "mean_mse": 0.05729835107922554,
+      "weight_mse": 0.0019937711767852306,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.9140625,
+      "avg_log_likelihood": -12.479041226169976
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "spectral",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.6924346014857292,
+      "mean_mse": 0.43011751770973206,
+      "weight_mse": 0.06387080997228622,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.7109375,
+      "avg_log_likelihood": -13.539850069156493
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "diag_gmm",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.1592479534447193,
+      "mean_mse": 0.7932969927787781,
+      "weight_mse": 0.058771271258592606,
+      "scale_mse": 0.30717968940734863,
+      "cluster_acc": 0.5390625,
+      "avg_log_likelihood": -11.597352981567383
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "tgmm",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.130279516801238,
+      "mean_mse": 0.9110005497932434,
+      "weight_mse": 0.020832693204283714,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.6171875,
+      "avg_log_likelihood": -15.007027950087718
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "em",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.40785856638103724,
+      "mean_mse": 0.1965114027261734,
+      "weight_mse": 0.012900889851152897,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.8359375,
+      "avg_log_likelihood": -12.318935088691902
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "kmeans",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.4195631043985486,
+      "mean_mse": 0.20727933943271637,
+      "weight_mse": 0.013837491162121296,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.8359375,
+      "avg_log_likelihood": -12.319990992203977
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "spectral",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.0783334439620376,
+      "mean_mse": 0.8714328408241272,
+      "weight_mse": 0.008454329334199429,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.796875,
+      "avg_log_likelihood": -13.377205587717356
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "diag_gmm",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.5203055860474706,
+      "mean_mse": 1.788223385810852,
+      "weight_mse": 0.0088279964402318,
+      "scale_mse": 0.7232542037963867,
+      "cluster_acc": 0.8125,
+      "avg_log_likelihood": -10.437593460083008
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "tgmm",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.1139726238325238,
+      "mean_mse": 0.9056839942932129,
+      "weight_mse": 0.009842355735599995,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.6875,
+      "avg_log_likelihood": -15.050787419209328
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "em",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.2620018236339092,
+      "mean_mse": 0.057849761098623276,
+      "weight_mse": 0.005705788731575012,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.921875,
+      "avg_log_likelihood": -12.323012945948006
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "kmeans",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.26363642094656825,
+      "mean_mse": 0.05947674438357353,
+      "weight_mse": 0.005713402759283781,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.921875,
+      "avg_log_likelihood": -12.323800891574221
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "spectral",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.5660918988287449,
+      "mean_mse": 0.33546435832977295,
+      "weight_mse": 0.032181266695261,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.8125,
+      "avg_log_likelihood": -13.209126810850584
+    },
+    "error": null
+  },
+  {
+    "generator": "residual",
+    "method": "diag_gmm",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.456443827599287,
+      "mean_mse": 1.4205125570297241,
+      "weight_mse": 0.05339191481471062,
+      "scale_mse": 0.9825393557548523,
+      "cluster_acc": 0.625,
+      "avg_log_likelihood": -9.282377243041992
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "tgmm",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.12100051343441,
+      "mean_mse": 0.8990265727043152,
+      "weight_mse": 0.023527666926383972,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.43859649122807015,
+      "avg_log_likelihood": -18.4860146411531
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "em",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.4389573773369193,
+      "mean_mse": 0.23041348159313202,
+      "weight_mse": 0.010097621940076351,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.8596491228070176,
+      "avg_log_likelihood": -15.112256163970624
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "kmeans",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.4296044819056988,
+      "mean_mse": 0.21946002542972565,
+      "weight_mse": 0.011698182672262192,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.8421052631578947,
+      "avg_log_likelihood": -15.11590689938043
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "spectral",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.90826983936131,
+      "mean_mse": 0.6892022490501404,
+      "weight_mse": 0.020621316507458687,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.6491228070175439,
+      "avg_log_likelihood": -16.955422039785894
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "diag_gmm",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.2666865182109177,
+      "mean_mse": 0.20381402969360352,
+      "weight_mse": 0.005832911003381014,
+      "scale_mse": 0.05703957751393318,
+      "cluster_acc": 0.8947368421052632,
+      "avg_log_likelihood": -13.819269180297852
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "tgmm",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.1209855861961842,
+      "mean_mse": 0.9126942753791809,
+      "weight_mse": 0.009845037013292313,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.7666666666666667,
+      "avg_log_likelihood": -18.685653758194675
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "em",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.7051020516082644,
+      "mean_mse": 0.4966723918914795,
+      "weight_mse": 0.009983385913074017,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.6166666666666667,
+      "avg_log_likelihood": -15.560723331245235
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "kmeans",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.7081197146326303,
+      "mean_mse": 0.49977532029151917,
+      "weight_mse": 0.009898120537400246,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.6166666666666667,
+      "avg_log_likelihood": -15.562601731313357
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "spectral",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.6929463222622871,
+      "mean_mse": 0.4681212902069092,
+      "weight_mse": 0.026378758251667023,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.6333333333333333,
+      "avg_log_likelihood": -16.79977083591302
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "diag_gmm",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.341201706789434,
+      "mean_mse": 1.1336578130722046,
+      "weight_mse": 0.010140388272702694,
+      "scale_mse": 0.19740350544452667,
+      "cluster_acc": 0.4166666666666667,
+      "avg_log_likelihood": -14.030959129333496
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "tgmm",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.1374152414500713,
+      "mean_mse": 0.9181716442108154,
+      "weight_mse": 0.020797323435544968,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.6744186046511628,
+      "avg_log_likelihood": -17.091075122444895
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "em",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.6029438991099596,
+      "mean_mse": 0.37355485558509827,
+      "weight_mse": 0.030942769721150398,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.8372093023255814,
+      "avg_log_likelihood": -14.285997661319444
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "kmeans",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.5992775931954384,
+      "mean_mse": 0.3732168972492218,
+      "weight_mse": 0.027614422142505646,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.8372093023255814,
+      "avg_log_likelihood": -14.288111441351118
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "spectral",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.7850715685635805,
+      "mean_mse": 0.5836542248725891,
+      "weight_mse": 0.002971069887280464,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.6046511627906976,
+      "avg_log_likelihood": -15.805107106357193
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "diag_gmm",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.5823352709412575,
+      "mean_mse": 0.9647232890129089,
+      "weight_mse": 0.10823825746774673,
+      "scale_mse": 0.5093737244606018,
+      "cluster_acc": 0.6744186046511628,
+      "avg_log_likelihood": -13.145026206970215
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "tgmm",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.1215251041576266,
+      "mean_mse": 0.9124383926391602,
+      "weight_mse": 0.010640437714755535,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.5737704918032787,
+      "avg_log_likelihood": -17.595145473103766
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "em",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.34534128080122173,
+      "mean_mse": 0.14364872872829437,
+      "weight_mse": 0.0032462782692164183,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.8524590163934426,
+      "avg_log_likelihood": -14.621063008321206
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "kmeans",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.42624130565673113,
+      "mean_mse": 0.21796731650829315,
+      "weight_mse": 0.00982771534472704,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.8524590163934426,
+      "avg_log_likelihood": -14.650335337132525
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "spectral",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.8564833849668503,
+      "mean_mse": 0.6274061799049377,
+      "weight_mse": 0.0306309312582016,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.7213114754098361,
+      "avg_log_likelihood": -16.0552867467451
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "diag_gmm",
+    "intervention": "none",
+    "family": "none",
+    "strength": 0.0,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.6653893925249577,
+      "mean_mse": 0.42219534516334534,
+      "weight_mse": 0.03519487753510475,
+      "scale_mse": 0.20799916982650757,
+      "cluster_acc": 0.8032786885245902,
+      "avg_log_likelihood": -13.261987686157227
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "tgmm",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.1278148368000984,
+      "mean_mse": 0.9069180488586426,
+      "weight_mse": 0.022450514137744904,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.6491228070175439,
+      "avg_log_likelihood": -17.3510301816737
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "em",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.40550760028418154,
+      "mean_mse": 0.20534877479076385,
+      "weight_mse": 0.0017125516897067428,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.8070175438596491,
+      "avg_log_likelihood": -14.199582910103006
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "kmeans",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.42033745821390767,
+      "mean_mse": 0.22170062363147736,
+      "weight_mse": 0.00019056077871937305,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.8070175438596491,
+      "avg_log_likelihood": -14.211248194213635
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "spectral",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.1356121003627777,
+      "mean_mse": 0.6363832354545593,
+      "weight_mse": 0.30078259110450745,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.45614035087719296,
+      "avg_log_likelihood": -16.106727733445375
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "diag_gmm",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.091153308749199,
+      "mean_mse": 0.7617847323417664,
+      "weight_mse": 0.04175575077533722,
+      "scale_mse": 0.28761282563209534,
+      "cluster_acc": 0.6491228070175439,
+      "avg_log_likelihood": -13.14441967010498
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "tgmm",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.2074053958058357,
+      "mean_mse": 0.9402828812599182,
+      "weight_mse": 0.06867624074220657,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.7666666666666667,
+      "avg_log_likelihood": -18.61281310200832
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "em",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.1398707814514637,
+      "mean_mse": 0.8895822167396545,
+      "weight_mse": 0.05184229090809822,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.5666666666666667,
+      "avg_log_likelihood": -14.736861892322318
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "kmeans",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.170910481363535,
+      "mean_mse": 0.9170544743537903,
+      "weight_mse": 0.05540973320603371,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.55,
+      "avg_log_likelihood": -14.74132107735491
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "spectral",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.639540284872055,
+      "mean_mse": 1.0445057153701782,
+      "weight_mse": 0.3965882956981659,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.3,
+      "avg_log_likelihood": -16.670946112486757
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "diag_gmm",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.2828599512577057,
+      "mean_mse": 1.0907796621322632,
+      "weight_mse": 0.08486288040876389,
+      "scale_mse": 0.10721740871667862,
+      "cluster_acc": 0.36666666666666664,
+      "avg_log_likelihood": -13.57102108001709
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "tgmm",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.2019017338752747,
+      "mean_mse": 0.9410898089408875,
+      "weight_mse": 0.06236565113067627,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.813953488372093,
+      "avg_log_likelihood": -16.971307970770113
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "em",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.1208001673221588,
+      "mean_mse": 0.8463001251220703,
+      "weight_mse": 0.07605376839637756,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.5813953488372093,
+      "avg_log_likelihood": -13.282446607748716
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "kmeans",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.137792930006981,
+      "mean_mse": 0.8588259816169739,
+      "weight_mse": 0.08052067458629608,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.5813953488372093,
+      "avg_log_likelihood": -13.285028783978396
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "spectral",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.1847634017467499,
+      "mean_mse": 0.6258513331413269,
+      "weight_mse": 0.36046579480171204,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.627906976744186,
+      "avg_log_likelihood": -15.152930950342753
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "diag_gmm",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.4565477718715556,
+      "mean_mse": 0.22556334733963013,
+      "weight_mse": 0.000238438427913934,
+      "scale_mse": 0.23074598610401154,
+      "cluster_acc": 0.9767441860465116,
+      "avg_log_likelihood": -12.471076011657715
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "tgmm",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.203471951186657,
+      "mean_mse": 0.9307531714439392,
+      "weight_mse": 0.0742725059390068,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.6229508196721312,
+      "avg_log_likelihood": -17.525508425734163
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "em",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.3702986761927605,
+      "mean_mse": 1.1087560653686523,
+      "weight_mse": 0.06309633702039719,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.5081967213114754,
+      "avg_log_likelihood": -13.95143959638078
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "kmeans",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.419465072453022,
+      "mean_mse": 1.1522836685180664,
+      "weight_mse": 0.06873513013124466,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.4918032786885246,
+      "avg_log_likelihood": -13.958081748293369
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "spectral",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.2548007816076279,
+      "mean_mse": 0.8896867632865906,
+      "weight_mse": 0.16666774451732635,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.5081967213114754,
+      "avg_log_likelihood": -15.010731155083965
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "diag_gmm",
+    "intervention": "prior@1.25",
+    "family": "prior",
+    "strength": 1.25,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.323008037637919,
+      "mean_mse": 1.6822572946548462,
+      "weight_mse": 0.004223025869578123,
+      "scale_mse": 0.6365277171134949,
+      "cluster_acc": 0.819672131147541,
+      "avg_log_likelihood": -12.274137496948242
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "tgmm",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.6081208735704422,
+      "mean_mse": 0.3861110210418701,
+      "weight_mse": 0.023563578724861145,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.43859649122807015,
+      "avg_log_likelihood": -16.558150110821998
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "em",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.9478645846247673,
+      "mean_mse": 0.6696236729621887,
+      "weight_mse": 0.07979463785886765,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.43859649122807015,
+      "avg_log_likelihood": -14.509601644546777
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "kmeans",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.9439915120601654,
+      "mean_mse": 0.657820463180542,
+      "weight_mse": 0.08772477507591248,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.47368421052631576,
+      "avg_log_likelihood": -14.536254991138442
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "spectral",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.6161125702783465,
+      "mean_mse": 0.40559425950050354,
+      "weight_mse": 0.012072036974132061,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.43859649122807015,
+      "avg_log_likelihood": -15.50189531382623
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "diag_gmm",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.7336824685335159,
+      "mean_mse": 0.3910793960094452,
+      "weight_mse": 0.10259881615638733,
+      "scale_mse": 0.2400042563676834,
+      "cluster_acc": 0.5263157894736842,
+      "avg_log_likelihood": -13.507936477661133
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "tgmm",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.6101714605465531,
+      "mean_mse": 0.4018811881542206,
+      "weight_mse": 0.009843998588621616,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.6833333333333333,
+      "avg_log_likelihood": -16.816706069788026
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "em",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.6690848618745804,
+      "mean_mse": 0.4552955627441406,
+      "weight_mse": 0.01534302532672882,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.55,
+      "avg_log_likelihood": -14.683100776527834
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "kmeans",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.6658169245347381,
+      "mean_mse": 0.45470190048217773,
+      "weight_mse": 0.012668750248849392,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.55,
+      "avg_log_likelihood": -14.688164616442625
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "spectral",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.8094283640384674,
+      "mean_mse": 0.5724835991859436,
+      "weight_mse": 0.038498491048812866,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.38333333333333336,
+      "avg_log_likelihood": -15.434905229185638
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "diag_gmm",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.8983332104980946,
+      "mean_mse": 0.684296190738678,
+      "weight_mse": 0.05505697801709175,
+      "scale_mse": 0.15898004174232483,
+      "cluster_acc": 0.4166666666666667,
+      "avg_log_likelihood": -13.705859184265137
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "tgmm",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.6252996046096087,
+      "mean_mse": 0.40605345368385315,
+      "weight_mse": 0.020799877122044563,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.5813953488372093,
+      "avg_log_likelihood": -15.33221649545702
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "em",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.9453533170744777,
+      "mean_mse": 0.7326317429542542,
+      "weight_mse": 0.014275300316512585,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.5348837209302325,
+      "avg_log_likelihood": -13.662105304217745
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "kmeans",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.9303295565769076,
+      "mean_mse": 0.7182196974754333,
+      "weight_mse": 0.013663585297763348,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.5348837209302325,
+      "avg_log_likelihood": -13.67478604615741
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "spectral",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.77286147326231,
+      "mean_mse": 0.49586716294288635,
+      "weight_mse": 0.07854803651571274,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.5581395348837209,
+      "avg_log_likelihood": -14.88289039242031
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "diag_gmm",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.4753505140542984,
+      "mean_mse": 1.5328210592269897,
+      "weight_mse": 0.13195110857486725,
+      "scale_mse": 0.8105783462524414,
+      "cluster_acc": 0.5813953488372093,
+      "avg_log_likelihood": -11.927613258361816
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "tgmm",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.6077937334775925,
+      "mean_mse": 0.39870724081993103,
+      "weight_mse": 0.0106402188539505,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.5409836065573771,
+      "avg_log_likelihood": -15.621002390248812
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "em",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.5780120901763439,
+      "mean_mse": 0.3637622594833374,
+      "weight_mse": 0.015803556889295578,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.639344262295082,
+      "avg_log_likelihood": -13.961507644487812
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "kmeans",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.5940616251900792,
+      "mean_mse": 0.38065531849861145,
+      "weight_mse": 0.014960032887756824,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.639344262295082,
+      "avg_log_likelihood": -13.9650800210088
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "spectral",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.6390472911298275,
+      "mean_mse": 0.40850499272346497,
+      "weight_mse": 0.032096024602651596,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.47540983606557374,
+      "avg_log_likelihood": -14.771310691322606
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "diag_gmm",
+    "intervention": "mechanism@0.65",
+    "family": "mechanism",
+    "strength": 0.35,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.41205144906416535,
+      "mean_mse": 0.26970887184143066,
+      "weight_mse": 0.005010510329157114,
+      "scale_mse": 0.13733206689357758,
+      "cluster_acc": 0.6885245901639344,
+      "avg_log_likelihood": -13.027278900146484
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "tgmm",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.3678137827664614,
+      "mean_mse": 0.89774489402771,
+      "weight_mse": 0.023564772680401802,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.3684210526315789,
+      "avg_log_likelihood": -19.859433827571475
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "em",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.0358940064907074,
+      "mean_mse": 1.5094066858291626,
+      "weight_mse": 0.07998320460319519,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.43859649122807015,
+      "avg_log_likelihood": -17.793443648232405
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "kmeans",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.9753624834120274,
+      "mean_mse": 1.4964958429336548,
+      "weight_mse": 0.032362524420022964,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.42105263157894735,
+      "avg_log_likelihood": -17.912853266656562
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "spectral",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.416708342730999,
+      "mean_mse": 0.9301688075065613,
+      "weight_mse": 0.040035419166088104,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.45614035087719296,
+      "avg_log_likelihood": -18.68403863974502
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "diag_gmm",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.5065094605088234,
+      "mean_mse": 0.8707483410835266,
+      "weight_mse": 0.10206661373376846,
+      "scale_mse": 0.5336945056915283,
+      "cluster_acc": 0.5263157894736842,
+      "avg_log_likelihood": -16.76886558532715
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "tgmm",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.3748920569196343,
+      "mean_mse": 0.9185642600059509,
+      "weight_mse": 0.009823680855333805,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.7,
+      "avg_log_likelihood": -20.070859197990455
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "em",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.492682839743793,
+      "mean_mse": 1.031018853187561,
+      "weight_mse": 0.015159870497882366,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.55,
+      "avg_log_likelihood": -17.958994342785235
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "kmeans",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.4935065722092986,
+      "mean_mse": 1.0343337059020996,
+      "weight_mse": 0.012668750248849392,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.55,
+      "avg_log_likelihood": -17.96450129128835
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "spectral",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.8071881048381329,
+      "mean_mse": 1.3127223253250122,
+      "weight_mse": 0.04796166345477104,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.36666666666666664,
+      "avg_log_likelihood": -18.663441645740203
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "diag_gmm",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.684483620338142,
+      "mean_mse": 1.295702576637268,
+      "weight_mse": 0.011231395415961742,
+      "scale_mse": 0.3775496482849121,
+      "cluster_acc": 0.4,
+      "avg_log_likelihood": -16.9486141204834
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "tgmm",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.3879281356930733,
+      "mean_mse": 0.9206383228302002,
+      "weight_mse": 0.020785696804523468,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.627906976744186,
+      "avg_log_likelihood": -18.604398499325068
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "em",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.131397302262485,
+      "mean_mse": 1.6704334020614624,
+      "weight_mse": 0.014459784142673016,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.5348837209302325,
+      "avg_log_likelihood": -16.939757288107987
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "kmeans",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 2.0972580267116427,
+      "mean_mse": 1.6370903253555298,
+      "weight_mse": 0.013663585297763348,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.5348837209302325,
+      "avg_log_likelihood": -16.95212837557382
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "spectral",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.5760350972414017,
+      "mean_mse": 1.0854672193527222,
+      "weight_mse": 0.044063761830329895,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.5813953488372093,
+      "avg_log_likelihood": -18.06660406273382
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "diag_gmm",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 5.410763218998909,
+      "mean_mse": 3.4525444507598877,
+      "weight_mse": 0.13162346184253693,
+      "scale_mse": 1.8265953063964844,
+      "cluster_acc": 0.5813953488372093,
+      "avg_log_likelihood": -15.160833358764648
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "tgmm",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.370021109469235,
+      "mean_mse": 0.9128894805908203,
+      "weight_mse": 0.010627512820065022,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.5737704918032787,
+      "avg_log_likelihood": -18.925435380418875
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "em",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.2850024104118347,
+      "mean_mse": 0.822689950466156,
+      "weight_mse": 0.0158083438873291,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.639344262295082,
+      "avg_log_likelihood": -17.239770679402817
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "kmeans",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.3227836908772588,
+      "mean_mse": 0.8613195419311523,
+      "weight_mse": 0.014960032887756824,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.639344262295082,
+      "avg_log_likelihood": -17.243199601888115
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "spectral",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.3992199394851923,
+      "mean_mse": 0.9296806454658508,
+      "weight_mse": 0.02303517796099186,
+      "scale_mse": 0.4465041160583496,
+      "cluster_acc": 0.5409836065573771,
+      "avg_log_likelihood": -18.07871195746125
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "diag_gmm",
+    "intervention": "noise@1.5",
+    "family": "noise",
+    "strength": 1.5,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.9129151459783316,
+      "mean_mse": 0.6028118133544922,
+      "weight_mse": 0.005547529086470604,
+      "scale_mse": 0.3045558035373688,
+      "cluster_acc": 0.7049180327868853,
+      "avg_log_likelihood": -16.290328979492188
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "tgmm",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.1266501694917679,
+      "mean_mse": 0.9046646952629089,
+      "weight_mse": 0.02353920042514801,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.4453125,
+      "avg_log_likelihood": -18.23036267480862
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "em",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.3721491489559412,
+      "mean_mse": 0.1575314998626709,
+      "weight_mse": 0.016171375289559364,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.796875,
+      "avg_log_likelihood": -15.396209094101179
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "kmeans",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.3786048050969839,
+      "mean_mse": 0.16438175737857819,
+      "weight_mse": 0.015776773914694786,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.796875,
+      "avg_log_likelihood": -15.399299404223566
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "spectral",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.1528914421796799,
+      "mean_mse": 0.7606785297393799,
+      "weight_mse": 0.19376663863658905,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.4453125,
+      "avg_log_likelihood": -17.521897624849856
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "diag_gmm",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 101,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.15357290767133236,
+      "mean_mse": 0.11049399524927139,
+      "weight_mse": 0.007184797897934914,
+      "scale_mse": 0.03589411452412605,
+      "cluster_acc": 0.84375,
+      "avg_log_likelihood": -14.144006729125977
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "tgmm",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.1169137666583993,
+      "mean_mse": 0.9175217151641846,
+      "weight_mse": 0.0009457776905037463,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.609375,
+      "avg_log_likelihood": -17.65184567901324
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "em",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.29567874036729336,
+      "mean_mse": 0.09073948860168457,
+      "weight_mse": 0.00649297796189785,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.8671875,
+      "avg_log_likelihood": -14.716724742912861
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "kmeans",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.2980200662277639,
+      "mean_mse": 0.09355548769235611,
+      "weight_mse": 0.006018304731696844,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.859375,
+      "avg_log_likelihood": -14.718747136052261
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "spectral",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.9440188407897949,
+      "mean_mse": 0.5441319942474365,
+      "weight_mse": 0.20144057273864746,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.5390625,
+      "avg_log_likelihood": -17.046368945348306
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "diag_gmm",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 101,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.10569675220176578,
+      "mean_mse": 0.08161891251802444,
+      "weight_mse": 0.0014211158268153667,
+      "scale_mse": 0.022656723856925964,
+      "cluster_acc": 0.8359375,
+      "avg_log_likelihood": -13.514297485351562
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "tgmm",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.1316084954887629,
+      "mean_mse": 0.9122456908226013,
+      "weight_mse": 0.0209165308624506,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.484375,
+      "avg_log_likelihood": -17.610741824312775
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "em",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.3499412499368191,
+      "mean_mse": 0.13895095884799957,
+      "weight_mse": 0.012544017285108566,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.8515625,
+      "avg_log_likelihood": -14.770928401970322
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "kmeans",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.36831105686724186,
+      "mean_mse": 0.15417064726352692,
+      "weight_mse": 0.015694135800004005,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.84375,
+      "avg_log_likelihood": -14.774818462708586
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "spectral",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.0061392784118652,
+      "mean_mse": 0.7353372573852539,
+      "weight_mse": 0.07235574722290039,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.6875,
+      "avg_log_likelihood": -15.83527684885253
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "diag_gmm",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 102,
+    "task_idx": 0,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.6598395258188248,
+      "mean_mse": 0.4153161942958832,
+      "weight_mse": 0.06582686305046082,
+      "scale_mse": 0.17869646847248077,
+      "cluster_acc": 0.65625,
+      "avg_log_likelihood": -13.750197410583496
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "tgmm",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 1.1118678983766586,
+      "mean_mse": 0.9105217456817627,
+      "weight_mse": 0.002899878891184926,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.4140625,
+      "avg_log_likelihood": -18.352785086316704
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "em",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.2505257827870082,
+      "mean_mse": 0.05162681266665459,
+      "weight_mse": 0.0004526963166426867,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.8984375,
+      "avg_log_likelihood": -15.02607600282537
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "kmeans",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.25131870876066387,
+      "mean_mse": 0.05253106728196144,
+      "weight_mse": 0.00034136767499148846,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.8984375,
+      "avg_log_likelihood": -15.028554354195705
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "spectral",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.44206631218548864,
+      "mean_mse": 0.24220497906208038,
+      "weight_mse": 0.0014150593196973205,
+      "scale_mse": 0.19844627380371094,
+      "cluster_acc": 0.8359375,
+      "avg_log_likelihood": -15.979473452933892
+    },
+    "error": null
+  },
+  {
+    "generator": "gaussian_diag",
+    "method": "diag_gmm",
+    "intervention": "sample_size@128",
+    "family": "sample_size",
+    "strength": 128.0,
+    "seed": 102,
+    "task_idx": 1,
+    "success": true,
+    "metrics": {
+      "parameter_error": 0.06210698187351227,
+      "mean_mse": 0.035697780549526215,
+      "weight_mse": 0.00023002922534942627,
+      "scale_mse": 0.026179172098636627,
+      "cluster_acc": 0.890625,
+      "avg_log_likelihood": -13.94253158569336
+    },
+    "error": null
+  }
+]
