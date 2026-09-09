@@ -12,11 +12,15 @@ ROOT = Path(__file__).resolve().parents[1]
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run the clean-claims training/evaluation suite.")
     parser.add_argument("--output-root", type=str, default="outputs_clean_suite")
-    parser.add_argument("--dataset-path", type=str, default="wine.csv")
-    parser.add_argument("--label-column", type=str, default="Cultivars")
+    parser.add_argument("--dataset", type=str, choices=["wine", "iris", "digits"], default="wine")
+    parser.add_argument("--dataset-path", type=str, default="")
+    parser.add_argument("--label-column", type=str, default="")
     parser.add_argument("--split-seed", type=int, default=11)
     parser.add_argument("--train-fraction", type=float, default=0.7)
     parser.add_argument("--generator", type=str, choices=["residual", "gaussian_diag"], default="residual")
+    parser.add_argument("--k", type=int, default=3)
+    parser.add_argument("--d", type=int, default=8)
+    parser.add_argument("--min-weight", type=float, default=0.12)
     parser.add_argument("--steps", type=int, default=500)
     parser.add_argument("--batch-size", type=int, default=32)
     parser.add_argument("--seed", type=int, default=0)
@@ -49,6 +53,8 @@ def main() -> None:
         "scripts/train_clean_tgmm.py",
         "--output-dir",
         str(train_out),
+        "--dataset",
+        args.dataset,
         "--dataset-path",
         args.dataset_path,
         "--label-column",
@@ -59,6 +65,12 @@ def main() -> None:
         str(args.train_fraction),
         "--generator",
         args.generator,
+        "--k",
+        str(args.k),
+        "--d",
+        str(args.d),
+        "--min-weight",
+        str(args.min_weight),
         "--steps",
         str(args.steps),
         "--batch-size",
@@ -75,6 +87,8 @@ def main() -> None:
         "scripts/check_task_overlap.py",
         "--output-dir",
         str(overlap_out),
+        "--dataset",
+        args.dataset,
         "--dataset-path",
         args.dataset_path,
         "--label-column",
@@ -85,6 +99,12 @@ def main() -> None:
         str(args.train_fraction),
         "--generator",
         args.generator,
+        "--k",
+        str(args.k),
+        "--d",
+        str(args.d),
+        "--min-weight",
+        str(args.min_weight),
         "--train-seed",
         str(args.seed),
         "--eval-seeds",

@@ -1,0 +1,1711 @@
+{
+  "checkpoint": "/Users/orio/Documents/GitHub/interventional_tgmm/outputs_clean_iris_2layer/train/checkpoint_last.pt",
+  "eval_args": {
+    "config": "config.yaml",
+    "checkpoint": "outputs_clean_iris_2layer/train/checkpoint_last.pt",
+    "output_dir": "outputs_clean_iris_2layer/eval",
+    "device": "auto",
+    "num_threads": 1,
+    "show_tmp": true,
+    "tmp_dir": "outputs/tmp",
+    "num_tasks": 100,
+    "seeds": [
+      101,
+      102,
+      103
+    ],
+    "methods": [
+      "tgmm",
+      "em",
+      "kmeans",
+      "spectral",
+      "diag_gmm"
+    ],
+    "eval_split": "test",
+    "generators": [
+      "residual",
+      "gaussian_diag"
+    ],
+    "em_restarts": 10,
+    "spectral_restarts": 20,
+    "curve_metric": "parameter_error",
+    "prior_strengths": "1.25",
+    "mechanism_compressions": "0.65",
+    "noise_factors": "1.5",
+    "sample_sizes": "128"
+  },
+  "clean_task_config": {
+    "dataset": "iris",
+    "dataset_path": "sklearn:iris",
+    "label_column": "target",
+    "k": 3,
+    "d": 4,
+    "n_min": 32,
+    "n_max": 64,
+    "sigma": 1.0,
+    "dirichlet_alpha": 4.0,
+    "min_weight": 0.12,
+    "split_seed": 11,
+    "train_fraction": 0.7,
+    "fit_preprocessor_on_train": true,
+    "generator": "residual"
+  },
+  "clean_benchmark": {
+    "dataset": "iris",
+    "dataset_path": "sklearn:iris",
+    "label_column": "target",
+    "original_dim": 4,
+    "split_seed": 11,
+    "train_fraction": 0.7,
+    "train_split": "train",
+    "fit_preprocessor_on_train": true,
+    "explained_variance_ratio": null
+  },
+  "summary": {
+    "residual": {
+      "tgmm": {
+        "none": {
+          "avg_log_likelihood": {
+            "mean": -6.97025359219926,
+            "std": 0.4291887604910121
+          },
+          "cluster_acc": {
+            "mean": 0.7669362530326599,
+            "std": 0.0686775484691703
+          },
+          "mean_mse": {
+            "mean": 0.010821701576933265,
+            "std": 0.0015805988159265606
+          },
+          "parameter_error": {
+            "mean": 2.4082259954620593,
+            "std": 0.006382652379687782
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.005503277649774342,
+            "std": 0.006097348238243163
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "prior@1.25": {
+          "avg_log_likelihood": {
+            "mean": -6.982790210363453,
+            "std": 0.4750829589401895
+          },
+          "cluster_acc": {
+            "mean": 0.8372146909398152,
+            "std": 0.06379604006960808
+          },
+          "mean_mse": {
+            "mean": 0.02350991656072438,
+            "std": 0.04130715444803991
+          },
+          "parameter_error": {
+            "mean": 2.424739905327733,
+            "std": 0.04928271326852721
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.0093289725316572,
+            "std": 0.010626749106521756
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "mechanism@0.65": {
+          "avg_log_likelihood": {
+            "mean": -6.8733955711037,
+            "std": 0.41487690391896576
+          },
+          "cluster_acc": {
+            "mean": 0.675631155374279,
+            "std": 0.09100641013107384
+          },
+          "mean_mse": {
+            "mean": 0.0949343591183424,
+            "std": 0.01845467069835006
+          },
+          "parameter_error": {
+            "mean": 2.5072629841982415,
+            "std": 0.03087246407603874
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.02042760884454765,
+            "std": 0.018489170485830524
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "noise@1.5": {
+          "avg_log_likelihood": {
+            "mean": -8.454415758450176,
+            "std": 0.44497397609424644
+          },
+          "cluster_acc": {
+            "mean": 0.702842548610261,
+            "std": 0.0758170683671409
+          },
+          "mean_mse": {
+            "mean": 0.012655468008791406,
+            "std": 0.0036100352413004065
+          },
+          "parameter_error": {
+            "mean": 5.4025143752595435,
+            "std": 0.0090770300358674
+          },
+          "scale_mse": {
+            "mean": 5.381777286529541,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.008081620721210735,
+            "std": 0.008117672558030462
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "sample_size@128": {
+          "avg_log_likelihood": {
+            "mean": -6.9634769988768435,
+            "std": 0.29311198087048157
+          },
+          "cluster_acc": {
+            "mean": 0.7706770833333333,
+            "std": 0.052218340646044935
+          },
+          "mean_mse": {
+            "mean": 0.010481215423593919,
+            "std": 0.0006979027738235851
+          },
+          "parameter_error": {
+            "mean": 2.4054919253565377,
+            "std": 0.0032395204816383573
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.003109693697592017,
+            "std": 0.0030400864536314826
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        }
+      },
+      "em": {
+        "none": {
+          "avg_log_likelihood": {
+            "mean": -6.0622233736030715,
+            "std": 0.21133010362492624
+          },
+          "cluster_acc": {
+            "mean": 0.6318240262529426,
+            "std": 0.10052723385845021
+          },
+          "mean_mse": {
+            "mean": 0.7543125562866528,
+            "std": 0.462135166321347
+          },
+          "parameter_error": {
+            "mean": 3.1721466936582874,
+            "std": 0.4736078316319785
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.025933121136282957,
+            "std": 0.02581490776493611
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "prior@1.25": {
+          "avg_log_likelihood": {
+            "mean": -5.907420316610075,
+            "std": 0.2677411565474116
+          },
+          "cluster_acc": {
+            "mean": 0.6406736823786668,
+            "std": 0.08929869554659055
+          },
+          "mean_mse": {
+            "mean": 0.8883237926165263,
+            "std": 0.40132402726426813
+          },
+          "parameter_error": {
+            "mean": 3.3115995451883737,
+            "std": 0.413201886447892
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.03137473633649582,
+            "std": 0.02544807191310277
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "mechanism@0.65": {
+          "avg_log_likelihood": {
+            "mean": -5.769000321693135,
+            "std": 0.19019009701571052
+          },
+          "cluster_acc": {
+            "mean": 0.5076278559153237,
+            "std": 0.11784086217677717
+          },
+          "mean_mse": {
+            "mean": 1.1215549982587496,
+            "std": 0.6350361224224927
+          },
+          "parameter_error": {
+            "mean": 3.5511940197015064,
+            "std": 0.6575024194611478
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.03773800520740527,
+            "std": 0.03841922334177776
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "noise@1.5": {
+          "avg_log_likelihood": {
+            "mean": -7.4073124320238595,
+            "std": 0.19138133823863965
+          },
+          "cluster_acc": {
+            "mean": 0.5140844251169473,
+            "std": 0.11532957841825406
+          },
+          "mean_mse": {
+            "mean": 2.441924497286479,
+            "std": 1.3982890901165212
+          },
+          "parameter_error": {
+            "mean": 7.860439109266748,
+            "std": 1.4201147973717674
+          },
+          "scale_mse": {
+            "mean": 5.381777286529541,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.036737325450728046,
+            "std": 0.037815979160449376
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "sample_size@128": {
+          "avg_log_likelihood": {
+            "mean": -6.168304647765529,
+            "std": 0.16587030274674536
+          },
+          "cluster_acc": {
+            "mean": 0.6286458333333333,
+            "std": 0.08132341768450763
+          },
+          "mean_mse": {
+            "mean": 0.6030370677014192,
+            "std": 0.3309277475402106
+          },
+          "parameter_error": {
+            "mean": 3.018858467317914,
+            "std": 0.34204967721128327
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.023920383381143134,
+            "std": 0.021910238321831126
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        }
+      },
+      "kmeans": {
+        "none": {
+          "avg_log_likelihood": {
+            "mean": -6.07458461909886,
+            "std": 0.2098961967226673
+          },
+          "cluster_acc": {
+            "mean": 0.6279306911887862,
+            "std": 0.09265600865182064
+          },
+          "mean_mse": {
+            "mean": 0.7065321379403273,
+            "std": 0.35708555246776
+          },
+          "parameter_error": {
+            "mean": 3.120651538214394,
+            "std": 0.3647362893802017
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.022218384038715157,
+            "std": 0.019498050798133416
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "prior@1.25": {
+          "avg_log_likelihood": {
+            "mean": -5.916783091376651,
+            "std": 0.26542869353077425
+          },
+          "cluster_acc": {
+            "mean": 0.6341865935216972,
+            "std": 0.0899722794979099
+          },
+          "mean_mse": {
+            "mean": 0.9026117614408334,
+            "std": 0.37633057142446485
+          },
+          "parameter_error": {
+            "mean": 3.3271436463049078,
+            "std": 0.3927186556052167
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.032630868628722665,
+            "std": 0.027022667423727612
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "mechanism@0.65": {
+          "avg_log_likelihood": {
+            "mean": -5.794748870621606,
+            "std": 0.18740912704564933
+          },
+          "cluster_acc": {
+            "mean": 0.5317084649324821,
+            "std": 0.10359186532098168
+          },
+          "mean_mse": {
+            "mean": 0.897329482237498,
+            "std": 0.4920992157951439
+          },
+          "parameter_error": {
+            "mean": 3.312656211841301,
+            "std": 0.5057164398788957
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.0234257133684514,
+            "std": 0.025058247830447605
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "noise@1.5": {
+          "avg_log_likelihood": {
+            "mean": -7.432222183977982,
+            "std": 0.1869108592393316
+          },
+          "cluster_acc": {
+            "mean": 0.5401264294772387,
+            "std": 0.09716605958788949
+          },
+          "mean_mse": {
+            "mean": 1.9517308421929678,
+            "std": 1.0467902446482111
+          },
+          "parameter_error": {
+            "mean": 7.35509437959623,
+            "std": 1.0572949175234705
+          },
+          "scale_mse": {
+            "mean": 5.381777286529541,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.021586250873721534,
+            "std": 0.02242665777672777
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "sample_size@128": {
+          "avg_log_likelihood": {
+            "mean": -6.17968178791011,
+            "std": 0.1656972273578855
+          },
+          "cluster_acc": {
+            "mean": 0.6279166666666667,
+            "std": 0.07373911171978018
+          },
+          "mean_mse": {
+            "mean": 0.5935644949972629,
+            "std": 0.25877892931815843
+          },
+          "parameter_error": {
+            "mean": 3.005169720124789,
+            "std": 0.26528475873408963
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.019704208892174696,
+            "std": 0.017392582613797586
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        }
+      },
+      "spectral": {
+        "none": {
+          "avg_log_likelihood": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "cluster_acc": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "mean_mse": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "parameter_error": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "scale_mse": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "weight_mse": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "success_rate": {
+            "mean": 0.0,
+            "std": 0.0
+          },
+          "sample_errors": {
+            "examples": [
+              "ValueError('Top-k empirical second moment eigenvalues are not strictly positive.')",
+              "ValueError('Top-k empirical second moment eigenvalues are not strictly positive.')",
+              "ValueError('Top-k empirical second moment eigenvalues are not strictly positive.')"
+            ]
+          }
+        },
+        "prior@1.25": {
+          "avg_log_likelihood": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "cluster_acc": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "mean_mse": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "parameter_error": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "scale_mse": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "weight_mse": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "success_rate": {
+            "mean": 0.0,
+            "std": 0.0
+          },
+          "sample_errors": {
+            "examples": [
+              "ValueError('Top-k empirical second moment eigenvalues are not strictly positive.')",
+              "ValueError('Top-k empirical second moment eigenvalues are not strictly positive.')",
+              "ValueError('Top-k empirical second moment eigenvalues are not strictly positive.')"
+            ]
+          }
+        },
+        "mechanism@0.65": {
+          "avg_log_likelihood": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "cluster_acc": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "mean_mse": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "parameter_error": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "scale_mse": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "weight_mse": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "success_rate": {
+            "mean": 0.0,
+            "std": 0.0
+          },
+          "sample_errors": {
+            "examples": [
+              "ValueError('Top-k empirical second moment eigenvalues are not strictly positive.')",
+              "ValueError('Top-k empirical second moment eigenvalues are not strictly positive.')",
+              "ValueError('Top-k empirical second moment eigenvalues are not strictly positive.')"
+            ]
+          }
+        },
+        "noise@1.5": {
+          "avg_log_likelihood": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "cluster_acc": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "mean_mse": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "parameter_error": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "scale_mse": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "weight_mse": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "success_rate": {
+            "mean": 0.0,
+            "std": 0.0
+          },
+          "sample_errors": {
+            "examples": [
+              "ValueError('Top-k empirical second moment eigenvalues are not strictly positive.')",
+              "ValueError('Top-k empirical second moment eigenvalues are not strictly positive.')",
+              "ValueError('Top-k empirical second moment eigenvalues are not strictly positive.')"
+            ]
+          }
+        },
+        "sample_size@128": {
+          "avg_log_likelihood": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "cluster_acc": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "mean_mse": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "parameter_error": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "scale_mse": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "weight_mse": {
+            "mean": NaN,
+            "std": NaN
+          },
+          "success_rate": {
+            "mean": 0.0,
+            "std": 0.0
+          },
+          "sample_errors": {
+            "examples": [
+              "ValueError('Top-k empirical second moment eigenvalues are not strictly positive.')",
+              "ValueError('Top-k empirical second moment eigenvalues are not strictly positive.')",
+              "ValueError('Top-k empirical second moment eigenvalues are not strictly positive.')"
+            ]
+          }
+        }
+      },
+      "diag_gmm": {
+        "none": {
+          "avg_log_likelihood": {
+            "mean": -4.6292020638783775,
+            "std": 0.6765302672826666
+          },
+          "cluster_acc": {
+            "mean": 0.6610520777839235,
+            "std": 0.1352048727589616
+          },
+          "mean_mse": {
+            "mean": 0.910709873586893,
+            "std": 0.6713920831032574
+          },
+          "parameter_error": {
+            "mean": 3.357723696325969,
+            "std": 1.0273777693730044
+          },
+          "scale_mse": {
+            "mean": 2.4138005352020264,
+            "std": 0.4221018658307401
+          },
+          "weight_mse": {
+            "mean": 0.03321328753704923,
+            "std": 0.03551039856335379
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "prior@1.25": {
+          "avg_log_likelihood": {
+            "mean": -3.818242258131504,
+            "std": 0.9967047174234284
+          },
+          "cluster_acc": {
+            "mean": 0.6588881801452067,
+            "std": 0.1668533082041435
+          },
+          "mean_mse": {
+            "mean": 1.2469004810104767,
+            "std": 0.6790624571014096
+          },
+          "parameter_error": {
+            "mean": 3.8245896676344273,
+            "std": 1.0747072229723191
+          },
+          "scale_mse": {
+            "mean": 2.5368342995643616,
+            "std": 0.4497369225020466
+          },
+          "weight_mse": {
+            "mean": 0.04085488705958899,
+            "std": 0.05338874046818927
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "mechanism@0.65": {
+          "avg_log_likelihood": {
+            "mean": -4.131807120045026,
+            "std": 0.684133854438979
+          },
+          "cluster_acc": {
+            "mean": 0.5546203151885272,
+            "std": 0.12981723112741833
+          },
+          "mean_mse": {
+            "mean": 1.1268127031624318,
+            "std": 0.6961513910815953
+          },
+          "parameter_error": {
+            "mean": 3.847833259393034,
+            "std": 1.0770432328137987
+          },
+          "scale_mse": {
+            "mean": 2.6792135326067608,
+            "std": 0.45376520759747907
+          },
+          "weight_mse": {
+            "mean": 0.04180702362384182,
+            "std": 0.036164386653544066
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "noise@1.5": {
+          "avg_log_likelihood": {
+            "mean": -5.777737799485524,
+            "std": 0.6916166146442706
+          },
+          "cluster_acc": {
+            "mean": 0.5642147788736323,
+            "std": 0.12826267267117006
+          },
+          "mean_mse": {
+            "mean": 2.590934546987216,
+            "std": 1.5753770418001867
+          },
+          "parameter_error": {
+            "mean": 8.668114886204712,
+            "std": 2.400796231930956
+          },
+          "scale_mse": {
+            "mean": 6.03492670694987,
+            "std": 1.014349452039096
+          },
+          "weight_mse": {
+            "mean": 0.04225363226762662,
+            "std": 0.036430557405741824
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "sample_size@128": {
+          "avg_log_likelihood": {
+            "mean": -5.039594338734944,
+            "std": 0.33815076629941604
+          },
+          "cluster_acc": {
+            "mean": 0.6961197916666667,
+            "std": 0.1062842667118583
+          },
+          "mean_mse": {
+            "mean": 0.5932779434571663,
+            "std": 0.5569535182279951
+          },
+          "parameter_error": {
+            "mean": 2.6936352628961564,
+            "std": 0.8517140209463984
+          },
+          "scale_mse": {
+            "mean": 2.0785771131515505,
+            "std": 0.3203912103194666
+          },
+          "weight_mse": {
+            "mean": 0.021780206287439798,
+            "std": 0.02470706286249461
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        }
+      }
+    },
+    "gaussian_diag": {
+      "tgmm": {
+        "none": {
+          "avg_log_likelihood": {
+            "mean": -14.152148912100275,
+            "std": 1.7482114994146019
+          },
+          "cluster_acc": {
+            "mean": 0.6162396576944409,
+            "std": 0.07761101216400407
+          },
+          "mean_mse": {
+            "mean": 0.02047123285010457,
+            "std": 0.012565469425420504
+          },
+          "parameter_error": {
+            "mean": 2.4295852791013264,
+            "std": 0.02000637415736555
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.017213030015870268,
+            "std": 0.015708785850671318
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "prior@1.25": {
+          "avg_log_likelihood": {
+            "mean": -14.018086648857958,
+            "std": 1.7124795565939386
+          },
+          "cluster_acc": {
+            "mean": 0.6789502624119623,
+            "std": 0.08561707091331248
+          },
+          "mean_mse": {
+            "mean": 0.038356938312451044,
+            "std": 0.030796698457793786
+          },
+          "parameter_error": {
+            "mean": 2.4460430475057606,
+            "std": 0.03471732046430773
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.015785092957958113,
+            "std": 0.012028557992310455
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "mechanism@0.65": {
+          "avg_log_likelihood": {
+            "mean": -13.827499221084329,
+            "std": 1.6929663646007045
+          },
+          "cluster_acc": {
+            "mean": 0.5292260843418336,
+            "std": 0.07780889606902643
+          },
+          "mean_mse": {
+            "mean": 0.04599469491901497,
+            "std": 0.015898944225159504
+          },
+          "parameter_error": {
+            "mean": 2.4612358256156828,
+            "std": 0.026678785284841442
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.02334011446131626,
+            "std": 0.02024227762411505
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "noise@1.5": {
+          "avg_log_likelihood": {
+            "mean": -15.782161513909763,
+            "std": 1.7555959734566446
+          },
+          "cluster_acc": {
+            "mean": 0.5339291569599948,
+            "std": 0.08113577864797732
+          },
+          "mean_mse": {
+            "mean": 0.03191484780050814,
+            "std": 0.016929380171593122
+          },
+          "parameter_error": {
+            "mean": 5.431714156152569,
+            "std": 0.02349106698835655
+          },
+          "scale_mse": {
+            "mean": 5.381777286529541,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.018022021822519795,
+            "std": 0.015741647012952293
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "sample_size@128": {
+          "avg_log_likelihood": {
+            "mean": -14.110982515415532,
+            "std": 1.0272342975416537
+          },
+          "cluster_acc": {
+            "mean": 0.6178385416666666,
+            "std": 0.04835955730534656
+          },
+          "mean_mse": {
+            "mean": 0.016821024160211286,
+            "std": 0.0059186990265522165
+          },
+          "parameter_error": {
+            "mean": 2.4231577030350553,
+            "std": 0.014070753511768216
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.014435662639492268,
+            "std": 0.01370850484220183
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        }
+      },
+      "em": {
+        "none": {
+          "avg_log_likelihood": {
+            "mean": -10.072911572009321,
+            "std": 0.872928226038445
+          },
+          "cluster_acc": {
+            "mean": 0.4471795813059394,
+            "std": 0.0885990009864731
+          },
+          "mean_mse": {
+            "mean": 3.0707716886202494,
+            "std": 1.3972337343992192
+          },
+          "parameter_error": {
+            "mean": 5.4911519372613595,
+            "std": 1.4063965523329927
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.028479232405758618,
+            "std": 0.023949767405662535
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "prior@1.25": {
+          "avg_log_likelihood": {
+            "mean": -9.548893721038906,
+            "std": 0.9387789686199818
+          },
+          "cluster_acc": {
+            "mean": 0.43437722792084527,
+            "std": 0.10269432379920132
+          },
+          "mean_mse": {
+            "mean": 3.6515096229314805,
+            "std": 1.982324176650038
+          },
+          "parameter_error": {
+            "mean": 6.1072743785105805,
+            "std": 2.0056369756578363
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.06386373934374812,
+            "std": 0.05268152203994741
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "mechanism@0.65": {
+          "avg_log_likelihood": {
+            "mean": -9.59847098207238,
+            "std": 0.8373474896019664
+          },
+          "cluster_acc": {
+            "mean": 0.40299215754965134,
+            "std": 0.08378868010878975
+          },
+          "mean_mse": {
+            "mean": 3.2766697084903718,
+            "std": 1.3371524338749272
+          },
+          "parameter_error": {
+            "mean": 5.696842573239071,
+            "std": 1.3456908052774639
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.02827184851334702,
+            "std": 0.022789773020986316
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "noise@1.5": {
+          "avg_log_likelihood": {
+            "mean": -11.23887783268923,
+            "std": 0.8389216966127135
+          },
+          "cluster_acc": {
+            "mean": 0.4034024021499639,
+            "std": 0.08373060029509868
+          },
+          "mean_mse": {
+            "mean": 7.392551251252493,
+            "std": 3.060136420545216
+          },
+          "parameter_error": {
+            "mean": 12.802869394402029,
+            "std": 3.0690884380779915
+          },
+          "scale_mse": {
+            "mean": 5.381777286529541,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.028540856619996096,
+            "std": 0.023276234324211827
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "sample_size@128": {
+          "avg_log_likelihood": {
+            "mean": -10.58299328675184,
+            "std": 0.6170940600344343
+          },
+          "cluster_acc": {
+            "mean": 0.4569010416666667,
+            "std": 0.06755127517346185
+          },
+          "mean_mse": {
+            "mean": 2.3542580131689705,
+            "std": 0.6858127681816765
+          },
+          "parameter_error": {
+            "mean": 4.770152928975149,
+            "std": 0.7016173757621064
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.023993899570826517,
+            "std": 0.02495115981751533
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        }
+      },
+      "kmeans": {
+        "none": {
+          "avg_log_likelihood": {
+            "mean": -10.085976417377669,
+            "std": 0.8735589153642709
+          },
+          "cluster_acc": {
+            "mean": 0.4480041494280579,
+            "std": 0.08970191844026354
+          },
+          "mean_mse": {
+            "mean": 2.965320271253586,
+            "std": 1.3480284763454715
+          },
+          "parameter_error": {
+            "mean": 5.382660775767193,
+            "std": 1.3561369171317206
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.025439488278255644,
+            "std": 0.020647668882192844
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "prior@1.25": {
+          "avg_log_likelihood": {
+            "mean": -9.566560694373308,
+            "std": 0.9412824198747871
+          },
+          "cluster_acc": {
+            "mean": 0.4316733677223676,
+            "std": 0.09868503982796677
+          },
+          "mean_mse": {
+            "mean": 3.5284848455588023,
+            "std": 1.8836792922498589
+          },
+          "parameter_error": {
+            "mean": 5.981892830508683,
+            "std": 1.9049654458360525
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.061506968714529646,
+            "std": 0.04884302938187296
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "mechanism@0.65": {
+          "avg_log_likelihood": {
+            "mean": -9.615124648954604,
+            "std": 0.8372761523568456
+          },
+          "cluster_acc": {
+            "mean": 0.40128875115017903,
+            "std": 0.0834471564751014
+          },
+          "mean_mse": {
+            "mean": 3.1872282151381173,
+            "std": 1.3960559450208316
+          },
+          "parameter_error": {
+            "mean": 5.605065032675824,
+            "std": 1.4051460932530402
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.025935801302354473,
+            "std": 0.022917002923234165
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "noise@1.5": {
+          "avg_log_likelihood": {
+            "mean": -11.256643561259969,
+            "std": 0.8383450344400151
+          },
+          "cluster_acc": {
+            "mean": 0.40450670490296786,
+            "std": 0.08458363393122258
+          },
+          "mean_mse": {
+            "mean": 7.151423807938894,
+            "std": 3.1879032468499586
+          },
+          "parameter_error": {
+            "mean": 12.558834418780219,
+            "std": 3.195959921971876
+          },
+          "scale_mse": {
+            "mean": 5.381777286529541,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.025633324311784236,
+            "std": 0.022238536050511973
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "sample_size@128": {
+          "avg_log_likelihood": {
+            "mean": -10.590632592239148,
+            "std": 0.6172184601516323
+          },
+          "cluster_acc": {
+            "mean": 0.45546875,
+            "std": 0.06452923221219847
+          },
+          "mean_mse": {
+            "mean": 2.3129136725266775,
+            "std": 0.620559522129611
+          },
+          "parameter_error": {
+            "mean": 4.727296402097102,
+            "std": 0.6343668360202734
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.022481713335073438,
+            "std": 0.02300618565200754
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        }
+      },
+      "spectral": {
+        "none": {
+          "avg_log_likelihood": {
+            "mean": -12.454114543392523,
+            "std": 1.6596424813779762
+          },
+          "cluster_acc": {
+            "mean": 0.43721796227093873,
+            "std": 0.10459739925728007
+          },
+          "mean_mse": {
+            "mean": 2.037736244325255,
+            "std": 1.0138762764880251
+          },
+          "parameter_error": {
+            "mean": 4.515752527833963,
+            "std": 1.013103785358756
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.08611526727335662,
+            "std": 0.07310574984520553
+          },
+          "success_rate": {
+            "mean": 0.9966666666666667,
+            "std": 0.0
+          },
+          "sample_errors": {
+            "examples": [
+              "ValueError('Top-k empirical second moment eigenvalues are not strictly positive.')"
+            ]
+          }
+        },
+        "prior@1.25": {
+          "avg_log_likelihood": {
+            "mean": -11.537442622329031,
+            "std": 1.9364492899800156
+          },
+          "cluster_acc": {
+            "mean": 0.44398639389179495,
+            "std": 0.1107575066466192
+          },
+          "mean_mse": {
+            "mean": 2.4017985998590787,
+            "std": 1.2607404508104065
+          },
+          "parameter_error": {
+            "mean": 4.9109037259744115,
+            "std": 1.2635047556471097
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.11720410987998131,
+            "std": 0.09668188845336927
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "mechanism@0.65": {
+          "avg_log_likelihood": {
+            "mean": -12.822996068845072,
+            "std": 3.7069670761154994
+          },
+          "cluster_acc": {
+            "mean": 0.409284996196245,
+            "std": 0.09119361047937341
+          },
+          "mean_mse": {
+            "mean": 4.301199916064939,
+            "std": 17.930392593860834
+          },
+          "parameter_error": {
+            "mean": 6.7818392617298,
+            "std": 17.926753707051425
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.08873832942951038,
+            "std": 0.06763678490477858
+          },
+          "success_rate": {
+            "mean": 0.9966666666666667,
+            "std": 0.0
+          },
+          "sample_errors": {
+            "examples": [
+              "ValueError('Top-k empirical second moment eigenvalues are not strictly positive.')"
+            ]
+          }
+        },
+        "noise@1.5": {
+          "avg_log_likelihood": {
+            "mean": -14.273853809977792,
+            "std": 2.545966585114906
+          },
+          "cluster_acc": {
+            "mean": 0.4135544507250388,
+            "std": 0.09332023394199651
+          },
+          "mean_mse": {
+            "mean": 7.666604870338504,
+            "std": 16.65042113911588
+          },
+          "parameter_error": {
+            "mean": 13.137730072655819,
+            "std": 16.6468481496313
+          },
+          "scale_mse": {
+            "mean": 5.381777286529541,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.08934791578777308,
+            "std": 0.0715963466352698
+          },
+          "success_rate": {
+            "mean": 0.9966666666666667,
+            "std": 0.0
+          },
+          "sample_errors": {
+            "examples": [
+              "ValueError('Top-k empirical second moment eigenvalues are not strictly positive.')"
+            ]
+          }
+        },
+        "sample_size@128": {
+          "avg_log_likelihood": {
+            "mean": -13.001412987172836,
+            "std": 1.2597102493791645
+          },
+          "cluster_acc": {
+            "mean": 0.4523697916666667,
+            "std": 0.07334074503117234
+          },
+          "mean_mse": {
+            "mean": 1.2485738183061281,
+            "std": 0.4379041736611872
+          },
+          "parameter_error": {
+            "mean": 3.734665387412291,
+            "std": 0.4546726431476098
+          },
+          "scale_mse": {
+            "mean": 2.3919010162353516,
+            "std": 0.0
+          },
+          "weight_mse": {
+            "mean": 0.09419055287081089,
+            "std": 0.07899669071925274
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        }
+      },
+      "diag_gmm": {
+        "none": {
+          "avg_log_likelihood": {
+            "mean": -7.664948601722717,
+            "std": 0.39242288166091543
+          },
+          "cluster_acc": {
+            "mean": 0.580602858973519,
+            "std": 0.16037838061546086
+          },
+          "mean_mse": {
+            "mean": 3.029258743673563,
+            "std": 2.7053738392888853
+          },
+          "parameter_error": {
+            "mean": 4.0600480620482235,
+            "std": 3.1552366007308246
+          },
+          "scale_mse": {
+            "mean": 0.9859526236355305,
+            "std": 0.5810251667637579
+          },
+          "weight_mse": {
+            "mean": 0.044836694739130205,
+            "std": 0.04240728840692961
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "prior@1.25": {
+          "avg_log_likelihood": {
+            "mean": -7.033983877499899,
+            "std": 0.5062084326318157
+          },
+          "cluster_acc": {
+            "mean": 0.6626979239101667,
+            "std": 0.21894008806246612
+          },
+          "mean_mse": {
+            "mean": 2.944443752169609,
+            "std": 2.5439194551312343
+          },
+          "parameter_error": {
+            "mean": 4.056750694737566,
+            "std": 2.94539014896611
+          },
+          "scale_mse": {
+            "mean": 1.0666809342304866,
+            "std": 0.6267932464527176
+          },
+          "weight_mse": {
+            "mean": 0.04562600833747032,
+            "std": 0.06359584898908492
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "mechanism@0.65": {
+          "avg_log_likelihood": {
+            "mean": -7.479096342722575,
+            "std": 0.39661323548102656
+          },
+          "cluster_acc": {
+            "mean": 0.48859163621581253,
+            "std": 0.15220688580767772
+          },
+          "mean_mse": {
+            "mean": 3.454950921932856,
+            "std": 3.16833170236066
+          },
+          "parameter_error": {
+            "mean": 4.696283375405425,
+            "std": 3.6275052062232866
+          },
+          "scale_mse": {
+            "mean": 1.1926705143103997,
+            "std": 0.6384683873208163
+          },
+          "weight_mse": {
+            "mean": 0.048661939162169196,
+            "std": 0.04441227904639557
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "noise@1.5": {
+          "avg_log_likelihood": {
+            "mean": -9.108278106053671,
+            "std": 0.40222251997587816
+          },
+          "cluster_acc": {
+            "mean": 0.49453766126244614,
+            "std": 0.15381283758902556
+          },
+          "mean_mse": {
+            "mean": 7.75230072538058,
+            "std": 7.029798846711926
+          },
+          "parameter_error": {
+            "mean": 10.427904643173049,
+            "std": 8.018819609813702
+          },
+          "scale_mse": {
+            "mean": 2.6281103977560996,
+            "std": 1.3985215830862634
+          },
+          "weight_mse": {
+            "mean": 0.047493520036368864,
+            "std": 0.044634307262107493
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "sample_size@128": {
+          "avg_log_likelihood": {
+            "mean": -7.940233572324117,
+            "std": 0.2960444023091583
+          },
+          "cluster_acc": {
+            "mean": 0.67078125,
+            "std": 0.12812191942434817
+          },
+          "mean_mse": {
+            "mean": 0.9720988799383243,
+            "std": 1.0585664598178277
+          },
+          "parameter_error": {
+            "mean": 1.3747639310650568,
+            "std": 1.2677379343839104
+          },
+          "scale_mse": {
+            "mean": 0.37903616347039737,
+            "std": 0.3464844938365861
+          },
+          "weight_mse": {
+            "mean": 0.023628887656335185,
+            "std": 0.026575950703545438
+          },
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        }
+      }
+    }
+  },
+  "claims": {
+    "eval_seeds": [
+      101,
+      102,
+      103
+    ],
+    "train_seed": 0,
+    "eval_seeds_disjoint_from_train_seed": true,
+    "generators": {
+      "residual": {
+        "no_shift": {
+          "tgmm_parameter_error": 2.4082259954620593,
+          "tgmm_cluster_acc": 0.7669362530326599,
+          "best_baseline_parameter_error_method": "kmeans",
+          "best_baseline_parameter_error": 3.120651538214394,
+          "best_baseline_cluster_acc_method": "diag_gmm",
+          "best_baseline_cluster_acc": 0.6610520777839235,
+          "tgmm_beats_best_baseline_on_parameter_error": true,
+          "tgmm_beats_best_baseline_on_cluster_acc": true
+        },
+        "tgmm_interventional_gaps": {
+          "prior@1.25": {
+            "parameter_error_gap": 0.016513909865673693,
+            "cluster_acc_gap": -0.07027843790715527
+          },
+          "mechanism@0.65": {
+            "parameter_error_gap": 0.09903698873618216,
+            "cluster_acc_gap": 0.09130509765838091
+          },
+          "noise@1.5": {
+            "parameter_error_gap": 2.994288379797484,
+            "cluster_acc_gap": 0.06409370442239892
+          },
+          "sample_size@128": {
+            "parameter_error_gap": -0.0027340701055216243,
+            "cluster_acc_gap": -0.0037408303006734034
+          }
+        }
+      },
+      "gaussian_diag": {
+        "no_shift": {
+          "tgmm_parameter_error": 2.4295852791013264,
+          "tgmm_cluster_acc": 0.6162396576944409,
+          "best_baseline_parameter_error_method": "diag_gmm",
+          "best_baseline_parameter_error": 4.0600480620482235,
+          "best_baseline_cluster_acc_method": "diag_gmm",
+          "best_baseline_cluster_acc": 0.580602858973519,
+          "tgmm_beats_best_baseline_on_parameter_error": true,
+          "tgmm_beats_best_baseline_on_cluster_acc": true
+        },
+        "tgmm_interventional_gaps": {
+          "prior@1.25": {
+            "parameter_error_gap": 0.016457768404434248,
+            "cluster_acc_gap": -0.06271060471752143
+          },
+          "mechanism@0.65": {
+            "parameter_error_gap": 0.03165054651435639,
+            "cluster_acc_gap": 0.08701357335260729
+          },
+          "noise@1.5": {
+            "parameter_error_gap": 3.002128877051242,
+            "cluster_acc_gap": 0.08231050073444612
+          },
+          "sample_size@128": {
+            "parameter_error_gap": -0.00642757606627109,
+            "cluster_acc_gap": -0.0015988839722257397
+          }
+        }
+      }
+    }
+  }
+}

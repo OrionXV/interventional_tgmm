@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from interventional_tgmm.clean_baselines import fit_method
-from interventional_tgmm.clean_benchmark import SplitTaskConfig, load_wine_split_benchmark, sample_split_task
+from interventional_tgmm.clean_benchmark import SplitTaskConfig, load_split_benchmark, sample_split_task
 from interventional_tgmm.config import InterventionConfig, ModelConfig
 from interventional_tgmm.config_io import apply_config_defaults
 from interventional_tgmm.metrics import evaluate_task, summarize_metric_dicts
@@ -246,6 +246,225 @@ def build_main_table(summary: dict[str, dict[str, dict[str, dict[str, Any]]]]) -
     return "\n".join(lines)
 
 
+def xml_escape(text: str) -> str:
+    return (
+        text.replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+        .replace("'", "&apos;")
+    )
+
+
+def _intervention_family_strength(name: str) -> tuple[str, float]:
+    if name == "none":
+        return "none", 0.0
+    if "@" not in name:
+        return name, float("inf")
+    family, raw = name.split("@", 1)
+    try:
+        return family, float(raw)
+    except ValueError:
+        return family, float("inf")
+
+
+def _ordered_interventions(interventions: list[str]) -> list[str]:
+    family_order = {
+        "none": 0,
+        "prior": 1,
+        "mechanism": 2,
+        "noise": 3,
+        "noise_diag": 4,
+        "sample_size": 5,
+        "dirichlet": 6,
+    }
+
+    def key_fn(name: str) -> tuple[int, float, str]:
+        family, strength = _intervention_family_strength(name)
+        return family_order.get(family, 99), strength, name
+
+    return sorted(interventions, key=key_fn)
+
+
+def _intervention_label(name: str, family_counts: dict[str, int]) -> str:
+    family, strength = _intervention_family_strength(name)
+    if family == "none":
+        return "none"
+    if family == "sample_size" and math.isfinite(strength):
+        return f"n={int(round(strength))}"
+
+    shorthand = {
+        "prior": "prior",
+        "mechanism": "mech",
+        "noise": "noise",
+        "noise_diag": "noise_diag",
+        "dirichlet": "dirichlet",
+    }
+    short = shorthand.get(family, family)
+    if family_counts.get(family, 0) <= 1:
+        return short
+    if math.isfinite(strength):
+        return f"{short}@{strength:g}"
+    return name
+
+
+def write_method_comparison_bar_svg(
+    path: Path,
+    summary: dict[str, dict[str, dict[str, dict[str, Any]]]],
+    methods: list[str],
+) -> None:
+    generators = [g for g in ["residual", "gaussian_diag"] if g in summary] or sorted(summary.keys())
+    metrics = ["parameter_error", "cluster_acc"]
+    if not generators:
+        return
+
+    panel_w = 420
+    panel_h = 300
+    cols = len(generators)
+    rows = len(metrics)
+    legend_h = 48
+    width = panel_w * cols
+    height = panel_h * rows + legend_h
+
+    colors = {
+        "tgmm": "#2C7FB8",
+        "em": "#F28E2B",
+        "kmeans": "#59A14F",
+        "spectral": "#E15759",
+        "diag_gmm": "#B07AA1",
+    }
+    fallback_palette = ["#2C7FB8", "#F28E2B", "#59A14F", "#E15759", "#B07AA1", "#76B7B2", "#EDC948", "#9C755F"]
+
+    svg: list[str] = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}">',
+        '<rect width="100%" height="100%" fill="#f6f7f9"/>',
+        '<text x="16" y="24" font-size="16" fill="#1f1f1f">Method Comparison Across Shift Tasks (Bar Charts)</text>',
+    ]
+
+    legend_x = 16
+    legend_y = 42
+    for idx, method in enumerate(methods):
+        color = colors.get(method, fallback_palette[idx % len(fallback_palette)])
+        x0 = legend_x + idx * 120
+        svg.append(f'<rect x="{x0}" y="{legend_y - 10}" width="10" height="10" fill="{color}" rx="1.5"/>')
+        svg.append(f'<text x="{x0 + 14}" y="{legend_y - 1}" font-size="11" fill="#333333">{xml_escape(method)}</text>')
+
+    for row_idx, metric in enumerate(metrics):
+        for col_idx, generator in enumerate(generators):
+            gen_summary = summary.get(generator, {})
+            interventions_set: set[str] = set()
+            for method in methods:
+                interventions_set.update(gen_summary.get(method, {}).keys())
+            if not interventions_set:
+                continue
+
+            interventions = _ordered_interventions(list(interventions_set))
+            family_counts: dict[str, int] = {}
+            for name in interventions:
+                family, _ = _intervention_family_strength(name)
+                family_counts[family] = family_counts.get(family, 0) + 1
+            labels = [_intervention_label(name, family_counts) for name in interventions]
+
+            all_values: list[float] = []
+            for method in methods:
+                for intervention in interventions:
+                    stats = gen_summary.get(method, {}).get(intervention, {}).get(metric)
+                    if stats is None:
+                        continue
+                    value = float(stats.get("mean", float("nan")))
+                    if math.isfinite(value):
+                        all_values.append(value)
+            if not all_values:
+                continue
+
+            use_log = metric == "parameter_error" and all(value > 0.0 for value in all_values)
+            if use_log:
+                plot_values = [math.log10(value) for value in all_values]
+            else:
+                plot_values = all_values
+
+            y_min = min(plot_values)
+            y_max = max(plot_values)
+            if abs(y_max - y_min) < 1e-9:
+                y_min -= 1.0
+                y_max += 1.0
+            else:
+                pad = 0.1 * (y_max - y_min)
+                y_min -= pad
+                y_max += pad
+
+            ox = col_idx * panel_w
+            oy = legend_h + row_idx * panel_h
+            left = ox + 70
+            right = ox + panel_w - 24
+            top = oy + 38
+            bottom = oy + panel_h - 58
+
+            title_metric = "parameter error" if metric == "parameter_error" else "cluster accuracy"
+            svg.append(f'<text x="{ox + 16}" y="{oy + 22}" font-size="14" fill="#202020">Held-out {xml_escape(generator)} generator: {xml_escape(title_metric)}</text>')
+            svg.append(
+                f'<rect x="{left}" y="{top}" width="{right - left}" height="{bottom - top}" fill="#ffffff" stroke="#d1d5db"/>'
+            )
+
+            for grid_idx in range(5):
+                y = top + grid_idx * (bottom - top) / 4.0
+                svg.append(f'<line x1="{left}" y1="{y:.2f}" x2="{right}" y2="{y:.2f}" stroke="#e5e7eb" stroke-width="1"/>')
+
+            n_groups = max(1, len(interventions))
+            group_w = (right - left) / n_groups
+            inner_w = group_w * 0.82
+            n_methods = max(1, len(methods))
+            bar_w = inner_w / n_methods
+
+            def y_map(raw_value: float) -> float:
+                yv = math.log10(raw_value) if use_log else raw_value
+                return bottom - (yv - y_min) / (y_max - y_min) * (bottom - top)
+
+            for g_idx, intervention in enumerate(interventions):
+                gx_left = left + g_idx * group_w + 0.5 * (group_w - inner_w)
+                x_tick = left + (g_idx + 0.5) * group_w
+                tick_label = labels[g_idx]
+                svg.append(
+                    f'<text x="{x_tick:.2f}" y="{bottom + 16}" font-size="10" fill="#4b5563" text-anchor="middle">{xml_escape(tick_label)}</text>'
+                )
+
+                for m_idx, method in enumerate(methods):
+                    stats = gen_summary.get(method, {}).get(intervention, {}).get(metric)
+                    if stats is None:
+                        continue
+                    value = float(stats.get("mean", float("nan")))
+                    if not math.isfinite(value):
+                        continue
+                    if use_log and value <= 0.0:
+                        continue
+                    x0 = gx_left + m_idx * bar_w
+                    y0 = y_map(value)
+                    color = colors.get(method, fallback_palette[m_idx % len(fallback_palette)])
+                    h = max(0.0, bottom - y0)
+                    svg.append(
+                        f'<rect x="{x0:.2f}" y="{y0:.2f}" width="{bar_w * 0.92:.2f}" height="{h:.2f}" fill="{color}" opacity="0.92"/>'
+                    )
+
+            y_mid = (top + bottom) / 2.0
+            y_label = "PE (lower is better)" if metric == "parameter_error" else "Accuracy"
+            svg.append(
+                f'<text x="{left - 50}" y="{y_mid:.2f}" font-size="11" fill="#374151" transform="rotate(-90 {left - 50} {y_mid:.2f})" text-anchor="middle">{xml_escape(y_label)}</text>'
+            )
+            svg.append(f'<text x="{(left + right)/2:.2f}" y="{bottom + 34}" font-size="11" fill="#374151" text-anchor="middle">Intervention</text>')
+
+            if use_log:
+                yt_top_label = f"{10**y_max:.2g}"
+                yt_bot_label = f"{10**y_min:.2g}"
+            else:
+                yt_top_label = f"{y_max:.3f}"
+                yt_bot_label = f"{y_min:.3f}"
+            svg.append(f'<text x="{left - 60}" y="{top + 4}" font-size="10" fill="#6b7280">{yt_top_label}</text>')
+            svg.append(f'<text x="{left - 60}" y="{bottom + 4}" font-size="10" fill="#6b7280">{yt_bot_label}</text>')
+
+    svg.append("</svg>")
+    path.write_text("\n".join(svg) + "\n", encoding="utf-8")
+
+
 def compute_claim_checks(
     summary: dict[str, dict[str, dict[str, dict[str, Any]]]],
     eval_seeds: list[int],
@@ -347,7 +566,8 @@ def main() -> None:
         out_dir = ensure_dir(args.output_dir)
 
         model, base_task_cfg, checkpoint_payload, train_seed = load_model_and_task_cfg(Path(args.checkpoint), device)
-        benchmark = load_wine_split_benchmark(
+        benchmark = load_split_benchmark(
+            dataset=base_task_cfg.dataset,
             dataset_path=base_task_cfg.dataset_path,
             label_column=base_task_cfg.label_column,
             d=base_task_cfg.d,
@@ -415,6 +635,11 @@ def main() -> None:
         save_json(out_dir / "claim_checks.json", claims)
         (out_dir / "main_table.md").write_text(main_table + "\n", encoding="utf-8")
         (out_dir / "claim_checks.md").write_text(claims_md + "\n", encoding="utf-8")
+        write_method_comparison_bar_svg(
+            out_dir / "method_comparison_bars.svg",
+            summary=summary,
+            methods=[str(m) for m in args.methods],
+        )
         print(f"Saved clean-claim evaluation outputs to {out_dir}")
     finally:
         cleanup_tmp_dir(args.tmp_dir, args.show_tmp)

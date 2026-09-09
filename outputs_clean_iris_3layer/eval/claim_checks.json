@@ -1,0 +1,71 @@
+{
+  "eval_seeds": [
+    101,
+    102,
+    103
+  ],
+  "train_seed": 0,
+  "eval_seeds_disjoint_from_train_seed": true,
+  "generators": {
+    "residual": {
+      "no_shift": {
+        "tgmm_parameter_error": 2.4081902973376055,
+        "tgmm_cluster_acc": 0.766093807000896,
+        "best_baseline_parameter_error_method": "kmeans",
+        "best_baseline_parameter_error": 3.120651538214394,
+        "best_baseline_cluster_acc_method": "diag_gmm",
+        "best_baseline_cluster_acc": 0.6610520777839235,
+        "tgmm_beats_best_baseline_on_parameter_error": true,
+        "tgmm_beats_best_baseline_on_cluster_acc": true
+      },
+      "tgmm_interventional_gaps": {
+        "prior@1.25": {
+          "parameter_error_gap": 0.015424322021308168,
+          "cluster_acc_gap": -0.07145250258260216
+        },
+        "mechanism@0.65": {
+          "parameter_error_gap": 0.09453029982984518,
+          "cluster_acc_gap": 0.08362888319246342
+        },
+        "noise@1.5": {
+          "parameter_error_gap": 2.993348911816394,
+          "cluster_acc_gap": 0.06523496261124717
+        },
+        "sample_size@128": {
+          "parameter_error_gap": -0.0027622236761546404,
+          "cluster_acc_gap": -0.0038801513324373538
+        }
+      }
+    },
+    "gaussian_diag": {
+      "no_shift": {
+        "tgmm_parameter_error": 2.430248147625389,
+        "tgmm_cluster_acc": 0.615057094771383,
+        "best_baseline_parameter_error_method": "diag_gmm",
+        "best_baseline_parameter_error": 4.0600480620482235,
+        "best_baseline_cluster_acc_method": "diag_gmm",
+        "best_baseline_cluster_acc": 0.580602858973519,
+        "tgmm_beats_best_baseline_on_parameter_error": true,
+        "tgmm_beats_best_baseline_on_cluster_acc": true
+      },
+      "tgmm_interventional_gaps": {
+        "prior@1.25": {
+          "parameter_error_gap": 0.01086233952771476,
+          "cluster_acc_gap": -0.06382615024718041
+        },
+        "mechanism@0.65": {
+          "parameter_error_gap": 0.02897567775163523,
+          "cluster_acc_gap": 0.08634002062215573
+        },
+        "noise@1.5": {
+          "parameter_error_gap": 3.0027086948153734,
+          "cluster_acc_gap": 0.07903179818016193
+        },
+        "sample_size@128": {
+          "parameter_error_gap": -0.00608005793297739,
+          "cluster_acc_gap": -0.0018699885619503087
+        }
+      }
+    }
+  }
+}

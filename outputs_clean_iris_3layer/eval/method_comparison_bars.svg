@@ -1,0 +1,168 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="840" height="648">
+<rect width="100%" height="100%" fill="#f6f7f9"/>
+<text x="16" y="24" font-size="16" fill="#1f1f1f">Method Comparison Across Shift Tasks (Bar Charts)</text>
+<rect x="16" y="32" width="10" height="10" fill="#2C7FB8" rx="1.5"/>
+<text x="30" y="41" font-size="11" fill="#333333">tgmm</text>
+<rect x="136" y="32" width="10" height="10" fill="#F28E2B" rx="1.5"/>
+<text x="150" y="41" font-size="11" fill="#333333">em</text>
+<rect x="256" y="32" width="10" height="10" fill="#59A14F" rx="1.5"/>
+<text x="270" y="41" font-size="11" fill="#333333">kmeans</text>
+<rect x="376" y="32" width="10" height="10" fill="#E15759" rx="1.5"/>
+<text x="390" y="41" font-size="11" fill="#333333">spectral</text>
+<rect x="496" y="32" width="10" height="10" fill="#B07AA1" rx="1.5"/>
+<text x="510" y="41" font-size="11" fill="#333333">diag_gmm</text>
+<text x="16" y="70" font-size="14" fill="#202020">Held-out residual generator: parameter error</text>
+<rect x="70" y="86" width="326" height="204" fill="#ffffff" stroke="#d1d5db"/>
+<line x1="70" y1="86.00" x2="396" y2="86.00" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="70" y1="137.00" x2="396" y2="137.00" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="70" y1="188.00" x2="396" y2="188.00" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="70" y1="239.00" x2="396" y2="239.00" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="70" y1="290.00" x2="396" y2="290.00" stroke="#e5e7eb" stroke-width="1"/>
+<text x="102.60" y="306" font-size="10" fill="#4b5563" text-anchor="middle">none</text>
+<rect x="75.87" y="272.85" width="9.84" height="17.15" fill="#2C7FB8" opacity="0.92"/>
+<rect x="86.56" y="236.31" width="9.84" height="53.69" fill="#F28E2B" opacity="0.92"/>
+<rect x="97.25" y="238.48" width="9.84" height="51.52" fill="#59A14F" opacity="0.92"/>
+<rect x="118.64" y="228.77" width="9.84" height="61.23" fill="#B07AA1" opacity="0.92"/>
+<text x="167.80" y="306" font-size="10" fill="#4b5563" text-anchor="middle">prior</text>
+<rect x="141.07" y="272.00" width="9.84" height="18.00" fill="#2C7FB8" opacity="0.92"/>
+<rect x="151.76" y="230.60" width="9.84" height="59.40" fill="#F28E2B" opacity="0.92"/>
+<rect x="162.45" y="229.98" width="9.84" height="60.02" fill="#59A14F" opacity="0.92"/>
+<rect x="183.84" y="211.50" width="9.84" height="78.50" fill="#B07AA1" opacity="0.92"/>
+<text x="233.00" y="306" font-size="10" fill="#4b5563" text-anchor="middle">mech</text>
+<rect x="206.27" y="267.74" width="9.84" height="22.26" fill="#2C7FB8" opacity="0.92"/>
+<rect x="216.96" y="221.34" width="9.84" height="68.66" fill="#F28E2B" opacity="0.92"/>
+<rect x="227.65" y="230.56" width="9.84" height="59.44" fill="#59A14F" opacity="0.92"/>
+<rect x="249.04" y="210.70" width="9.84" height="79.30" fill="#B07AA1" opacity="0.92"/>
+<text x="298.20" y="306" font-size="10" fill="#4b5563" text-anchor="middle">noise</text>
+<rect x="271.47" y="165.72" width="9.84" height="124.28" fill="#2C7FB8" opacity="0.92"/>
+<rect x="282.16" y="115.97" width="9.84" height="174.03" fill="#F28E2B" opacity="0.92"/>
+<rect x="292.85" y="124.78" width="9.84" height="165.22" fill="#59A14F" opacity="0.92"/>
+<rect x="314.24" y="103.00" width="9.84" height="187.00" fill="#B07AA1" opacity="0.92"/>
+<text x="363.40" y="306" font-size="10" fill="#4b5563" text-anchor="middle">n=128</text>
+<rect x="336.67" y="273.00" width="9.84" height="17.00" fill="#2C7FB8" opacity="0.92"/>
+<rect x="347.36" y="242.88" width="9.84" height="47.12" fill="#F28E2B" opacity="0.92"/>
+<rect x="358.05" y="243.48" width="9.84" height="46.52" fill="#59A14F" opacity="0.92"/>
+<rect x="379.44" y="257.99" width="9.84" height="32.01" fill="#B07AA1" opacity="0.92"/>
+<text x="20" y="188.00" font-size="11" fill="#374151" transform="rotate(-90 20 188.00)" text-anchor="middle">PE (lower is better)</text>
+<text x="233.00" y="324" font-size="11" fill="#374151" text-anchor="middle">Intervention</text>
+<text x="10" y="90" font-size="10" fill="#6b7280">9.9</text>
+<text x="10" y="294" font-size="10" fill="#6b7280">2.1</text>
+<text x="436" y="70" font-size="14" fill="#202020">Held-out gaussian_diag generator: parameter error</text>
+<rect x="490" y="86" width="326" height="204" fill="#ffffff" stroke="#d1d5db"/>
+<line x1="490" y1="86.00" x2="816" y2="86.00" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="490" y1="137.00" x2="816" y2="137.00" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="490" y1="188.00" x2="816" y2="188.00" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="490" y1="239.00" x2="816" y2="239.00" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="490" y1="290.00" x2="816" y2="290.00" stroke="#e5e7eb" stroke-width="1"/>
+<text x="522.60" y="306" font-size="10" fill="#4b5563" text-anchor="middle">none</text>
+<rect x="495.87" y="230.09" width="9.84" height="59.91" fill="#2C7FB8" opacity="0.92"/>
+<rect x="506.56" y="168.70" width="9.84" height="121.30" fill="#F28E2B" opacity="0.92"/>
+<rect x="517.25" y="170.20" width="9.84" height="119.80" fill="#59A14F" opacity="0.92"/>
+<rect x="527.95" y="183.43" width="9.84" height="106.57" fill="#E15759" opacity="0.92"/>
+<rect x="538.64" y="191.44" width="9.84" height="98.56" fill="#B07AA1" opacity="0.92"/>
+<text x="587.80" y="306" font-size="10" fill="#4b5563" text-anchor="middle">prior</text>
+<rect x="561.07" y="229.76" width="9.84" height="60.24" fill="#2C7FB8" opacity="0.92"/>
+<rect x="571.76" y="160.69" width="9.84" height="129.31" fill="#F28E2B" opacity="0.92"/>
+<rect x="582.45" y="162.25" width="9.84" height="127.75" fill="#59A14F" opacity="0.92"/>
+<rect x="593.15" y="177.11" width="9.84" height="112.89" fill="#E15759" opacity="0.92"/>
+<rect x="603.84" y="191.50" width="9.84" height="98.50" fill="#B07AA1" opacity="0.92"/>
+<text x="653.00" y="306" font-size="10" fill="#4b5563" text-anchor="middle">mech</text>
+<rect x="626.27" y="229.20" width="9.84" height="60.80" fill="#2C7FB8" opacity="0.92"/>
+<rect x="636.96" y="165.93" width="9.84" height="124.07" fill="#F28E2B" opacity="0.92"/>
+<rect x="647.65" y="167.15" width="9.84" height="122.85" fill="#59A14F" opacity="0.92"/>
+<rect x="658.35" y="152.80" width="9.84" height="137.20" fill="#E15759" opacity="0.92"/>
+<rect x="669.04" y="180.48" width="9.84" height="109.52" fill="#B07AA1" opacity="0.92"/>
+<text x="718.20" y="306" font-size="10" fill="#4b5563" text-anchor="middle">noise</text>
+<rect x="691.47" y="169.50" width="9.84" height="120.50" fill="#2C7FB8" opacity="0.92"/>
+<rect x="702.16" y="104.94" width="9.84" height="185.06" fill="#F28E2B" opacity="0.92"/>
+<rect x="712.85" y="106.39" width="9.84" height="183.61" fill="#59A14F" opacity="0.92"/>
+<rect x="723.55" y="103.00" width="9.84" height="187.00" fill="#E15759" opacity="0.92"/>
+<rect x="734.24" y="120.40" width="9.84" height="169.60" fill="#B07AA1" opacity="0.92"/>
+<text x="783.40" y="306" font-size="10" fill="#4b5563" text-anchor="middle">n=128</text>
+<rect x="756.67" y="230.28" width="9.84" height="59.72" fill="#2C7FB8" opacity="0.92"/>
+<rect x="767.36" y="179.30" width="9.84" height="110.70" fill="#F28E2B" opacity="0.92"/>
+<rect x="778.05" y="179.98" width="9.84" height="110.02" fill="#59A14F" opacity="0.92"/>
+<rect x="788.75" y="197.73" width="9.84" height="92.27" fill="#E15759" opacity="0.92"/>
+<rect x="799.44" y="273.00" width="9.84" height="17.00" fill="#B07AA1" opacity="0.92"/>
+<text x="440" y="188.00" font-size="11" fill="#374151" transform="rotate(-90 440 188.00)" text-anchor="middle">PE (lower is better)</text>
+<text x="653.00" y="324" font-size="11" fill="#374151" text-anchor="middle">Intervention</text>
+<text x="430" y="90" font-size="10" fill="#6b7280">16</text>
+<text x="430" y="294" font-size="10" fill="#6b7280">1.1</text>
+<text x="16" y="370" font-size="14" fill="#202020">Held-out residual generator: cluster accuracy</text>
+<rect x="70" y="386" width="326" height="204" fill="#ffffff" stroke="#d1d5db"/>
+<line x1="70" y1="386.00" x2="396" y2="386.00" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="70" y1="437.00" x2="396" y2="437.00" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="70" y1="488.00" x2="396" y2="488.00" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="70" y1="539.00" x2="396" y2="539.00" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="70" y1="590.00" x2="396" y2="590.00" stroke="#e5e7eb" stroke-width="1"/>
+<text x="102.60" y="606" font-size="10" fill="#4b5563" text-anchor="middle">none</text>
+<rect x="75.87" y="439.82" width="9.84" height="150.18" fill="#2C7FB8" opacity="0.92"/>
+<rect x="86.56" y="509.00" width="9.84" height="81.00" fill="#F28E2B" opacity="0.92"/>
+<rect x="97.25" y="511.01" width="9.84" height="78.99" fill="#59A14F" opacity="0.92"/>
+<rect x="118.64" y="493.94" width="9.84" height="96.06" fill="#B07AA1" opacity="0.92"/>
+<text x="167.80" y="606" font-size="10" fill="#4b5563" text-anchor="middle">prior</text>
+<rect x="141.07" y="403.00" width="9.84" height="187.00" fill="#2C7FB8" opacity="0.92"/>
+<rect x="151.76" y="504.44" width="9.84" height="85.56" fill="#F28E2B" opacity="0.92"/>
+<rect x="162.45" y="507.79" width="9.84" height="82.21" fill="#59A14F" opacity="0.92"/>
+<rect x="183.84" y="495.06" width="9.84" height="94.94" fill="#B07AA1" opacity="0.92"/>
+<text x="233.00" y="606" font-size="10" fill="#4b5563" text-anchor="middle">mech</text>
+<rect x="206.27" y="482.91" width="9.84" height="107.09" fill="#2C7FB8" opacity="0.92"/>
+<rect x="216.96" y="573.00" width="9.84" height="17.00" fill="#F28E2B" opacity="0.92"/>
+<rect x="227.65" y="560.59" width="9.84" height="29.41" fill="#59A14F" opacity="0.92"/>
+<rect x="249.04" y="548.79" width="9.84" height="41.21" fill="#B07AA1" opacity="0.92"/>
+<text x="298.20" y="606" font-size="10" fill="#4b5563" text-anchor="middle">noise</text>
+<rect x="271.47" y="473.43" width="9.84" height="116.57" fill="#2C7FB8" opacity="0.92"/>
+<rect x="282.16" y="569.67" width="9.84" height="20.33" fill="#F28E2B" opacity="0.92"/>
+<rect x="292.85" y="556.25" width="9.84" height="33.75" fill="#59A14F" opacity="0.92"/>
+<rect x="314.24" y="543.84" width="9.84" height="46.16" fill="#B07AA1" opacity="0.92"/>
+<text x="363.40" y="606" font-size="10" fill="#4b5563" text-anchor="middle">n=128</text>
+<rect x="336.67" y="437.82" width="9.84" height="152.18" fill="#2C7FB8" opacity="0.92"/>
+<rect x="347.36" y="510.64" width="9.84" height="79.36" fill="#F28E2B" opacity="0.92"/>
+<rect x="358.05" y="511.02" width="9.84" height="78.98" fill="#59A14F" opacity="0.92"/>
+<rect x="379.44" y="475.87" width="9.84" height="114.13" fill="#B07AA1" opacity="0.92"/>
+<text x="20" y="488.00" font-size="11" fill="#374151" transform="rotate(-90 20 488.00)" text-anchor="middle">Accuracy</text>
+<text x="233.00" y="624" font-size="11" fill="#374151" text-anchor="middle">Intervention</text>
+<text x="10" y="390" font-size="10" fill="#6b7280">0.871</text>
+<text x="10" y="594" font-size="10" fill="#6b7280">0.475</text>
+<text x="436" y="370" font-size="14" fill="#202020">Held-out gaussian_diag generator: cluster accuracy</text>
+<rect x="490" y="386" width="326" height="204" fill="#ffffff" stroke="#d1d5db"/>
+<line x1="490" y1="386.00" x2="816" y2="386.00" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="490" y1="437.00" x2="816" y2="437.00" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="490" y1="488.00" x2="816" y2="488.00" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="490" y1="539.00" x2="816" y2="539.00" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="490" y1="590.00" x2="816" y2="590.00" stroke="#e5e7eb" stroke-width="1"/>
+<text x="522.60" y="606" font-size="10" fill="#4b5563" text-anchor="middle">none</text>
+<rect x="495.87" y="442.09" width="9.84" height="147.91" fill="#2C7FB8" opacity="0.92"/>
+<rect x="506.56" y="544.90" width="9.84" height="45.10" fill="#F28E2B" opacity="0.92"/>
+<rect x="517.25" y="544.39" width="9.84" height="45.61" fill="#59A14F" opacity="0.92"/>
+<rect x="527.95" y="551.00" width="9.84" height="39.00" fill="#E15759" opacity="0.92"/>
+<rect x="538.64" y="463.19" width="9.84" height="126.81" fill="#B07AA1" opacity="0.92"/>
+<text x="587.80" y="606" font-size="10" fill="#4b5563" text-anchor="middle">prior</text>
+<rect x="561.07" y="403.00" width="9.84" height="187.00" fill="#2C7FB8" opacity="0.92"/>
+<rect x="571.76" y="552.74" width="9.84" height="37.26" fill="#F28E2B" opacity="0.92"/>
+<rect x="582.45" y="554.39" width="9.84" height="35.61" fill="#59A14F" opacity="0.92"/>
+<rect x="593.15" y="546.85" width="9.84" height="43.15" fill="#E15759" opacity="0.92"/>
+<rect x="603.84" y="412.91" width="9.84" height="177.09" fill="#B07AA1" opacity="0.92"/>
+<text x="653.00" y="606" font-size="10" fill="#4b5563" text-anchor="middle">mech</text>
+<rect x="626.27" y="494.96" width="9.84" height="95.04" fill="#2C7FB8" opacity="0.92"/>
+<rect x="636.96" y="571.96" width="9.84" height="18.04" fill="#F28E2B" opacity="0.92"/>
+<rect x="647.65" y="573.00" width="9.84" height="17.00" fill="#59A14F" opacity="0.92"/>
+<rect x="658.35" y="568.10" width="9.84" height="21.90" fill="#E15759" opacity="0.92"/>
+<rect x="669.04" y="519.54" width="9.84" height="70.46" fill="#B07AA1" opacity="0.92"/>
+<text x="718.20" y="606" font-size="10" fill="#4b5563" text-anchor="middle">noise</text>
+<rect x="691.47" y="490.49" width="9.84" height="99.51" fill="#2C7FB8" opacity="0.92"/>
+<rect x="702.16" y="571.71" width="9.84" height="18.29" fill="#F28E2B" opacity="0.92"/>
+<rect x="712.85" y="571.03" width="9.84" height="18.97" fill="#59A14F" opacity="0.92"/>
+<rect x="723.55" y="565.49" width="9.84" height="24.51" fill="#E15759" opacity="0.92"/>
+<rect x="734.24" y="515.89" width="9.84" height="74.11" fill="#B07AA1" opacity="0.92"/>
+<text x="783.40" y="606" font-size="10" fill="#4b5563" text-anchor="middle">n=128</text>
+<rect x="756.67" y="440.94" width="9.84" height="149.06" fill="#2C7FB8" opacity="0.92"/>
+<rect x="767.36" y="538.94" width="9.84" height="51.06" fill="#F28E2B" opacity="0.92"/>
+<rect x="778.05" y="539.82" width="9.84" height="50.18" fill="#59A14F" opacity="0.92"/>
+<rect x="788.75" y="541.72" width="9.84" height="48.28" fill="#E15759" opacity="0.92"/>
+<rect x="799.44" y="407.96" width="9.84" height="182.04" fill="#B07AA1" opacity="0.92"/>
+<text x="440" y="488.00" font-size="11" fill="#374151" transform="rotate(-90 440 488.00)" text-anchor="middle">Accuracy</text>
+<text x="653.00" y="624" font-size="11" fill="#374151" text-anchor="middle">Intervention</text>
+<text x="430" y="390" font-size="10" fill="#6b7280">0.707</text>
+<text x="430" y="594" font-size="10" fill="#6b7280">0.374</text>
+</svg>

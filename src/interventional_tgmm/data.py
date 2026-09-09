@@ -8,16 +8,31 @@ from typing import Any
 
 import numpy as np
 import torch
+from sklearn.datasets import load_digits, load_iris
 from sklearn.decomposition import PCA
 
 from .config import InterventionConfig, SamplingConfig
 from .types import GMMParams, GMMTask
 
 _EPS = 1e-8
+_SUPPORTED_DATASETS = {"wine", "iris", "digits"}
+_DEFAULT_DATASET_PATH = {
+    "wine": "wine.csv",
+    "iris": "sklearn:iris",
+    "digits": "sklearn:digits",
+}
+_DEFAULT_LABEL_COLUMN = {
+    "wine": "Cultivars",
+    "iris": "target",
+    "digits": "target",
+}
+_IRIS_SPECIAL_PATHS = {"sklearn:iris", "builtin:iris", "iris"}
+_DIGITS_SPECIAL_PATHS = {"sklearn:digits", "builtin:digits", "digits"}
 
 
 @dataclass(slots=True)
-class WineDataset:
+class TabularDataset:
+    dataset: str
     path: str
     label_column: str
     features: np.ndarray
@@ -31,10 +46,36 @@ class WineDataset:
     original_dim: int
 
 
+WineDataset = TabularDataset
+
+
 def _softmax_np(logits: np.ndarray) -> np.ndarray:
     logits = logits - logits.max()
     exp_logits = np.exp(logits)
     return exp_logits / exp_logits.sum()
+
+
+def _normalize_dataset_name(dataset: str) -> str:
+    dataset_name = dataset.strip().lower()
+    if not dataset_name:
+        dataset_name = "wine"
+    if dataset_name not in _SUPPORTED_DATASETS:
+        supported = ", ".join(sorted(_SUPPORTED_DATASETS))
+        raise ValueError(f"Unsupported dataset '{dataset}'. Supported datasets: {supported}.")
+    return dataset_name
+
+
+def resolve_dataset_spec(dataset: str, dataset_path: str, label_column: str) -> tuple[str, str, str]:
+    dataset_name = _normalize_dataset_name(dataset)
+    effective_path = dataset_path.strip() if dataset_path else ""
+    effective_label_column = label_column.strip() if label_column else ""
+
+    if not effective_path:
+        effective_path = _DEFAULT_DATASET_PATH[dataset_name]
+    if not effective_label_column:
+        effective_label_column = _DEFAULT_LABEL_COLUMN[dataset_name]
+
+    return dataset_name, effective_path, effective_label_column
 
 
 def _resolve_dataset_path(dataset_path: str) -> Path:
@@ -66,7 +107,7 @@ def _resolve_label_column(header: list[str], label_column: str) -> int:
     raise ValueError(f"Label column '{label_column}' was not found in dataset header: {header}")
 
 
-def _read_wine_csv(dataset_path: Path, label_column: str) -> tuple[np.ndarray, np.ndarray, list[str]]:
+def _read_tabular_csv(dataset_path: Path, label_column: str) -> tuple[np.ndarray, np.ndarray, list[str]]:
     with dataset_path.open("r", encoding="utf-8", newline="") as handle:
         reader = csv.reader(handle)
         raw_header = next(reader, None)
@@ -88,18 +129,69 @@ def _read_wine_csv(dataset_path: Path, label_column: str) -> tuple[np.ndarray, n
             feature_names.append(name if name else f"feature_{idx}")
 
         rows_x: list[list[float]] = []
-        rows_y: list[int] = []
+        rows_y: list[str] = []
         for row in reader:
             if not row:
                 continue
-            rows_y.append(int(float(row[label_idx])))
+            if label_idx >= len(row):
+                raise ValueError(f"Encountered a row missing the label column at index {label_idx}: {row}")
+            label_value = row[label_idx].strip()
+            if not label_value:
+                raise ValueError(f"Encountered an empty label cell in dataset '{dataset_path}'.")
+            rows_y.append(label_value)
             rows_x.append([float(row[idx]) for idx in feature_indices])
 
     x = np.asarray(rows_x, dtype=np.float64)
-    y = np.asarray(rows_y, dtype=np.int64)
+    y = np.asarray(rows_y, dtype=np.str_)
     if x.ndim != 2 or len(x) == 0:
         raise ValueError(f"Dataset at '{dataset_path}' did not contain tabular numeric features.")
     return x, y, feature_names
+
+
+def _read_wine_csv(dataset_path: Path, label_column: str) -> tuple[np.ndarray, np.ndarray, list[str]]:
+    return _read_tabular_csv(dataset_path, label_column)
+
+
+def _read_builtin_iris(label_column: str) -> tuple[np.ndarray, np.ndarray, list[str], str]:
+    normalized_label = label_column.strip().lower()
+    if normalized_label and normalized_label not in {"target", "class", "label", "species"}:
+        raise ValueError(
+            f"Iris builtin loader expects label_column in {{target, class, label, species}}; got '{label_column}'."
+        )
+
+    iris = load_iris()
+    x = np.asarray(iris.data, dtype=np.float64)
+    y = np.asarray(iris.target, dtype=np.str_)
+    feature_names = [str(name) for name in iris.feature_names]
+    return x, y, feature_names, "target"
+
+
+def _read_builtin_digits(label_column: str) -> tuple[np.ndarray, np.ndarray, list[str], str]:
+    normalized_label = label_column.strip().lower()
+    if normalized_label and normalized_label not in {"target", "class", "label", "digit"}:
+        raise ValueError(
+            f"Digits builtin loader expects label_column in {{target, class, label, digit}}; got '{label_column}'."
+        )
+
+    digits = load_digits()
+    x = np.asarray(digits.data, dtype=np.float64)
+    y = np.asarray(digits.target, dtype=np.str_)
+    feature_names = [str(name) for name in digits.feature_names]
+    return x, y, feature_names, "target"
+
+
+def read_dataset_arrays(dataset: str, dataset_path: str, label_column: str) -> tuple[str, np.ndarray, np.ndarray, list[str], str]:
+    dataset_name, effective_path, effective_label_column = resolve_dataset_spec(dataset, dataset_path, label_column)
+    if dataset_name == "iris" and effective_path.lower() in _IRIS_SPECIAL_PATHS:
+        x, y, feature_names, resolved_label_column = _read_builtin_iris(effective_label_column)
+        return "sklearn:iris", x, y, feature_names, resolved_label_column
+    if dataset_name == "digits" and effective_path.lower() in _DIGITS_SPECIAL_PATHS:
+        x, y, feature_names, resolved_label_column = _read_builtin_digits(effective_label_column)
+        return "sklearn:digits", x, y, feature_names, resolved_label_column
+
+    resolved_path = _resolve_dataset_path(effective_path)
+    x, y, feature_names = _read_tabular_csv(resolved_path, effective_label_column)
+    return str(resolved_path), x, y, feature_names, effective_label_column
 
 
 def _standardize_features(x: np.ndarray) -> np.ndarray:
@@ -110,9 +202,19 @@ def _standardize_features(x: np.ndarray) -> np.ndarray:
 
 
 @lru_cache(maxsize=32)
-def _load_wine_dataset_cached(dataset_path: str, label_column: str, d: int, k: int) -> WineDataset:
-    resolved_path = _resolve_dataset_path(dataset_path)
-    x_raw, y_raw, feature_names = _read_wine_csv(resolved_path, label_column)
+def _load_tabular_dataset_cached(
+    dataset: str,
+    dataset_path: str,
+    label_column: str,
+    d: int,
+    k: int,
+) -> TabularDataset:
+    dataset_name, effective_path, effective_label_column = resolve_dataset_spec(dataset, dataset_path, label_column)
+    resolved_path, x_raw, y_raw, feature_names, resolved_label_column = read_dataset_arrays(
+        dataset=dataset_name,
+        dataset_path=effective_path,
+        label_column=effective_label_column,
+    )
     original_dim = int(x_raw.shape[1])
 
     if d <= 0:
@@ -128,8 +230,8 @@ def _load_wine_dataset_cached(dataset_path: str, label_column: str, d: int, k: i
             f"Configured k={k} does not match the dataset class count={len(unique_labels)} ({unique_labels})."
         )
 
-    label_map = {int(label): idx for idx, label in enumerate(unique_labels)}
-    y = np.asarray([label_map[int(label)] for label in y_raw], dtype=np.int64)
+    label_map = {label: idx for idx, label in enumerate(unique_labels)}
+    y = np.asarray([label_map[label] for label in y_raw], dtype=np.int64)
 
     x = _standardize_features(x_raw)
     if d < original_dim:
@@ -157,9 +259,10 @@ def _load_wine_dataset_cached(dataset_path: str, label_column: str, d: int, k: i
         class_scales[class_idx] = scales
         class_weights[class_idx] = float(points.shape[0] / x.shape[0])
 
-    return WineDataset(
+    return TabularDataset(
+        dataset=dataset_name,
         path=str(resolved_path),
-        label_column=label_column,
+        label_column=resolved_label_column,
         features=x,
         labels=y,
         class_points=tuple(class_points),
@@ -172,10 +275,17 @@ def _load_wine_dataset_cached(dataset_path: str, label_column: str, d: int, k: i
     )
 
 
-def load_wine_dataset(cfg: SamplingConfig) -> WineDataset:
-    if cfg.dataset.lower() != "wine":
-        raise ValueError(f"Unsupported dataset '{cfg.dataset}'. This project now expects dataset='wine'.")
-    return _load_wine_dataset_cached(cfg.dataset_path, cfg.label_column, cfg.d, cfg.k)
+def load_tabular_dataset(cfg: SamplingConfig) -> TabularDataset:
+    return _load_tabular_dataset_cached(cfg.dataset, cfg.dataset_path, cfg.label_column, cfg.d, cfg.k)
+
+
+def load_wine_dataset(cfg: SamplingConfig) -> TabularDataset:
+    dataset_name, _, _ = resolve_dataset_spec(cfg.dataset, cfg.dataset_path, cfg.label_column)
+    if dataset_name != "wine":
+        raise ValueError(
+            f"load_wine_dataset requires dataset='wine', but got dataset='{cfg.dataset}'. Use load_tabular_dataset instead."
+        )
+    return _load_tabular_dataset_cached("wine", cfg.dataset_path, cfg.label_column, cfg.d, cfg.k)
 
 
 def sample_weights(
@@ -282,7 +392,7 @@ def sample_task(
     intervention: InterventionConfig | None = None,
 ) -> GMMTask:
     intervention = intervention or InterventionConfig(kind="none")
-    dataset = load_wine_dataset(cfg)
+    dataset = load_tabular_dataset(cfg)
     weights = sample_weights(cfg, rng, base_weights=dataset.class_weights)
     means = dataset.class_means.copy()
     sigma = float(cfg.sigma)
@@ -337,7 +447,7 @@ def sample_task(
         sigma_diag=None if sigma_diag is None else sigma_diag.astype(np.float32),
         metadata={
             "dataset": dataset.path,
-            "dataset_name": cfg.dataset,
+            "dataset_name": dataset.dataset,
             "label_column": dataset.label_column,
             "original_dim": dataset.original_dim,
             "projected_dim": cfg.d,

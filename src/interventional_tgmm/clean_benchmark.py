@@ -3,7 +3,6 @@ from __future__ import annotations
 import hashlib
 from dataclasses import dataclass
 from functools import lru_cache
-from pathlib import Path
 from typing import Any, Literal
 
 import numpy as np
@@ -11,7 +10,7 @@ import torch
 from sklearn.decomposition import PCA
 
 from .config import InterventionConfig
-from .data import _read_wine_csv, _resolve_dataset_path, apply_intervention
+from .data import apply_intervention, read_dataset_arrays, resolve_dataset_spec
 from .types import GMMParams, GMMTask
 
 
@@ -22,8 +21,9 @@ GeneratorKind = Literal["residual", "gaussian_diag"]
 
 @dataclass(slots=True)
 class SplitTaskConfig:
-    dataset_path: str = "wine.csv"
-    label_column: str = "Cultivars"
+    dataset: str = "wine"
+    dataset_path: str = ""
+    label_column: str = ""
     k: int = 3
     d: int = 8
     n_min: int = 32
@@ -38,6 +38,7 @@ class SplitTaskConfig:
 
     def to_dict(self) -> dict[str, Any]:
         return {
+            "dataset": self.dataset,
             "dataset_path": self.dataset_path,
             "label_column": self.label_column,
             "k": self.k,
@@ -68,6 +69,7 @@ class WineSplit:
 
 @dataclass(slots=True)
 class WineSplitBenchmark:
+    dataset_name: str
     dataset_path: str
     label_column: str
     k: int
@@ -111,7 +113,12 @@ def _standardize_train_reference(
     return x_train_std, x_all_std, mean, std
 
 
-def _split_indices_by_class(labels: np.ndarray, k: int, split_seed: int, train_fraction: float) -> tuple[list[np.ndarray], list[np.ndarray]]:
+def _split_indices_by_class(
+    labels: np.ndarray,
+    k: int,
+    split_seed: int,
+    train_fraction: float,
+) -> tuple[list[np.ndarray], list[np.ndarray]]:
     if not (0.0 < train_fraction < 1.0):
         raise ValueError(f"train_fraction must be in (0, 1); got {train_fraction}.")
     rng = np.random.default_rng(split_seed)
@@ -133,7 +140,8 @@ def _split_indices_by_class(labels: np.ndarray, k: int, split_seed: int, train_f
 
 
 @lru_cache(maxsize=32)
-def load_wine_split_benchmark(
+def load_split_benchmark(
+    dataset: str,
     dataset_path: str,
     label_column: str,
     d: int,
@@ -142,8 +150,13 @@ def load_wine_split_benchmark(
     train_fraction: float,
     fit_preprocessor_on_train: bool = True,
 ) -> WineSplitBenchmark:
-    resolved = _resolve_dataset_path(dataset_path)
-    x_raw, y_raw, feature_names = _read_wine_csv(resolved, label_column)
+    dataset_name, effective_path, effective_label_column = resolve_dataset_spec(dataset, dataset_path, label_column)
+    resolved_path, x_raw, y_raw, feature_names, resolved_label_column = read_dataset_arrays(
+        dataset=dataset_name,
+        dataset_path=effective_path,
+        label_column=effective_label_column,
+    )
+
     original_dim = int(x_raw.shape[1])
     if d <= 0 or d > original_dim:
         raise ValueError(f"Requested d={d} but dataset has original_dim={original_dim}.")
@@ -151,8 +164,8 @@ def load_wine_split_benchmark(
     unique_labels = sorted(np.unique(y_raw).tolist())
     if len(unique_labels) != k:
         raise ValueError(f"Configured k={k} does not match class count={len(unique_labels)}.")
-    label_map = {int(label): idx for idx, label in enumerate(unique_labels)}
-    y = np.asarray([label_map[int(label)] for label in y_raw], dtype=np.int64)
+    label_map = {label: idx for idx, label in enumerate(unique_labels)}
+    y = np.asarray([label_map[label] for label in y_raw], dtype=np.int64)
 
     train_parts, test_parts = _split_indices_by_class(y, k=k, split_seed=split_seed, train_fraction=train_fraction)
     train_indices_all = np.concatenate(train_parts, axis=0)
@@ -215,8 +228,9 @@ def load_wine_split_benchmark(
         )
 
     return WineSplitBenchmark(
-        dataset_path=str(resolved),
-        label_column=label_column,
+        dataset_name=dataset_name,
+        dataset_path=str(resolved_path),
+        label_column=resolved_label_column,
         k=k,
         d=d,
         split_seed=split_seed,
@@ -227,6 +241,27 @@ def load_wine_split_benchmark(
         feature_names=tuple(feature_names),
         train=build_split(train_parts),
         test=build_split(test_parts),
+    )
+
+
+def load_wine_split_benchmark(
+    dataset_path: str,
+    label_column: str,
+    d: int,
+    k: int,
+    split_seed: int,
+    train_fraction: float,
+    fit_preprocessor_on_train: bool = True,
+) -> WineSplitBenchmark:
+    return load_split_benchmark(
+        dataset="wine",
+        dataset_path=dataset_path,
+        label_column=label_column,
+        d=d,
+        k=k,
+        split_seed=split_seed,
+        train_fraction=train_fraction,
+        fit_preprocessor_on_train=fit_preprocessor_on_train,
     )
 
 
@@ -263,6 +298,12 @@ def sample_split_task(
         raise ValueError(f"cfg.k={cfg.k} does not match benchmark.k={benchmark.k}.")
     if cfg.d != benchmark.d:
         raise ValueError(f"cfg.d={cfg.d} does not match benchmark.d={benchmark.d}.")
+
+    cfg_dataset, _, _ = resolve_dataset_spec(cfg.dataset, cfg.dataset_path, cfg.label_column)
+    if cfg_dataset != benchmark.dataset_name:
+        raise ValueError(
+            f"cfg.dataset resolves to '{cfg_dataset}' but benchmark.dataset_name is '{benchmark.dataset_name}'."
+        )
 
     intervention = intervention or InterventionConfig(kind="none")
     split_data = _get_split(benchmark, split)
@@ -325,6 +366,7 @@ def sample_split_task(
         sigma_diag=true_scales.astype(np.float32),
         metadata={
             "dataset": benchmark.dataset_path,
+            "dataset_name": benchmark.dataset_name,
             "label_column": benchmark.label_column,
             "split": split,
             "generator": cfg.generator,

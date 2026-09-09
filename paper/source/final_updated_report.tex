@@ -1,0 +1,791 @@
+\documentclass{article}
+\PassOptionsToPackage{numbers,compress}{natbib}
+\usepackage[preprint]{neurips_2026}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{threeparttable}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{placeins}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  urlcolor=blue
+}
+
+\newcommand{\tgmm}{\textsc{TGMM}}
+\newcommand{\diaggmm}{\textsc{DiagGMM}}
+\newcommand{\PE}{\mathrm{PE}}
+\newcommand{\LL}{\mathrm{LL}}
+
+\title{Interventional Robustness of a Transformer-Based Learned GMM Solver\\on Held-Out Public Benchmarks}
+
+\author{
+  Syed Arsalaan Nadim \\
+  SDS7103 Data Analysis and Visualization \\
+  MBZUAI
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This project studies whether a small transformer-based solver for Gaussian mixture model (GMM) estimation remains accurate under controlled distribution shift. We build held-out semisynthetic benchmarks from the UCI Wine and Iris datasets by fitting preprocessing on class-stratified training splits only and generating evaluation tasks from disjoint test splits.
+
+The main model is a 3-layer set transformer trained on residual-resampled tasks with task-level supervision from known semisynthetic parameters. The evaluation uses disjoint train/eval seeds and exact task-hash audits with zero overlaps. The solver is tested on residual and diagonal-Gaussian held-out generators under prior, mechanism, noise, and sample-size interventions, and compared with isotropic EM, $k$-means, a spectral method, and a diagonal-covariance Gaussian mixture baseline. 
+
+We find that on Wine and Iris, the transformer is best on parameter error and clustering accuracy on all residual settings and on four of five Gaussian-diagonal settings. Ablation studies show that the 2-layer variant performs nearly identically. The matched diagonal-covariance baseline consistently attains the best log-likelihood and overtakes the transformer only in the Gaussian-diagonal $n=128$ condition. Therefore we claim that it is benchmark-specific rather than universal: the learned solver is strong on structural recovery, but not on every metric or in every matched classical regime.
+\end{abstract}
+
+\section{Introduction}
+Transformer architectures are usually discussed in supervised or in-context settings \citep{vaswani2017attention}, but recent work argues that they can also be meta-trained as shared solvers for unlabeled Gaussian mixture estimation problems \citep{chen2026tgmm}. That idea is interesting because classical GMM estimators have complementary weaknesses: EM depends on initialization and can converge to poor local optima; $k$-means is tied to centroidal partitions; and moment-based spectral methods can become numerically unstable or rely on restrictive assumptions \citep{dempster1977em,macqueen1967kmeans,anandkumar2014tensor,mclachlan2000finite}. A natural question is whether a learned solver stays competitive when the test distribution shifts.
+
+The main difficulty in evaluating this claim cleanly is that purely synthetic Gaussian benchmarks are easy to score but can be overly favorable to matched classical estimators, while real datasets usually do not provide ground-truth mixture parameters. In this report we use a middle ground: public-data semisynthetic benchmarks derived from the UCI Wine dataset \citep{aeberhard1992wine} and the Iris dataset \citep{fisher1936iris}, together with three safeguards meant to make the resulting claims cleaner.
+
+\begin{enumerate}[leftmargin=1.4em]
+    \item The benchmark uses class-stratified train/test splits, and all reported evaluation tasks come from the held-out test splits.
+    \item Preprocessing is fit on the training split only.
+    \item Training and evaluation use disjoint random seeds, and exact task-hash audits confirm zero train/eval overlaps in the reported held-out runs.
+\end{enumerate}
+
+Therefore, the goal is not to claim that transformers universally beat classical GMM solvers. The goal is to test a narrower claim: on held-out public benchmarks with controlled interventions, when does a learned transformer solver outperform classical baselines on parameter recovery and clustering accuracy, when does a matched classical model catch up, and how sensitive are those findings to transformer depth and to the underlying dataset?
+
+\subsection{Research questions}
+This report answers four questions.
+\begin{enumerate}[leftmargin=1.4em]
+    \item On held-out Wine-backed tasks does a small \tgmm-style solver outperform classical baselines on parameter error and clustering accuracy?
+    \item Does that advantage survive controlled interventions and cross-generator evaluation without retraining?
+    \item Is the qualitative picture stable when the transformer depth is reduced from three layers to two?
+    \item Does the same pattern replicate on a second public dataset?
+\end{enumerate}
+
+\section{Benchmark construction}
+\subsection{Wine benchmark: dataset, preprocessing, and split}
+The UCI Wine dataset contains 178 observations, 13 continuous chemical variables, and 3 cultivar labels \citep{aeberhard1992wine}. Following the repository guidance for scale-sensitive methods, we standardize the features and then apply PCA \citep{jolliffe2002pca}. To make evaluation cleaner, we first create a class-stratified 70/30 train/test split with split seed 11, fit standardization and PCA on the training split only, and then apply the fitted transform to both splits. The final dimension of the representation is $d=8$, retaining 92.29\% of the variance of the train-standardized data.
+
+For each split $s \in \{\mathrm{train},\mathrm{test}\}$ and class $k \in \{1,2,3\}$, let $D_k^{(s)}$ denote the standardized-and-projected points from class $k$ in split $s$. We compute split-specific class means,
+\begin{equation}
+\mu_k^{(s)} = \frac{1}{|D_k^{(s)}|} \sum_{x \in D_k^{(s)}} x,
+\end{equation}
+as well as split-specific residual pools and diagonal scale summaries,
+\begin{equation}
+R_k^{(s)} = \{x - \mu_k^{(s)} : x \in D_k^{(s)}\},
+\qquad
+\sigma_{k,\mathrm{diag}}^{(s)} = \mathrm{sd}\bigl(R_k^{(s)}\bigr).
+\end{equation}
+Training tasks are sampled from the training split only; all reported evaluation tasks are sampled from the held-out test split only.
+
+\subsection{Second public benchmark: Iris}
+To test whether the qualitative picture depends heavily on Wine, we repeat the same protocol on the Iris dataset \citep{fisher1936iris}. Iris has 150 observations, 4 continuous variables, and 3 species. We again use a class-stratified 70/30 train/test split with split seed 11 and fit standardization on the training split only. Because Iris already has only four continuous features, we keep the representation dimension at $d=4$ and do not apply PCA. The same held-out means, residual pools, diagonal-scale summaries, generators, interventions, seeds, and evaluation protocol are then used exactly as in the Wine study.
+
+\subsection{Task generators}
+Each task has fixed mixture count $K=3$. Mixture weights are sampled around the empirical split frequencies using
+\begin{equation}
+\pi \sim \mathrm{Dirichlet}(\alpha K \bar{\pi}),
+\qquad \alpha = 4.0,
+\end{equation}
+with rejection sampling until $\min_k \pi_k \ge 0.12$. Unless otherwise stated, the task size is sampled as $n \sim \mathrm{Unif}\{32,\dots,64\}$.
+
+We evaluate two task generators.
+
+\paragraph{Residual generator.}
+For each observation,
+\begin{equation}
+z_i \sim \mathrm{Categorical}(\pi),
+\qquad r_i \sim \mathrm{Unif}(R_{z_i}^{(s)}),
+\qquad x_i = \mu'_{z_i} + a_{z_i} \odot r_i,
+\end{equation}
+where $\odot$ is elementwise multiplication and $a_k$ rescales the held-out residual vector to the current target diagonal scale. This generator preserves the empirical residual structure of the held-out split and is therefore generally anisotropic and non-Gaussian.
+
+\paragraph{Gaussian-diagonal generator.}
+For each observation,
+\begin{equation}
+z_i \sim \mathrm{Categorical}(\pi),
+\qquad x_i \sim \mathcal{N}\!\left(\mu'_{z_i},\, \mathrm{Diag}\bigl((\sigma'_{z_i,\mathrm{diag}})^2\bigr)\right).
+\end{equation}
+This creates a cleaner diagonal-Gaussian test family using the same held-out means and diagonal-scale summaries.
+
+The transformer is trained only on the residual generator from the training split. It is then evaluated, without retraining, on both generators from the held-out test split.
+
+\subsection{Interventions}
+The benchmark uses four intervention families.
+
+\paragraph{Prior shift.}
+The first component is upweighted in logit space,
+\begin{equation}
+\pi'_k = \frac{\exp\!\left(\log \pi_k + \lambda \mathbf{1}\{k=c^\star\}\right)}{\sum_j \exp\!\left(\log \pi_j + \lambda \mathbf{1}\{j=c^\star\}\right)},
+\qquad \lambda = 1.25.
+\end{equation}
+This changes class frequencies but leaves cluster geometry unchanged.
+
+\paragraph{Mechanism shift.}
+Means are compressed toward their centroid,
+\begin{equation}
+\mu'_k = \bar{\mu} + \rho (\mu_k - \bar{\mu}),
+\qquad
+\bar{\mu} = \frac{1}{K} \sum_{j=1}^K \mu_j,
+\qquad \rho = 0.65.
+\end{equation}
+All pairwise mean separations shrink by 35\%, so this is the strongest geometric intervention.
+
+\paragraph{Noise shift.}
+Component scales are inflated by a factor $\gamma = 1.5$,
+\begin{equation}
+\sigma'_{k,\mathrm{diag}} = \gamma \, \sigma_{k,\mathrm{diag}}.
+\end{equation}
+Because the transformer does not predict component scales in these runs, parameter error includes a nonzero scale term even at no shift; noise inflation increases that term substantially.
+
+\paragraph{Sample-size shift.}
+Evaluation task size is fixed at $n=128$, outside the training range $[32,64]$.
+
+\section{Model, baselines, and protocol}
+\subsection{Transformer solver}
+The learned solver is a small set transformer \citep{lee2019settransformer} inspired by \tgmm{} \citep{chen2026tgmm}. Each point $x_i \in \mathbb{R}^d$ is projected to a hidden space, processed by a Transformer encoder \citep{vaswani2017attention}, and queried by $K=3$ learnable slot vectors through cross-attention. The slot states produce component means and mixture logits,
+\begin{align}
+h_i^{(0)} &= W_{\mathrm{in}} x_i + b_{\mathrm{in}}, \\
+H &= \mathrm{Encoder}\bigl(h_1^{(0)}, \dots, h_n^{(0)}\bigr), \\
+s_k &= \mathrm{CrossAttn}(q_k,H,H) + \mathrm{FFN}\bigl(\mathrm{CrossAttn}(q_k,H,H)\bigr), \\
+\hat{\mu}_k &= W_\mu s_k + b_\mu, \\
+\hat{\pi} &= \mathrm{softmax}\!\left(\{W_\pi s_k + b_\pi\}_{k=1}^K\right).
+\end{align}
+The main model uses 3 encoder layers, 4 heads, hidden width 128, and 729{,}737 trainable parameters in the Wine setup. We also train a 2-layer variant with the same hidden width and heads as a depth-sensitivity test.
+
+Training uses unlabeled point sets as input but \emph{task-level supervision} from the semisynthetic ground-truth parameters. Because mixture components are permutation-invariant, the loss minimizes the best alignment over all $K!$ permutations,
+\begin{equation}
+\mathcal{L} = \min_{\sigma \in S_K}
+\left[
+\frac{1}{Kd} \sum_{k=1}^K \lVert \hat{\mu}_{\sigma(k)} - \mu_k \rVert_2^2
+- \sum_{k=1}^K \pi_k \log \hat{\pi}_{\sigma(k)}
+\right].
+\end{equation}
+
+\subsection{Baselines}
+We compare against four classical baselines.
+\begin{enumerate}[leftmargin=1.4em]
+    \item \textbf{EM}: isotropic EM with known scalar average scale and 10 restarts \citep{dempster1977em}.
+    \item \textbf{$k$-means}: $K=3$ centroids, with weights inferred from cluster counts \citep{macqueen1967kmeans}.
+    \item \textbf{Spectral}: an isotropic spectral estimator based on low-order moments and tensor power iterations \citep{anandkumar2014tensor}.
+    \item \textbf{\diaggmm}: a diagonal-covariance GaussianMixture baseline fit with \texttt{scikit-learn} \citep{pedregosa2011scikit}.
+\end{enumerate}
+
+The first three baselines are useful misspecified references on the residual benchmark, while \diaggmm{} is the main matched classical baseline on the Gaussian-diagonal benchmark.
+
+\subsection{Protocol and audits}
+Every training run uses 500 gradient updates with batch size 32, AdamW \citep{loshchilov2019decoupled}, learning rate $10^{-4}$, weight decay $10^{-4}$, and gradient clipping at 1.0, corresponding to 16{,}000 sampled training tasks. All reported runs train on the residual generator with train seed 0. Evaluation uses \texttt{checkpoint\_last.pt} on 100 tasks for each of 3 held-out seeds (101, 102, 103), under both generators and all five intervention conditions. Every method--generator--intervention summary therefore averages over 300 tasks.
+
+The reported Wine and Iris runs both pass exact task-hash audits with 0/300 train/eval overlaps on the held-out residual evaluations. This removes the main leakage concern from the earlier draft.
+
+\subsection{Metrics}
+Predicted components are matched to ground truth by Hungarian alignment on the means \citep{kuhn1955hungarian}:
+\begin{equation}
+P^\star = \arg\min_{P \in \Pi_K} \lVert P\hat{M} - M \rVert_F^2.
+\end{equation}
+After matching, we report total parameter error,
+\begin{equation}
+\PE = \mathrm{MSE}_{\mu} + \mathrm{MSE}_{\pi} + \mathrm{MSE}_{s},
+\end{equation}
+with
+\begin{align}
+\mathrm{MSE}_{\mu} &= \frac{1}{Kd} \lVert P^\star \hat{M} - M \rVert_F^2, \\
+\mathrm{MSE}_{\pi} &= \frac{1}{K} \lVert P^\star \hat{\pi} - \pi \rVert_2^2, \\
+\mathrm{MSE}_{s} &= \frac{1}{Kd} \lVert P^\star \hat{S} - S \rVert_F^2.
+\end{align}
+We also report clustering accuracy,
+\begin{equation}
+\hat{z}_i = \arg\max_k \left[\log \hat{\pi}_k + \log \mathcal{N}(x_i;\hat{\mu}_k,\hat{\Sigma}_k)\right],
+\end{equation}
+and average log-likelihood,
+\begin{equation}
+\LL = \frac{1}{n} \sum_{i=1}^n \log \sum_{k=1}^K \hat{\pi}_k \mathcal{N}(x_i;\hat{\mu}_k,\hat{\Sigma}_k).
+\end{equation}
+Because the transformer does not predict scales in these runs, and because the held-out benchmarks are not isotropic, $\mathrm{MSE}_s$ is nonzero even at no shift. For that reason, we interpret total parameter error together with its decomposition and with clustering accuracy.
+
+\section{Results}
+\subsection{Held-out Wine benchmark: residual generator}
+Table~\ref{tab:residual-results} reports the main held-out Wine residual benchmark. On this benchmark, \tgmm{} achieves the best parameter error and clustering accuracy in every intervention setting. In the no-shift condition, it reaches $\PE=0.274$ and accuracy 0.931, compared with the best baseline at $\PE=0.602$ and accuracy 0.842. Mechanism compression and noise inflation are the hardest interventions, reducing accuracy to roughly 0.81 in both cases. Sample-size shift slightly improves \tgmm{} parameter error but does not materially change accuracy.
+
+A different pattern appears for average log-likelihood. On the residual benchmark, \diaggmm{} attains the best average log-likelihood in every condition, even though it is much worse than \tgmm{} on parameter error and clustering accuracy. This matters because it shows that likelihood and parameter recovery are no longer aligned once the benchmark departs from a matched isotropic family.
+
+\begin{table*}[t]
+\centering
+\caption{Held-out Wine residual benchmark. Means are reported as mean $\pm$ standard deviation over 300 tasks per intervention (100 tasks $\times$ 3 seeds). Lower parameter error is better; higher clustering accuracy, average log-likelihood, and success are better.}
+\label{tab:residual-results}
+\begin{threeparttable}
+\scriptsize
+\setlength{\tabcolsep}{4.5pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llcccc}
+\toprule
+Intervention & Method & Parameter error $\downarrow$ & Cluster acc. $\uparrow$ & Avg. log-likelihood $\uparrow$ & Success $\uparrow$ \\
+\midrule
+\multirow{5}{*}{None}
+& TGMM & \textbf{0.2740 $\pm$ 0.0190} & \textbf{0.9308 $\pm$ 0.0402} & -12.9272 $\pm$ 0.6153 & 100.0\% \\
+& EM & 0.6702 $\pm$ 0.6225 & 0.8395 $\pm$ 0.1501 & -12.2482 $\pm$ 0.5333 & 100.0\% \\
+& $k$-means & 0.6015 $\pm$ 0.5266 & 0.8420 $\pm$ 0.1409 & -12.2713 $\pm$ 0.5390 & 100.0\% \\
+& Spectral & 1.2994 $\pm$ 0.7084 & 0.6596 $\pm$ 0.1569 & -13.5515 $\pm$ 0.7870 & 100.0\% \\
+& DiagGMM & 1.9226 $\pm$ 0.9401 & 0.6232 $\pm$ 0.1810 & \textbf{-9.6056 $\pm$ 1.5200} & 100.0\% \\
+\midrule
+\multirow{5}{*}{Prior ($\lambda=1.25$)}
+& TGMM & \textbf{0.2827 $\pm$ 0.0246} & \textbf{0.9314 $\pm$ 0.0387} & -12.4163 $\pm$ 0.5745 & 100.0\% \\
+& EM & 0.9707 $\pm$ 0.7170 & 0.8082 $\pm$ 0.1971 & -11.6682 $\pm$ 0.5820 & 100.0\% \\
+& $k$-means & 0.8799 $\pm$ 0.6318 & 0.7799 $\pm$ 0.2073 & -11.7040 $\pm$ 0.5803 & 100.0\% \\
+& Spectral & 1.8441 $\pm$ 4.7729 & 0.6959 $\pm$ 0.1781 & -13.1253 $\pm$ 1.3515 & 100.0\% \\
+& DiagGMM & 2.1885 $\pm$ 0.7724 & 0.6030 $\pm$ 0.2187 & \textbf{-8.7649 $\pm$ 1.7284} & 100.0\% \\
+\midrule
+\multirow{5}{*}{Mechanism ($\rho=0.65$)}
+& TGMM & \textbf{0.3124 $\pm$ 0.0109} & \textbf{0.8052 $\pm$ 0.0608} & -12.6791 $\pm$ 0.5626 & 100.0\% \\
+& EM & 1.1179 $\pm$ 0.6488 & 0.6235 $\pm$ 0.1517 & -11.7187 $\pm$ 0.4142 & 100.0\% \\
+& $k$-means & 0.9264 $\pm$ 0.5985 & 0.6394 $\pm$ 0.1393 & -11.7714 $\pm$ 0.4325 & 100.0\% \\
+& Spectral & 1.3608 $\pm$ 0.8688 & 0.5088 $\pm$ 0.1457 & -12.7878 $\pm$ 1.2154 & 100.0\% \\
+& DiagGMM & 1.9803 $\pm$ 0.7374 & 0.5379 $\pm$ 0.1420 & \textbf{-8.7613 $\pm$ 1.5804} & 100.0\% \\
+\midrule
+\multirow{5}{*}{Noise ($\gamma=1.5$)}
+& TGMM & \textbf{0.5236 $\pm$ 0.0228} & \textbf{0.8093 $\pm$ 0.0611} & -15.7466 $\pm$ 0.5673 & 100.0\% \\
+& EM & 2.4072 $\pm$ 1.4315 & 0.6376 $\pm$ 0.1534 & -14.9935 $\pm$ 0.4203 & 100.0\% \\
+& $k$-means & 1.9671 $\pm$ 1.2947 & 0.6517 $\pm$ 0.1440 & -15.0445 $\pm$ 0.4405 & 100.0\% \\
+& Spectral & 3.0401 $\pm$ 1.8663 & 0.5166 $\pm$ 0.1460 & -16.0463 $\pm$ 0.8778 & 100.0\% \\
+& DiagGMM & 4.3546 $\pm$ 1.6115 & 0.5309 $\pm$ 0.1396 & \textbf{-12.0026 $\pm$ 1.6604} & 100.0\% \\
+\midrule
+\multirow{5}{*}{Sample size ($n=128$)}
+& TGMM & \textbf{0.2703 $\pm$ 0.0052} & \textbf{0.9283 $\pm$ 0.0239} & -12.9038 $\pm$ 0.4054 & 100.0\% \\
+& EM & 0.3652 $\pm$ 0.3346 & 0.8908 $\pm$ 0.0821 & -12.4959 $\pm$ 0.3581 & 100.0\% \\
+& $k$-means & 0.3538 $\pm$ 0.2536 & 0.8843 $\pm$ 0.0770 & -12.5090 $\pm$ 0.3616 & 100.0\% \\
+& Spectral & 0.9857 $\pm$ 0.5148 & 0.6971 $\pm$ 0.1441 & -13.5913 $\pm$ 0.6413 & 100.0\% \\
+& DiagGMM & 1.5638 $\pm$ 0.9944 & 0.6467 $\pm$ 0.1828 & \textbf{-10.9161 $\pm$ 0.8855} & 99.7\% \\
+\bottomrule
+\end{tabular}%
+}
+\end{threeparttable}
+\end{table*}
+
+\subsection{Held-out Wine benchmark: cross-generator evaluation on Gaussian-diagonal tasks}
+Table~\ref{tab:gaussdiag-results} evaluates the same trained model on held-out Gaussian-diagonal tasks without retraining. This is a stronger generalization check because the training generator is residual-resampled rather than diagonal-Gaussian. Even so, \tgmm{} achieves the best parameter error and clustering accuracy in four of the five intervention settings.
+
+The main exception is informative rather than damaging: when the test family is explicitly diagonal-Gaussian and the sample size is increased to $n=128$, the matched \diaggmm{} baseline overtakes \tgmm{} on both parameter error and clustering accuracy (0.136 vs.~0.268 in parameter error and 0.903 vs.~0.895 in accuracy). \diaggmm{} also attains the best average log-likelihood in every Gaussian-diagonal condition. This is exactly the regime where a matched classical baseline should be expected to catch up.
+
+Figure~\ref{fig:performance-curves} visualizes the full intervention sweep across the held-out Wine and Iris generators, and Figure~\ref{fig:tgmm-advantage} compresses the same story into TGMM-versus-best-baseline margins. The only negative cells on Wine occur in the Gaussian-diagonal $n=128$ condition, which is exactly the matched-data regime where the diagonal baseline should be strongest.
+
+\begin{table*}[t]
+\centering
+\caption{Held-out Wine Gaussian-diagonal benchmark. The transformer is evaluated without retraining after being trained only on the residual generator. Means are over 300 tasks per intervention.}
+\label{tab:gaussdiag-results}
+\begin{threeparttable}
+\scriptsize
+\setlength{\tabcolsep}{4.5pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llcccc}
+\toprule
+Intervention & Method & Parameter error $\downarrow$ & Cluster acc. $\uparrow$ & Avg. log-likelihood $\uparrow$ & Success $\uparrow$ \\
+\midrule
+\multirow{5}{*}{None}
+& TGMM & \textbf{0.2712 $\pm$ 0.0082} & \textbf{0.8970 $\pm$ 0.0500} & -15.3118 $\pm$ 0.6406 & 100.0\% \\
+& EM & 0.5897 $\pm$ 0.3063 & 0.8133 $\pm$ 0.1196 & -14.4452 $\pm$ 0.6071 & 100.0\% \\
+& $k$-means & 0.5969 $\pm$ 0.3083 & 0.8014 $\pm$ 0.1256 & -14.4682 $\pm$ 0.6022 & 100.0\% \\
+& Spectral & 1.0316 $\pm$ 0.3169 & 0.6360 $\pm$ 0.1505 & -16.0851 $\pm$ 1.0106 & 100.0\% \\
+& DiagGMM & 0.8399 $\pm$ 0.7495 & 0.7679 $\pm$ 0.1684 & \textbf{-13.1224 $\pm$ 0.5369} & 100.0\% \\
+\midrule
+\multirow{5}{*}{Prior ($\lambda=1.25$)}
+& TGMM & \textbf{0.2894 $\pm$ 0.0401} & \textbf{0.9262 $\pm$ 0.0444} & -14.7510 $\pm$ 0.6040 & 100.0\% \\
+& EM & 0.9504 $\pm$ 0.4836 & 0.7180 $\pm$ 0.1861 & -13.7121 $\pm$ 0.6691 & 100.0\% \\
+& $k$-means & 0.9611 $\pm$ 0.4773 & 0.6987 $\pm$ 0.1784 & -13.7413 $\pm$ 0.6687 & 100.0\% \\
+& Spectral & 1.2415 $\pm$ 0.3974 & 0.5824 $\pm$ 0.1540 & -14.9742 $\pm$ 1.0917 & 100.0\% \\
+& DiagGMM & 1.1848 $\pm$ 0.8094 & 0.7378 $\pm$ 0.2001 & \textbf{-12.5505 $\pm$ 0.6509} & 100.0\% \\
+\midrule
+\multirow{5}{*}{Mechanism ($\rho=0.65$)}
+& TGMM & \textbf{0.3115 $\pm$ 0.0119} & \textbf{0.7665 $\pm$ 0.0697} & -14.9693 $\pm$ 0.5991 & 100.0\% \\
+& EM & 0.7956 $\pm$ 0.3085 & 0.6113 $\pm$ 0.1170 & -13.9258 $\pm$ 0.5505 & 100.0\% \\
+& $k$-means & 0.7415 $\pm$ 0.2139 & 0.6076 $\pm$ 0.1067 & -13.9630 $\pm$ 0.5483 & 100.0\% \\
+& Spectral & 0.8040 $\pm$ 0.2550 & 0.5081 $\pm$ 0.1228 & -14.9257 $\pm$ 0.6866 & 100.0\% \\
+& DiagGMM & 1.0153 $\pm$ 0.6303 & 0.5920 $\pm$ 0.1465 & \textbf{-12.8017 $\pm$ 0.5273} & 100.0\% \\
+\midrule
+\multirow{5}{*}{Noise ($\gamma=1.5$)}
+& TGMM & \textbf{0.5242 $\pm$ 0.0091} & \textbf{0.7761 $\pm$ 0.0694} & -18.1332 $\pm$ 0.6191 & 100.0\% \\
+& EM & 1.7463 $\pm$ 0.7026 & 0.6212 $\pm$ 0.1171 & -17.1983 $\pm$ 0.5519 & 100.0\% \\
+& $k$-means & 1.6208 $\pm$ 0.4749 & 0.6188 $\pm$ 0.1091 & -17.2350 $\pm$ 0.5517 & 100.0\% \\
+& Spectral & 1.7267 $\pm$ 0.5503 & 0.5027 $\pm$ 0.1292 & -18.2293 $\pm$ 0.7150 & 100.0\% \\
+& DiagGMM & 2.2060 $\pm$ 1.3503 & 0.5985 $\pm$ 0.1503 & \textbf{-16.0638 $\pm$ 0.5493} & 100.0\% \\
+\midrule
+\multirow{5}{*}{Sample size ($n=128$)}
+& TGMM & 0.2675 $\pm$ 0.0038 & 0.8948 $\pm$ 0.0313 & -15.4152 $\pm$ 0.4771 & 100.0\% \\
+& EM & 0.3506 $\pm$ 0.1680 & 0.8511 $\pm$ 0.0812 & -14.9176 $\pm$ 0.4217 & 100.0\% \\
+& $k$-means & 0.3597 $\pm$ 0.1732 & 0.8455 $\pm$ 0.0799 & -14.9251 $\pm$ 0.4214 & 100.0\% \\
+& Spectral & 0.9438 $\pm$ 0.2489 & 0.6142 $\pm$ 0.1498 & -16.5623 $\pm$ 0.8008 & 100.0\% \\
+& DiagGMM & \textbf{0.1360 $\pm$ 0.1336} & \textbf{0.9028 $\pm$ 0.0607} & \textbf{-13.7233 $\pm$ 0.2601} & 100.0\% \\
+\bottomrule
+\end{tabular}%
+}
+\end{threeparttable}
+\end{table*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{report_revision_concise_bundle/figures/method_comparison_bars.pdf}
+\caption{Performance across interventions on the held-out evaluation generators. Parameter-error panels use a log scale. The residual benchmarks show a consistent TGMM advantage on parameter error and clustering accuracy; on the Gaussian-diagonal benchmarks, the matched \diaggmm{} baseline closes the gap mainly in the Wine and Iris $n=128$ conditions.}
+\label{fig:performance-curves}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/tgmm_advantage_heatmaps.pdf}
+\caption{TGMM's margin over the best classical baseline on the held-out Wine benchmark. For parameter error, positive values mean the best baseline has higher error than TGMM. For clustering accuracy, positive values mean TGMM is more accurate. The only negative cells occur in the Gaussian-diagonal $n=128$ condition, where the matched \diaggmm{} baseline overtakes TGMM.}
+\label{fig:tgmm-advantage}
+\end{figure*}
+
+\subsection{Depth sensitivity: 3 layers versus 2 layers}
+Table~\ref{tab:depth-sensitivity} compares the main 3-layer transformer with a 2-layer variant while keeping hidden width, heads, training budget, seeds, and evaluation protocol fixed. The two models are almost indistinguishable on both Wine and Iris. On Wine, the largest absolute differences are only a few thousandths in parameter error and around one thousandth in clustering accuracy. On Iris, the same pattern holds. In short, the qualitative ranking is not being driven by an especially deep transformer; reducing the backbone to two layers preserves the main conclusions.
+
+\begin{table}[t]
+\centering
+\small
+\caption{Selected depth-sensitivity results for TGMM. Both variants are trained on residual tasks with the same seeds and optimization settings. Differences are negligible across both datasets.}
+\label{tab:depth-sensitivity}
+\begin{tabularx}{\linewidth}{llcccc}
+\toprule
+Dataset & Slice & 3L PE & 2L PE & 3L Acc & 2L Acc \\
+\midrule
+Wine & residual / none & 0.2740 & 0.2718 & 0.9308 & 0.9302 \\
+Wine & residual / mechanism & 0.3124 & 0.3147 & 0.8052 & 0.8060 \\
+Wine & gaussian-diag / none & 0.2712 & 0.2698 & 0.8970 & 0.8971 \\
+Wine & gaussian-diag / $n{=}128$ & 0.2675 & 0.2655 & 0.8948 & 0.8942 \\
+Iris & residual / none & 2.4082 & 2.4082 & 0.7661 & 0.7669 \\
+Iris & residual / mechanism & 2.5027 & 2.5073 & 0.6825 & 0.6756 \\
+Iris & gaussian-diag / none & 2.4302 & 2.4296 & 0.6151 & 0.6162 \\
+Iris & gaussian-diag / $n{=}128$ & 2.4242 & 2.4232 & 0.6169 & 0.6178 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Cross-dataset replication on Iris}
+Table~\ref{tab:iris-summary} summarizes the held-out Iris results. The qualitative pattern closely mirrors Wine. On the residual Iris benchmark, the 3-layer transformer achieves the best parameter error and clustering accuracy in all five intervention settings. On the Gaussian-diagonal Iris benchmark, it again wins in four of the five settings and loses only in the matched $n=128$ condition, where \diaggmm{} overtakes it on both metrics. As on Wine, \diaggmm{} attains the best average log-likelihood throughout.
+
+The main extra wrinkle is spectral failure on Iris residual tasks. In the reported run, the spectral baseline returns no finite results on any residual Iris evaluation task, making it uninformative there. This is a useful negative result as it shows that low-order moment methods can become numerically brittle on small, low-dimensional, held-out semisynthetic tasks even when the other baselines remain stable.
+
+\begin{table}[t]
+\centering
+\small
+\caption{Cross-dataset replication summary for the held-out Iris benchmark (3-layer TGMM).}
+\label{tab:iris-summary}
+\begin{tabularx}{\linewidth}{>{\bfseries}l c c c X}
+\toprule
+Iris slice & TGMM best PE & TGMM best Acc & Best LL & Notable caveat \\
+\midrule
+Residual generator & 5/5 & 5/5 & DiagGMM & Spectral has 0\% success and provides no finite residual-task results. \\
+Gaussian-diagonal generator & 4/5 & 4/5 & DiagGMM & Matched \diaggmm{} overtakes TGMM only at $n=128$. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.8\linewidth]{report_revision_concise_bundle/figures/viz_clean.pdf}
+\caption{Example clustering on a held-out Iris task. The visualization illustrates the qualitative behavior of TGMM compared to classical baselines. TGMM better separates overlapping components under mechanism shift, while classical methods exhibit boundary errors.}
+\label{fig:iris-clustering-example}
+\end{figure}
+
+\subsection{Additional held-out benchmark: Digits}
+As an additional stress test, we evaluate the same clean protocol on a third public benchmark built from the \texttt{sklearn} Digits dataset. This benchmark is presented as an extra result rather than part of the main claim, because it differs materially from Wine and Iris: it has 10 classes rather than 3, starts from a 64-dimensional pixel space, and uses PCA to obtain an 8-dimensional representation. We again use a class-stratified 70/30 train/test split with split seed 11, fit preprocessing on the training split only, train on residual tasks from the training split with train seed 0, and evaluate on held-out test tasks using seeds 101, 102, and 103. As in the other clean runs, the reported residual evaluation passes an exact task-hash audit with 0/300 train/eval overlaps.
+
+The Digits benchmark is therefore a useful out-of-distribution extension of the earlier experiments: it keeps the same evaluation hygiene while increasing the number of mixture components to $K=10$ and moving from low-dimensional tabular measurements to compressed image-derived features.
+
+\begin{table}[t]
+\centering
+\small
+\caption{Extra held-out Digits benchmark summary (3-layer TGMM).}
+\label{tab:digits-summary}
+\begin{tabularx}{\linewidth}{>{\bfseries}l c c c X}
+\toprule
+Digits slice & TGMM best PE & TGMM best Acc & Best LL & Notable caveat \\
+\midrule
+Residual generator & 5/5 & 5/5 & DiagGMM & Spectral has 0\% success and provides no finite results. \\
+Gaussian-diagonal generator & 5/5 & 5/5 & DiagGMM & TGMM remains best even at $n=128$, unlike the matched-baseline reversals seen on Wine and Iris. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The Digits results strengthen the benchmark-specific interpretation rather than overturning it. On both the held-out residual and held-out Gaussian-diagonal Digits generators, \tgmm{} achieves the best parameter error and clustering accuracy in all five intervention settings. In the residual no-shift condition, \tgmm{} reaches $\PE=0.1625$ and clustering accuracy 0.881, compared with the best baseline at $\PE=1.9198$ and accuracy 0.656. On the Gaussian-diagonal no-shift benchmark, \tgmm{} again leads with $\PE=0.1638$ and accuracy 0.946, while the strongest baseline reaches $\PE=0.8695$ and accuracy 0.762.
+
+The intervention profile is also informative. Mechanism compression remains the hardest geometric intervention, increasing \tgmm{} parameter error from 0.1625 to 0.4038 on the residual generator and reducing accuracy from 0.881 to 0.674. Noise inflation increases total parameter error primarily through the scale term, as in the earlier datasets. Unlike Wine and Iris, however, the matched \diaggmm{} baseline does not overtake \tgmm{} even on the Gaussian-diagonal $n=128$ condition. At the same time, \diaggmm{} still attains the best average log-likelihood in every Digits condition, reinforcing the broader point that likelihood and structural recovery need not rank methods the same way once evaluation departs from the exact training objective.
+
+A further negative result is that the spectral baseline fails completely on this benchmark: in the reported Digits run it returns no finite results on either generator in any intervention condition. This makes the Digits benchmark a stronger test of numerical robustness than Wine and Iris, where spectral was at least partially usable.
+
+Overall, the extra Digits benchmark is consistent with the main conclusion of the report but shows a slightly stronger version of it: on this higher-$K$ held-out benchmark, the learned transformer solver remains clearly best on parameter recovery and clustering accuracy across all tested interventions, while the diagonal-covariance baseline remains strongest on likelihood.
+
+\subsection{Interpreting the interventions}
+Table~\ref{tab:claim-summary} summarizes the clean claim supported by the held-out Wine, Iris, and extra Digits evaluations.
+
+Three patterns are especially informative.
+\begin{enumerate}[leftmargin=1.4em]
+    \item \textbf{Mechanism shift is the main geometric failure mode.} It causes the largest drop in clustering accuracy for \tgmm{} on both datasets and both generators. On Wine, accuracy falls from 0.931 to 0.805 on the residual generator and from 0.897 to 0.767 on the Gaussian-diagonal generator. On Iris, the same intervention reduces residual accuracy from 0.766 to 0.683 and Gaussian-diagonal accuracy from 0.615 to 0.529.
+    \item \textbf{Noise shift increases parameter error mainly through the scale term.} For \tgmm{}, the scale contribution is already nonzero at no shift because the model does not predict diagonal scales; under noise@1.5 it rises sharply and dominates the increase in total parameter error.
+    \item \textbf{Matched classical regimes do catch up.} When the evaluation family becomes explicitly diagonal-Gaussian and the sample size is increased to $n=128$, the matched \diaggmm{} baseline overtakes TGMM on both Wine and Iris. The learned solver is therefore strong, but not universally strongest.
+\end{enumerate}
+
+\begin{table}[t]
+\centering
+\small
+\caption{Summary of the clean claim supported by the held-out evaluations.}
+\label{tab:claim-summary}
+\begin{tabularx}{\linewidth}{>{\bfseries}l X}
+\toprule
+Benchmark slice & Supported claim \\
+\midrule
+Wine residual generator & \tgmm{} achieves the best parameter error and clustering accuracy in all five intervention settings. The best average log-likelihood is achieved by \diaggmm{}, not by \tgmm{}. \\
+Wine Gaussian-diagonal generator & \tgmm{} remains best on parameter error and clustering accuracy in four of five settings. The matched \diaggmm{} baseline overtakes it only in the $n=128$ condition. \\
+Iris residual generator & \tgmm{} again achieves the best parameter error and clustering accuracy in all five settings. Spectral has 0\% success here and is effectively unusable. \\
+Iris Gaussian-diagonal generator & \tgmm{} again wins in four of five settings, with \diaggmm{} overtaking only in the matched $n=128$ condition. \\
+Digits residual generator (extra) & \tgmm{} achieves the best parameter error and clustering accuracy in all five settings, while \diaggmm{} achieves the best average log-likelihood throughout. Spectral has 0\% success. \\
+Digits Gaussian-diagonal generator (extra) & \tgmm{} also achieves the best parameter error and clustering accuracy in all five settings, including the $n=128$ condition, while \diaggmm{} again achieves the best average log-likelihood throughout. Spectral has 0\% success. \\
+Audit result & The Wine, Iris, and Digits held-out evaluations use test splits, disjoint eval seeds 101/102/103, and exact task-hash audits with 0/300 train/eval overlaps in the reported residual runs. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Discussion, novel contributions, and limitations}
+\subsection{Discussion}
+ On held-out Wine-backed tasks, the transformer-based solver is usually strongest on parameter recovery and clustering accuracy, and it remains competitive under cross-generator evaluation. The results show that this is not just a one-off artifact of one backbone or one dataset: the same qualitative pattern appears with a 2-layer transformer, on the held-out Iris benchmark, and on an additional held-out Digits benchmark with $K=10$ components.
+
+At the same time, the results do \emph{not} support the broad claim that learned transformers dominate classical GMM solvers in every relevant sense. The diagonal-covariance baseline consistently achieves the best log-likelihood, and it overtakes the transformer whenever the evaluation family becomes explicitly diagonal-Gaussian and the sample size is large enough.
+
+\subsection{Novel contributions and impact}
+The main contributions of the project are methodological rather than architectural.
+\begin{enumerate}[leftmargin=1.4em]
+    \item \textbf{A held-out public-data semisynthetic benchmark.} The project turns public datasets into mixture-estimation tasks with known ground truth while preserving a clean train/test split.
+    \item \textbf{Evaluation hygiene.} The cleaned protocol fits preprocessing on the training split only, uses disjoint train/eval seeds, and includes exact task-hash overlap audits.
+    \item \textbf{Intervention-specific robustness analysis.} Rather than using one vague distribution-shift label, the study separates prior, mechanism, noise, and sample-size interventions and interprets them through parameter-error decomposition.
+    \item \textbf{Sensitivity and replication checks.} The report shows that the main pattern is stable under a 2-layer ablation, replicates on a second public dataset (Iris), and remains visible on an additional higher-$K$ Digits benchmark, while also identifying matched classical regimes where the transformer no longer wins.
+\end{enumerate}
+
+The impact of the project is therefore primarily methodological. It offers a reproducible way to stress-test learned mixture solvers on public data while keeping claims narrow enough to be credible. The findings help clarify when a learned solver improves parameter recovery and clustering accuracy, when matched classical models remain preferable, and how much those conclusions depend on benchmark design.
+
+\subsection{Limitations}
+Several limitations matter for interpretation.
+\begin{enumerate}[leftmargin=1.4em]
+    \item \textbf{Semisynthetic construction.} The benchmarks use class labels to define the task generators, so these are not purely real unsupervised clustering problems.
+    \item \textbf{Task-level supervision.} The model is trained on unlabeled point sets but with supervision from known semisynthetic parameters, so ``learned solver'' is more accurate than ``fully unsupervised model.''
+    \item \textbf{Benchmark-specific conclusions.} The results come from two small public datasets with fixed $K=3$ and do not imply universal robustness.
+    \item \textbf{Point-level holdout, not dataset-family holdout.} The evaluation splits are disjoint from training, but they still come from the same underlying public datasets.
+    \item \textbf{Scale-head omission.} The transformer does not predict component scales in these runs, so the scale term materially affects total parameter error even without an explicit noise intervention.
+    \item \textbf{Model mismatch across baselines.} The residual benchmarks are not matched isotropic GMM families; isotropic EM and spectral methods should therefore be interpreted as useful misspecified references rather than fully matched solvers.
+\end{enumerate}
+
+\subsection{Broader impact}
+The broader impact of the project is limited. The benchmarks use non-personal tabular measurements of wine chemistry and flower morphology and evaluate generic clustering methods rather than deployed decision systems. Privacy and consent concerns are therefore minimal. Any transfer to higher-stakes domains would require domain-specific validation rather than direct extrapolation from these small public benchmarks.
+
+\section{Reproducibility}
+The submission archive contains the code, configuration files, checkpoints, clean-suite evaluation outputs, sensitivity runs, Iris replication outputs, and overlap-audit reports used in this write-up. The key reproducibility details are the following: class-stratified 70/30 train/test split with split seed 11; preprocessing fit on the training split only; training seed 0; evaluation seeds 101, 102, and 103; residual training generator; residual and Gaussian-diagonal held-out evaluation generators; Wine dimension $d=8$ after PCA and Iris dimension $d=4$ without PCA; and zero exact task overlaps in the reported held-out residual audits for both datasets. The extra Digits benchmark uses the same clean protocol with \texttt{sklearn} Digits, $K=10$, PCA from 64 dimensions to $d=8$, explained variance ratio 53.26\%, and zero exact task overlaps in the reported held-out residual audit.
+
+\section{Conclusion}
+This report revises the original claim into a cleaner held-out benchmark statement and strengthens it with depth sensitivity, cross-dataset replication, and an additional Digits benchmark. After training on residual-resampled tasks from the training splits of Wine and Iris, the transformer-based solver achieves the best parameter error and clustering accuracy in all five settings on the held-out residual benchmarks and in four of five settings on the held-out Gaussian-diagonal benchmarks. The 2-layer variant behaves almost identically, so the main qualitative picture is not highly depth-sensitive in this small regime.
+
+The strongest overall conclusion is therefore benchmark-specific rather than universal. On the held-out Wine and Iris benchmarks, the transformer-based solver is often the strongest method on parameter recovery and clustering accuracy, but a matched diagonal-covariance Gaussian mixture baseline achieves the best log-likelihood throughout and overtakes the transformer when the evaluation family becomes explicitly diagonal-Gaussian with more data. On the additional held-out Digits benchmark, the transformer solver is stronger still: it achieves the best parameter error and clustering accuracy in all five tested settings on both generators, while \diaggmm{} continues to dominate log-likelihood. Taken together, the results support a narrow but credible claim: learned transformer solvers can be very strong on structural recovery under controlled held-out shift, but their advantage is metric-dependent and benchmark-dependent rather than universal.
+
+\bibliographystyle{plainnat}
+\bibliography{interventional_tgmm_refs}
+
+\appendix
+
+\section{Run configuration}
+\begin{table}[H]
+\centering
+\caption{Configuration summary for the reported runs. All runs use AdamW, learning rate $10^{-4}$, weight decay $10^{-4}$, batch size 32, 500 updates, train seed 0, and eval seeds 101/102/103.}
+\label{tab:run-config}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}l X}
+\toprule
+Run & Configuration \\
+\midrule
+Wine 3-layer main & UCI Wine, class-stratified 70/30 split (seed 11), standardization and PCA fit on train only, $d=8$, residual training generator, 3 layers, 4 heads, hidden width 128, checkpoint\_last evaluated. \\
+Wine 2-layer sensitivity & Same as Wine main, but with 2 layers instead of 3. \\
+Iris 3-layer replication & Iris, class-stratified 70/30 split (seed 11), standardization fit on train only, $d=4$, residual training generator, 3 layers, 4 heads, hidden width 128. \\
+Iris 2-layer sensitivity & Same as Iris 3-layer run, but with 2 layers instead of 3. \\
+Overlap audits & Exact task-hash overlaps 0/300 on the reported held-out residual evaluations for Wine and Iris. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{figures/training_curves.pdf}
+\caption{Clean-suite training history for the reported held-out Wine run. The mean-loss term drops quickly, while the mixture-weight term stays comparatively flat and dominates the final objective.}
+\label{fig:training-curves}
+\end{figure}
+
+\section{TGMM parameter-error decomposition on Wine}
+\begin{table}[H]
+\centering
+\caption{Decomposition of Wine 3-layer \tgmm{} parameter error into mean, weight, and scale terms. Shares are percentages of total parameter error.}
+\label{tab:tgmm-decomp}
+\scriptsize
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{llccccccc}
+\toprule
+Generator & Intervention & Total PE & Mean MSE & Weight MSE & Scale MSE & Mean share & Weight share & Scale share \\
+\midrule
+Residual & None & 0.2740 & 0.0706 & 0.0050 & 0.1984 & 25.8\% & 1.8\% & 72.4\% \\
+Residual & Prior ($\lambda=1.25$) & 0.2827 & 0.0759 & 0.0083 & 0.1984 & 26.9\% & 2.9\% & 70.2\% \\
+Residual & Mechanism ($\rho=0.65$) & 0.3124 & 0.1086 & 0.0053 & 0.1984 & 34.8\% & 1.7\% & 63.5\% \\
+Residual & Noise ($\gamma=1.5$) & 0.5236 & 0.0713 & 0.0058 & 0.4465 & 13.6\% & 1.1\% & 85.3\% \\
+Residual & Sample size ($n=128$) & 0.2703 & 0.0682 & 0.0036 & 0.1984 & 25.2\% & 1.3\% & 73.4\% \\
+\midrule
+Gaussian-diag & None & 0.2712 & 0.0677 & 0.0051 & 0.1984 & 25.0\% & 1.9\% & 73.2\% \\
+Gaussian-diag & Prior ($\lambda=1.25$) & 0.2894 & 0.0804 & 0.0106 & 0.1984 & 27.8\% & 3.7\% & 68.6\% \\
+Gaussian-diag & Mechanism ($\rho=0.65$) & 0.3115 & 0.1063 & 0.0067 & 0.1984 & 34.1\% & 2.2\% & 63.7\% \\
+Gaussian-diag & Noise ($\gamma=1.5$) & 0.5242 & 0.0705 & 0.0072 & 0.4465 & 13.5\% & 1.4\% & 85.2\% \\
+Gaussian-diag & Sample size ($n=128$) & 0.2675 & 0.0659 & 0.0032 & 0.1984 & 24.6\% & 1.2\% & 74.2\% \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{figures/tgmm_decomposition.pdf}
+\caption{Stacked decomposition of Wine 3-layer TGMM parameter error into mean, weight, and scale terms across generators and interventions. The dominant contribution comes from the scale term, especially under the noise intervention, which is why the main text interprets total parameter error together with its decomposition and clustering accuracy.}
+\label{fig:tgmm-decomposition}
+\end{figure}
+
+\section{Full Iris replication tables (3-layer TGMM)}
+
+\begin{table*}[t]
+\centering
+\caption{Held-out Iris residual benchmark. The spectral baseline returned no finite results in this run and is shown as unavailable. Means are over 300 tasks per intervention.}
+\label{tab:iris-residual-full}
+\scriptsize
+\setlength{\tabcolsep}{4.5pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llcccc}
+\toprule
+Intervention & Method & Parameter error $\downarrow$ & Cluster acc. $\uparrow$ & Avg. log-likelihood $\uparrow$ & Success $\uparrow$ \\
+\midrule
+\multirow{5}{*}{None}
+& TGMM & \textbf{2.4082 $\pm$ 0.0064} & \textbf{0.7661 $\pm$ 0.0683} & -6.9689 $\pm$ 0.4289 & 100.0\% \\
+& EM & 3.1721 $\pm$ 0.4736 & 0.6318 $\pm$ 0.1005 & -6.0622 $\pm$ 0.2113 & 100.0\% \\
+& $k$-means & 3.1207 $\pm$ 0.3647 & 0.6279 $\pm$ 0.0927 & -6.0746 $\pm$ 0.2099 & 100.0\% \\
+& Spectral & -- & -- & -- & 0.0\% \\
+& DiagGMM & 3.3577 $\pm$ 1.0274 & 0.6611 $\pm$ 0.1352 & \textbf{-4.6292 $\pm$ 0.6765} & 100.0\% \\
+\midrule
+\multirow{5}{*}{Prior ($\lambda=1.25$)}
+& TGMM & \textbf{2.4236 $\pm$ 0.0502} & \textbf{0.8375 $\pm$ 0.0631} & -6.9807 $\pm$ 0.4761 & 100.0\% \\
+& EM & 3.3116 $\pm$ 0.4132 & 0.6407 $\pm$ 0.0893 & -5.9074 $\pm$ 0.2677 & 100.0\% \\
+& $k$-means & 3.3271 $\pm$ 0.3927 & 0.6342 $\pm$ 0.0900 & -5.9168 $\pm$ 0.2654 & 100.0\% \\
+& Spectral & -- & -- & -- & 0.0\% \\
+& DiagGMM & 3.8246 $\pm$ 1.0747 & 0.6589 $\pm$ 0.1669 & \textbf{-3.8182 $\pm$ 0.9967} & 100.0\% \\
+\midrule
+\multirow{5}{*}{Mechanism ($\rho=0.65$)}
+& TGMM & \textbf{2.5027 $\pm$ 0.0266} & \textbf{0.6825 $\pm$ 0.0910} & -6.8770 $\pm$ 0.4144 & 100.0\% \\
+& EM & 3.5512 $\pm$ 0.6575 & 0.5076 $\pm$ 0.1178 & -5.7690 $\pm$ 0.1902 & 100.0\% \\
+& $k$-means & 3.3127 $\pm$ 0.5057 & 0.5317 $\pm$ 0.1036 & -5.7947 $\pm$ 0.1874 & 100.0\% \\
+& Spectral & -- & -- & -- & 0.0\% \\
+& DiagGMM & 3.8478 $\pm$ 1.0770 & 0.5546 $\pm$ 0.1298 & \textbf{-4.1318 $\pm$ 0.6841} & 100.0\% \\
+\midrule
+\multirow{5}{*}{Noise ($\gamma=1.5$)}
+& TGMM & \textbf{5.4015 $\pm$ 0.0085} & \textbf{0.7009 $\pm$ 0.0753} & -8.4544 $\pm$ 0.4441 & 100.0\% \\
+& EM & 7.8604 $\pm$ 1.4201 & 0.5141 $\pm$ 0.1153 & -7.4073 $\pm$ 0.1914 & 100.0\% \\
+& $k$-means & 7.3551 $\pm$ 1.0573 & 0.5401 $\pm$ 0.0972 & -7.4322 $\pm$ 0.1869 & 100.0\% \\
+& Spectral & -- & -- & -- & 0.0\% \\
+& DiagGMM & 8.6681 $\pm$ 2.4008 & 0.5642 $\pm$ 0.1283 & \textbf{-5.7777 $\pm$ 0.6916} & 100.0\% \\
+\midrule
+\multirow{5}{*}{Sample size ($n=128$)}
+& TGMM & \textbf{2.4054 $\pm$ 0.0033} & \textbf{0.7700 $\pm$ 0.0528} & -6.9608 $\pm$ 0.2927 & 100.0\% \\
+& EM & 3.0189 $\pm$ 0.3420 & 0.6286 $\pm$ 0.0813 & -6.1683 $\pm$ 0.1659 & 100.0\% \\
+& $k$-means & 3.0052 $\pm$ 0.2653 & 0.6279 $\pm$ 0.0737 & -6.1797 $\pm$ 0.1657 & 100.0\% \\
+& Spectral & -- & -- & -- & 0.0\% \\
+& DiagGMM & 2.6936 $\pm$ 0.8517 & 0.6961 $\pm$ 0.1063 & \textbf{-5.0396 $\pm$ 0.3382} & 100.0\% \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\caption{Held-out Iris Gaussian-diagonal benchmark for the 3-layer TGMM. Means are over 300 tasks per intervention.}
+\label{tab:iris-gaussdiag-full}
+\scriptsize
+\setlength{\tabcolsep}{4.5pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llcccc}
+\toprule
+Intervention & Method & Parameter error $\downarrow$ & Cluster acc. $\uparrow$ & Avg. log-likelihood $\uparrow$ & Success $\uparrow$ \\
+\midrule
+\multirow{5}{*}{None}
+& TGMM & \textbf{2.4302 $\pm$ 0.0200} & \textbf{0.6151 $\pm$ 0.0761} & -14.1515 $\pm$ 1.7535 & 100.0\% \\
+& EM & 5.4912 $\pm$ 1.4064 & 0.4472 $\pm$ 0.0886 & -10.0729 $\pm$ 0.8729 & 100.0\% \\
+& $k$-means & 5.3827 $\pm$ 1.3561 & 0.4480 $\pm$ 0.0897 & -10.0860 $\pm$ 0.8736 & 100.0\% \\
+& Spectral & 4.5158 $\pm$ 1.0131 & 0.4372 $\pm$ 0.1046 & -12.4541 $\pm$ 1.6596 & 99.7\% \\
+& DiagGMM & 4.0600 $\pm$ 3.1552 & 0.5806 $\pm$ 0.1604 & \textbf{-7.6649 $\pm$ 0.3924} & 100.0\% \\
+\midrule
+\multirow{5}{*}{Prior ($\lambda=1.25$)}
+& TGMM & \textbf{2.4411 $\pm$ 0.0283} & \textbf{0.6789 $\pm$ 0.0846} & -13.9879 $\pm$ 1.7072 & 100.0\% \\
+& EM & 6.1073 $\pm$ 2.0056 & 0.4344 $\pm$ 0.1027 & -9.5489 $\pm$ 0.9388 & 100.0\% \\
+& $k$-means & 5.9819 $\pm$ 1.9050 & 0.4317 $\pm$ 0.0987 & -9.5666 $\pm$ 0.9413 & 100.0\% \\
+& Spectral & 4.9109 $\pm$ 1.2635 & 0.4440 $\pm$ 0.1108 & -11.5374 $\pm$ 1.9364 & 100.0\% \\
+& DiagGMM & 4.0568 $\pm$ 2.9454 & 0.6627 $\pm$ 0.2189 & \textbf{-7.0340 $\pm$ 0.5062} & 100.0\% \\
+\midrule
+\multirow{5}{*}{Mechanism ($\rho=0.65$)}
+& TGMM & \textbf{2.4592 $\pm$ 0.0264} & \textbf{0.5287 $\pm$ 0.0779} & -13.8318 $\pm$ 1.7001 & 100.0\% \\
+& EM & 5.6968 $\pm$ 1.3457 & 0.4030 $\pm$ 0.0838 & -9.5985 $\pm$ 0.8373 & 100.0\% \\
+& $k$-means & 5.6051 $\pm$ 1.4051 & 0.4013 $\pm$ 0.0834 & -9.6151 $\pm$ 0.8373 & 100.0\% \\
+& Spectral & 6.7818 $\pm$ 17.9268 & 0.4093 $\pm$ 0.0912 & -12.8230 $\pm$ 3.7070 & 99.7\% \\
+& DiagGMM & 4.6963 $\pm$ 3.6275 & 0.4886 $\pm$ 0.1522 & \textbf{-7.4791 $\pm$ 0.3966} & 100.0\% \\
+\midrule
+\multirow{5}{*}{Noise ($\gamma=1.5$)}
+& TGMM & \textbf{5.4330 $\pm$ 0.0243} & \textbf{0.5360 $\pm$ 0.0811} & -15.7872 $\pm$ 1.7598 & 100.0\% \\
+& EM & 12.8029 $\pm$ 3.0691 & 0.4034 $\pm$ 0.0837 & -11.2389 $\pm$ 0.8389 & 100.0\% \\
+& $k$-means & 12.5588 $\pm$ 3.1960 & 0.4045 $\pm$ 0.0846 & -11.2566 $\pm$ 0.8383 & 100.0\% \\
+& Spectral & 13.1377 $\pm$ 16.6468 & 0.4136 $\pm$ 0.0933 & -14.2739 $\pm$ 2.5460 & 99.7\% \\
+& DiagGMM & 10.4279 $\pm$ 8.0188 & 0.4945 $\pm$ 0.1538 & \textbf{-9.1083 $\pm$ 0.4022} & 100.0\% \\
+\midrule
+\multirow{5}{*}{Sample size ($n=128$)}
+& TGMM & 2.4242 $\pm$ 0.0155 & 0.6169 $\pm$ 0.0484 & -14.1093 $\pm$ 1.0307 & 100.0\% \\
+& EM & 4.7702 $\pm$ 0.7016 & 0.4569 $\pm$ 0.0676 & -10.5830 $\pm$ 0.6171 & 100.0\% \\
+& $k$-means & 4.7273 $\pm$ 0.6344 & 0.4555 $\pm$ 0.0645 & -10.5906 $\pm$ 0.6172 & 100.0\% \\
+& Spectral & 3.7347 $\pm$ 0.4547 & 0.4524 $\pm$ 0.0733 & -13.0014 $\pm$ 1.2597 & 100.0\% \\
+& DiagGMM & \textbf{1.3748 $\pm$ 1.2677} & \textbf{0.6708 $\pm$ 0.1281} & \textbf{-7.9402 $\pm$ 0.2960} & 100.0\% \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}
+
+\section{Extra benchmark: Digits}
+
+\begin{table*}[t]
+\centering
+\caption{Held-out Digits residual benchmark (extra results). Means are reported as mean $\pm$ standard deviation over 300 tasks per intervention (100 tasks $\times$ 3 seeds). Lower parameter error is better; higher clustering accuracy, average log-likelihood, and success are better.}
+\label{tab:digits-residual-full}
+\begin{threeparttable}
+\scriptsize
+\setlength{\tabcolsep}{4.5pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llcccc}
+\toprule
+Intervention & Method & Parameter error $\downarrow$ & Cluster acc. $\uparrow$ & Avg. log-likelihood $\uparrow$ & Success $\uparrow$ \\
+\midrule
+\multirow{5}{*}{None}
+& TGMM & \textbf{0.1625 $\pm$ 0.0038} & \textbf{0.8815 $\pm$ 0.0481} & -13.8682 $\pm$ 0.9993 & 100.0\% \\
+& EM & 1.9609 $\pm$ 0.9351 & 0.6530 $\pm$ 0.0975 & -11.6962 $\pm$ 0.4499 & 100.0\% \\
+& $k$-means & 1.9198 $\pm$ 0.9625 & 0.6562 $\pm$ 0.0996 & -11.7695 $\pm$ 0.4694 & 100.0\% \\
+& Spectral & -- & -- & -- & 0.0\% \\
+& DiagGMM & 2.4036 $\pm$ 1.0329 & 0.6073 $\pm$ 0.1097 & \textbf{-6.7587 $\pm$ 2.1664} & 100.0\% \\
+\midrule
+\multirow{5}{*}{Prior ($\lambda=1.25$)}
+& TGMM & \textbf{0.1680 $\pm$ 0.0101} & \textbf{0.8966 $\pm$ 0.0460} & -13.4480 $\pm$ 0.9731 & 100.0\% \\
+& EM & 1.9387 $\pm$ 0.9254 & 0.6978 $\pm$ 0.1097 & -11.3369 $\pm$ 0.4883 & 100.0\% \\
+& $k$-means & 1.8728 $\pm$ 0.9360 & 0.6992 $\pm$ 0.1010 & -11.4066 $\pm$ 0.4984 & 100.0\% \\
+& Spectral & -- & -- & -- & 0.0\% \\
+& DiagGMM & 2.3448 $\pm$ 0.9727 & 0.6638 $\pm$ 0.1161 & \textbf{-5.8923 $\pm$ 2.2191} & 100.0\% \\
+\midrule
+\multirow{5}{*}{Mechanism ($\rho=0.65$)}
+& TGMM & \textbf{0.4038 $\pm$ 0.0276} & \textbf{0.6736 $\pm$ 0.0750} & -13.9248 $\pm$ 0.9465 & 100.0\% \\
+& EM & 1.8638 $\pm$ 0.8724 & 0.5108 $\pm$ 0.1019 & -11.1882 $\pm$ 0.3294 & 100.0\% \\
+& $k$-means & 1.7623 $\pm$ 0.8748 & 0.5089 $\pm$ 0.1003 & -11.2763 $\pm$ 0.3467 & 100.0\% \\
+& Spectral & -- & -- & -- & 0.0\% \\
+& DiagGMM & 2.1838 $\pm$ 0.9385 & 0.4839 $\pm$ 0.1041 & \textbf{-5.8295 $\pm$ 2.1568} & 100.0\% \\
+\midrule
+\multirow{5}{*}{Noise ($\gamma=1.5$)}
+& TGMM & \textbf{0.3126 $\pm$ 0.0036} & \textbf{0.7548 $\pm$ 0.0707} & -16.6016 $\pm$ 0.9917 & 100.0\% \\
+& EM & 4.1862 $\pm$ 1.9919 & 0.5232 $\pm$ 0.1050 & -14.4595 $\pm$ 0.3352 & 100.0\% \\
+& $k$-means & 3.9678 $\pm$ 1.9401 & 0.5270 $\pm$ 0.0999 & -14.5468 $\pm$ 0.3509 & 100.0\% \\
+& Spectral & -- & -- & -- & 0.0\% \\
+& DiagGMM & 4.9001 $\pm$ 2.1409 & 0.4925 $\pm$ 0.1061 & \textbf{-9.0285 $\pm$ 2.1660} & 100.0\% \\
+\midrule
+\multirow{5}{*}{Sample size ($n=128$)}
+& TGMM & \textbf{0.1622 $\pm$ 0.0016} & \textbf{0.8838 $\pm$ 0.0295} & -13.8955 $\pm$ 0.6674 & 100.0\% \\
+& EM & 1.9359 $\pm$ 0.8771 & 0.6424 $\pm$ 0.0860 & -12.4456 $\pm$ 0.2892 & 100.0\% \\
+& $k$-means & 1.8595 $\pm$ 0.8723 & 0.6498 $\pm$ 0.0901 & -12.5104 $\pm$ 0.2941 & 100.0\% \\
+& Spectral & -- & -- & -- & 0.0\% \\
+& DiagGMM & 2.3047 $\pm$ 1.0557 & 0.6099 $\pm$ 0.0943 & \textbf{-10.7272 $\pm$ 0.4815} & 100.0\% \\
+\bottomrule
+\end{tabular}%
+}
+\end{threeparttable}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\caption{Held-out Digits Gaussian-diagonal benchmark (extra results). The transformer is evaluated without retraining after being trained only on the residual generator. Means are over 300 tasks per intervention.}
+\label{tab:digits-gaussdiag-full}
+\begin{threeparttable}
+\scriptsize
+\setlength{\tabcolsep}{4.5pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llcccc}
+\toprule
+Intervention & Method & Parameter error $\downarrow$ & Cluster acc. $\uparrow$ & Avg. log-likelihood $\uparrow$ & Success $\uparrow$ \\
+\midrule
+\multirow{5}{*}{None}
+& TGMM & \textbf{0.1638 $\pm$ 0.0033} & \textbf{0.9459 $\pm$ 0.0325} & -12.5865 $\pm$ 0.3452 & 100.0\% \\
+& EM & 0.9149 $\pm$ 0.3334 & 0.7624 $\pm$ 0.1077 & -11.5309 $\pm$ 0.3355 & 100.0\% \\
+& $k$-means & 0.8695 $\pm$ 0.3287 & 0.7577 $\pm$ 0.1041 & -11.5938 $\pm$ 0.3451 & 100.0\% \\
+& Spectral & -- & -- & -- & 0.0\% \\
+& DiagGMM & 1.2170 $\pm$ 0.3882 & 0.7149 $\pm$ 0.1136 & \textbf{-7.1910 $\pm$ 1.6586} & 100.0\% \\
+\midrule
+\multirow{5}{*}{Prior ($\lambda=1.25$)}
+& TGMM & \textbf{0.1694 $\pm$ 0.0103} & \textbf{0.9550 $\pm$ 0.0322} & -12.2305 $\pm$ 0.3793 & 100.0\% \\
+& EM & 1.0076 $\pm$ 0.3507 & 0.7926 $\pm$ 0.0985 & -11.1113 $\pm$ 0.4236 & 100.0\% \\
+& $k$-means & 0.9545 $\pm$ 0.3382 & 0.7881 $\pm$ 0.1000 & -11.1697 $\pm$ 0.4291 & 100.0\% \\
+& Spectral & -- & -- & -- & 0.0\% \\
+& DiagGMM & 1.3477 $\pm$ 0.4135 & 0.7492 $\pm$ 0.1099 & \textbf{-5.8644 $\pm$ 2.0987} & 100.0\% \\
+\midrule
+\multirow{5}{*}{Mechanism ($\rho=0.65$)}
+& TGMM & \textbf{0.3887 $\pm$ 0.0316} & \textbf{0.7393 $\pm$ 0.0664} & -12.8440 $\pm$ 0.3539 & 100.0\% \\
+& EM & 0.9265 $\pm$ 0.2317 & 0.5830 $\pm$ 0.1069 & -11.1517 $\pm$ 0.2817 & 100.0\% \\
+& $k$-means & 0.8349 $\pm$ 0.2099 & 0.5912 $\pm$ 0.0993 & -11.2510 $\pm$ 0.2938 & 100.0\% \\
+& Spectral & -- & -- & -- & 0.0\% \\
+& DiagGMM & 1.1880 $\pm$ 0.2783 & 0.5488 $\pm$ 0.1061 & \textbf{-6.4240 $\pm$ 1.7543} & 100.0\% \\
+\midrule
+\multirow{5}{*}{Noise ($\gamma=1.5$)}
+& TGMM & \textbf{0.3150 $\pm$ 0.0034} & \textbf{0.8285 $\pm$ 0.0591} & -15.3992 $\pm$ 0.3233 & 100.0\% \\
+& EM & 2.0868 $\pm$ 0.5226 & 0.5909 $\pm$ 0.1023 & -14.4227 $\pm$ 0.2848 & 100.0\% \\
+& $k$-means & 1.8660 $\pm$ 0.4943 & 0.5986 $\pm$ 0.0988 & -14.5261 $\pm$ 0.2910 & 100.0\% \\
+& Spectral & -- & -- & -- & 0.0\% \\
+& DiagGMM & 2.6516 $\pm$ 0.6122 & 0.5625 $\pm$ 0.1087 & \textbf{-9.6544 $\pm$ 1.8287} & 100.0\% \\
+\midrule
+\multirow{5}{*}{Sample size ($n=128$)}
+& TGMM & \textbf{0.1633 $\pm$ 0.0017} & \textbf{0.9478 $\pm$ 0.0208} & -12.6309 $\pm$ 0.2460 & 100.0\% \\
+& EM & 0.4874 $\pm$ 0.2639 & 0.8369 $\pm$ 0.0930 & -12.1230 $\pm$ 0.2331 & 100.0\% \\
+& $k$-means & 0.4835 $\pm$ 0.2329 & 0.8204 $\pm$ 0.0894 & -12.1641 $\pm$ 0.2329 & 100.0\% \\
+& Spectral & -- & -- & -- & 0.0\% \\
+& DiagGMM & 0.5951 $\pm$ 0.3900 & 0.8095 $\pm$ 0.1104 & \textbf{-10.4910 $\pm$ 0.3894} & 100.0\% \\
+\bottomrule
+\end{tabular}%
+}
+\end{threeparttable}
+\end{table*}
+
+\begin{table}[t]
+\centering
+\small
+\caption{Extra reproducibility details for the held-out Digits benchmark.}
+\label{tab:digits-config}
+\begin{tabularx}{\linewidth}{>{\bfseries}l X}
+\toprule
+Item & Configuration \\
+\midrule
+Dataset & \texttt{sklearn} Digits, 10 classes, original dimension 64. \\
+Split and preprocessing & Class-stratified 70/30 train/test split with split seed 11; preprocessing fit on the training split only. \\
+Representation & PCA to $d=8$, retaining 53.26\% explained variance. \\
+Task setup & $K=10$, residual training generator, task size $n \sim \mathrm{Unif}\{32,\dots,64\}$ except for the $n=128$ intervention. \\
+Training/evaluation seeds & Train seed 0; eval seeds 101, 102, 103. \\
+Audit & Exact task-hash overlap 0/300 on the reported held-out residual evaluation. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\end{document}

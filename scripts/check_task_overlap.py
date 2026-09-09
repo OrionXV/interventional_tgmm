@@ -10,7 +10,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from interventional_tgmm.clean_benchmark import SplitTaskConfig, load_wine_split_benchmark, sample_split_task, task_hash
+from interventional_tgmm.clean_benchmark import SplitTaskConfig, load_split_benchmark, sample_split_task, task_hash
 from interventional_tgmm.config import InterventionConfig
 from interventional_tgmm.tmp_utils import cleanup_tmp_dir, rewrite_tmp_relative_path
 from interventional_tgmm.utils import ensure_dir, save_json
@@ -21,8 +21,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", type=str, default="outputs_clean/overlap_audit")
     parser.add_argument("--show-tmp", action="store_true")
     parser.add_argument("--tmp-dir", type=str, default="outputs/tmp")
-    parser.add_argument("--dataset-path", type=str, default="wine.csv")
-    parser.add_argument("--label-column", type=str, default="Cultivars")
+    parser.add_argument("--dataset", type=str, choices=["wine", "iris", "digits"], default="wine")
+    parser.add_argument("--dataset-path", type=str, default="")
+    parser.add_argument("--label-column", type=str, default="")
     parser.add_argument("--split-seed", type=int, default=11)
     parser.add_argument("--train-fraction", type=float, default=0.7)
     parser.add_argument("--generator", type=str, choices=["residual", "gaussian_diag"], default="residual")
@@ -48,6 +49,7 @@ def main() -> None:
     try:
         out_dir = ensure_dir(args.output_dir)
         task_cfg = SplitTaskConfig(
+            dataset=args.dataset,
             dataset_path=args.dataset_path,
             label_column=args.label_column,
             k=args.k,
@@ -61,7 +63,8 @@ def main() -> None:
             train_fraction=args.train_fraction,
             generator=args.generator,
         )
-        benchmark = load_wine_split_benchmark(
+        benchmark = load_split_benchmark(
+            dataset=task_cfg.dataset,
             dataset_path=task_cfg.dataset_path,
             label_column=task_cfg.label_column,
             d=task_cfg.d,
@@ -98,6 +101,9 @@ def main() -> None:
                     )
 
         report = {
+            "dataset": benchmark.dataset_name,
+            "dataset_path": benchmark.dataset_path,
+            "label_column": benchmark.label_column,
             "generator": args.generator,
             "train_split": args.train_split,
             "eval_split": args.eval_split,
@@ -113,6 +119,7 @@ def main() -> None:
         save_json(out_dir / "overlap_report.json", report)
 
         md = ["# Task-overlap audit", ""]
+        md.append(f"- Dataset: {benchmark.dataset_name} ({benchmark.dataset_path})")
         md.append(f"- Generator: {args.generator}")
         md.append(f"- Train split / eval split: {args.train_split} / {args.eval_split}")
         md.append(f"- Train seed: {args.train_seed}; eval seeds: {args.eval_seeds}")

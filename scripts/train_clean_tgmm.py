@@ -12,7 +12,7 @@ from tqdm.auto import tqdm
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from interventional_tgmm.clean_benchmark import SplitTaskConfig, load_wine_split_benchmark, sample_split_task_batch
+from interventional_tgmm.clean_benchmark import SplitTaskConfig, load_split_benchmark, sample_split_task_batch
 from interventional_tgmm.config import ModelConfig
 from interventional_tgmm.config_io import apply_config_defaults
 from interventional_tgmm.losses import permutation_invariant_loss
@@ -38,8 +38,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--tmp-dir", type=str, default="outputs/tmp")
 
     # Benchmark settings
-    parser.add_argument("--dataset-path", type=str, default="wine.csv")
-    parser.add_argument("--label-column", type=str, default="Cultivars")
+    parser.add_argument("--dataset", type=str, choices=["wine", "iris", "digits"], default="wine")
+    parser.add_argument("--dataset-path", type=str, default="")
+    parser.add_argument("--label-column", type=str, default="")
     parser.add_argument("--split-seed", type=int, default=11)
     parser.add_argument("--train-fraction", type=float, default=0.7)
     parser.add_argument("--train-split", type=str, choices=["train", "test"], default="train")
@@ -79,6 +80,7 @@ def main() -> None:
         out_dir = ensure_dir(args.output_dir)
 
         task_cfg = SplitTaskConfig(
+            dataset=args.dataset,
             dataset_path=args.dataset_path,
             label_column=args.label_column,
             k=args.k,
@@ -93,7 +95,8 @@ def main() -> None:
             fit_preprocessor_on_train=args.fit_preprocessor_on_train,
             generator=args.generator,
         )
-        benchmark = load_wine_split_benchmark(
+        benchmark = load_split_benchmark(
+            dataset=task_cfg.dataset,
             dataset_path=task_cfg.dataset_path,
             label_column=task_cfg.label_column,
             d=task_cfg.d,
@@ -173,6 +176,10 @@ def main() -> None:
                     "model_config": model_cfg.to_dict(),
                     "clean_task_config": task_cfg.to_dict(),
                     "clean_benchmark": {
+                        "dataset": benchmark.dataset_name,
+                        "dataset_path": benchmark.dataset_path,
+                        "label_column": benchmark.label_column,
+                        "original_dim": benchmark.original_dim,
                         "split_seed": args.split_seed,
                         "train_fraction": args.train_fraction,
                         "train_split": args.train_split,
@@ -199,6 +206,10 @@ def main() -> None:
             "model_config": model_cfg.to_dict(),
             "clean_task_config": task_cfg.to_dict(),
             "clean_benchmark": {
+                "dataset": benchmark.dataset_name,
+                "dataset_path": benchmark.dataset_path,
+                "label_column": benchmark.label_column,
+                "original_dim": benchmark.original_dim,
                 "split_seed": args.split_seed,
                 "train_fraction": args.train_fraction,
                 "train_split": args.train_split,

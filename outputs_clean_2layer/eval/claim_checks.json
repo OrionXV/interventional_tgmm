@@ -1,0 +1,71 @@
+{
+  "eval_seeds": [
+    101,
+    102,
+    103
+  ],
+  "train_seed": 0,
+  "eval_seeds_disjoint_from_train_seed": true,
+  "generators": {
+    "residual": {
+      "no_shift": {
+        "tgmm_parameter_error": 0.27182807411427956,
+        "tgmm_cluster_acc": 0.93015204715257,
+        "best_baseline_parameter_error_method": "kmeans",
+        "best_baseline_parameter_error": 0.6014769821751057,
+        "best_baseline_cluster_acc_method": "kmeans",
+        "best_baseline_cluster_acc": 0.8419551224017265,
+        "tgmm_beats_best_baseline_on_parameter_error": true,
+        "tgmm_beats_best_baseline_on_cluster_acc": true
+      },
+      "tgmm_interventional_gaps": {
+        "prior@1.25": {
+          "parameter_error_gap": 0.00953304659079851,
+          "cluster_acc_gap": -0.001915466386482767
+        },
+        "mechanism@0.65": {
+          "parameter_error_gap": 0.0428557074910092,
+          "cluster_acc_gap": 0.1241972977385557
+        },
+        "noise@1.5": {
+          "parameter_error_gap": 0.25099937555373497,
+          "cluster_acc_gap": 0.1222291731724181
+        },
+        "sample_size@128": {
+          "parameter_error_gap": -0.004039405268904395,
+          "cluster_acc_gap": 0.00168850548590338
+        }
+      }
+    },
+    "gaussian_diag": {
+      "no_shift": {
+        "tgmm_parameter_error": 0.2698057650844385,
+        "tgmm_cluster_acc": 0.8971292333661232,
+        "best_baseline_parameter_error_method": "em",
+        "best_baseline_parameter_error": 0.5896507662103349,
+        "best_baseline_cluster_acc_method": "em",
+        "best_baseline_cluster_acc": 0.813256378455981,
+        "tgmm_beats_best_baseline_on_parameter_error": true,
+        "tgmm_beats_best_baseline_on_cluster_acc": true
+      },
+      "tgmm_interventional_gaps": {
+        "prior@1.25": {
+          "parameter_error_gap": 0.019167092339794134,
+          "cluster_acc_gap": -0.02850000819402243
+        },
+        "mechanism@0.65": {
+          "parameter_error_gap": 0.03849045290598113,
+          "cluster_acc_gap": 0.13058387802509452
+        },
+        "noise@1.5": {
+          "parameter_error_gap": 0.25530603440914396,
+          "cluster_acc_gap": 0.12186438939348954
+        },
+        "sample_size@128": {
+          "parameter_error_gap": -0.004329653685188839,
+          "cluster_acc_gap": 0.0029365250327898496
+        }
+      }
+    }
+  }
+}

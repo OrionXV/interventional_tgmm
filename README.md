@@ -1,5 +1,13 @@
 # Interventional TGMM
 
+## Report and public research snapshot
+
+[**Read the technical report (PDF)**](paper/interventional_tgmm_report.pdf) · [**Interpretation notes and reproducibility details**](paper/README.md)
+
+This repository now includes the May 2026 course-project report and recorded Wine, Iris, and Digits experiments. It is exploratory work, not a peer-reviewed paper. The public-release notes document an omitted fixed-geometry baseline, a residual-scale metadata mismatch, and the inapplicability of the spectral baseline to the Digits configuration. Read those notes before interpreting the archived comparisons.
+
+The code and recorded results are preserved as a research snapshot; the full experiments have not been rerun or corrected for this release. The original Wine-focused workflow is documented below. Expanded report configurations are stored with the corresponding runs.
+
 This repository implements the full project workflow for **Interventional Robustness of a Transformer-Based Unsupervised GMM Solver**.
 
 It follows the proposal scope:
